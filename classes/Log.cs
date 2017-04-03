@@ -1,0 +1,86 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.IO;
+
+namespace ReceiptExport
+{
+    public static class Log
+    {
+        private static string filePath;
+        private static StreamWriter logWriter;
+        static string errMsg;
+
+        private static DateTime currentDateTime;
+       
+
+        public static string FilePath
+        {
+            get { return filePath; }
+            set { filePath = value; }
+        }
+
+        public static DateTime CurrentDateTime
+        {
+            get {
+                currentDateTime = DateTime.Now;
+                return currentDateTime; 
+            }
+            set { currentDateTime = value; }
+        }
+
+        public static void Exit(string _errMsg, ExitCode exitCode)
+        {
+            try
+            {
+                bool fileExists = File.Exists(filePath);
+                if (fileExists)
+                {
+                    logWriter.WriteLine(_errMsg);
+                    logWriter.Close();
+                }
+            }
+            finally
+            {
+                Program.EmailNotification((int)exitCode);
+                System.Environment.Exit((int)exitCode);
+            }
+        }
+
+        public static void WriteLine(string text)
+        {
+            logWriter.WriteLine(text);
+        }
+
+        //write Write process here for successful loggin
+        public static void CreateLogFile()
+        {
+            try
+            {
+                string strDate = String.Format("{0:MMddyyyy}", CurrentDateTime);
+                FilePath = String.Format("{0}ReceiptExport{1}.log", Program.FileDir, strDate);
+
+                logWriter = new StreamWriter(filePath);
+
+                logWriter.WriteLine(String.Format("----- Start: {0} -----", DateTime.Now.ToString()));
+            }
+            catch
+            {
+                errMsg = "CreateLogFile()\n";
+                //Exit(errMsg, ExitCode.CreateLogFileError);
+                Program.EmailNotification((int)(ExitCode.CreateLogFileError));
+            }
+        }
+
+        public static void Close()
+        {
+            logWriter.Close();
+        }
+        public static bool IsLogWriterNull()
+        {
+            return logWriter == null ? true : false;
+        }
+
+    }
+}
