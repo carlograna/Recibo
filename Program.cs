@@ -6,6 +6,7 @@ using System.IO;
 using System.Configuration;
 using System.Data;
 using System.Net.Mail;
+using System.Data.SqlClient;
 
 
 namespace ReceiptExport
@@ -72,6 +73,8 @@ namespace ReceiptExport
 
             //detail record
             string sqlString = "ReceiptExport";
+            //using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["itemCS"].ToString()))
+            //{ }
             SDUConnection conn = new SDUConnection();
             DataTable table = conn.GetDataTableWithStoredProcedure(sqlString, kidcareConnString);
 

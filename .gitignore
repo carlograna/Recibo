@@ -3,4 +3,4 @@ ReceiptExport.suo
 sh.exe.stackdump
 bin/
 obj/
-Properties/
+.vs/
