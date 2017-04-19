@@ -54,12 +54,12 @@ namespace ReceiptExport
         }
 
         //write Write process here for successful loggin
-        public static void CreateLogFile()
+        public static void CreateLogFile(string fileDir)
         {
             try
             {
                 string strDate = String.Format("{0:MMddyyyy}", CurrentDateTime);
-                FilePath = String.Format("{0}ReceiptExport{1}.log", Program.FileDir, strDate);
+                FilePath = String.Format("{0}ReceiptExport_{1}.log", fileDir, strDate);
 
                 logWriter = new StreamWriter(filePath);
 

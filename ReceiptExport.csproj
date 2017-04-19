@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="classes\Connection.cs" />
+    <Compile Include="classes\Database.cs" />
     <Compile Include="classes\Log.cs" />
     <Compile Include="classes\RecordType01.cs" />
     <Compile Include="classes\RecordType05.cs" />
