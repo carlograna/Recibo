@@ -222,27 +222,13 @@ namespace ReceiptExport
 
 
                             if (batchHasUnidentified)
-                            {
+                        {
+                            sqlString = UpdateBatch(prevGlobalBatchId);
 
-                                sqlString = String.Format(
-                                        "UPDATE Batch SET DEStatus = 3 WHERE GlobalBatchID = {0}", prevGlobalBatchId);
+                            batchHasUnidentified = false;
+                        }
 
-                                //con.UpdateQuery(sqlString, itemprocessingConnString);
-                                var factory = DbProviderFactories.GetFactory();
-
-                                using (IDbConnection conn = (Database.GetFactory()).CreateConnection())
-                                {
-                                    IDbCommand cmd2 = DbProviderFactory.Create
-                                    cmd2.CommandText = sqlString;
-                                    cmd.CommandType = CommandType.Text;
-
-                                    cmd.ExecuteNonQuery();
-                                }
-
-                                batchHasUnidentified = false;
-                            }
-
-                            prevGlobalBatchId = rec05[i].SduBatchId;
+                        prevGlobalBatchId = rec05[i].SduBatchId;
                         }
                         //-----------------------------------------------------------------------------------------
 
@@ -275,11 +261,31 @@ namespace ReceiptExport
 
             }
 
-            //SDUConnection conn = new SDUConnection();
-            //DataTable table = conn.GetDataTableWithStoredProcedure(sqlString, kidcareConnString);
+        private static string UpdateBatch(string prevGlobalBatchId)
+        {
+            string sqlString = String.Format(
+                    "UPDATE Batch SET DEStatus = 3 WHERE GlobalBatchID = {0}", prevGlobalBatchId);
+
+            //con.UpdateQuery(sqlString, itemprocessingConnString);
+            var factory = Database.GetFactory();
+
+            using (IDbConnection conn = (Database.GetFactory()).CreateConnection())
+            {
+                IDbCommand cmd = factory.CreateCommand();
+                cmd.CommandText = sqlString;
+                cmd.CommandType = CommandType.Text;
+
+                cmd.ExecuteNonQuery();
+            }
+
+            return sqlString;
+        }
+
+        //SDUConnection conn = new SDUConnection();
+        //DataTable table = conn.GetDataTableWithStoredProcedure(sqlString, kidcareConnString);
 
 
-        
+
         private static void GetParameters(string[] args)
         {
             int requiredNumberOfArguments = Int32.Parse(ConfigurationManager.AppSettings["CommandLineArguments"].ToString());
