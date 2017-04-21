@@ -50,6 +50,7 @@ namespace ReceiptExport
         static int total05Records = 0;
         static StreamWriter receiptWriter;
         static DateTime setChartsExportedDate = DateTime.Now;
+        static string itemprocCS = ConfigurationManager.ConnectionStrings["itemCS"].ToString();
 
 
         static void Main(string[] args)
@@ -65,21 +66,17 @@ namespace ReceiptExport
             System.Environment.Exit((int)ExitCode.Success); //exit
         }
 
-        private static void ProcessRecords()
-        {            
-            //header record
-            RecordType01 rec01 = new RecordType01();
-            rec01.CreationStamp = DateTime.Now;
-
+        private static DataTable GetReceipts()
+        {
             DbProviderFactory factory = Database.GetFactory();
-
 
             using (IDbConnection con = factory.CreateConnection())
             {
-                con.ConnectionString = ConfigurationManager.ConnectionStrings["itemCS"].ToString();                
+                con.ConnectionString = itemprocCS;
+                string sqlString = "ReceiptExport";
 
                 IDbCommand cmd = factory.CreateCommand();
-                cmd.CommandText = "ReceiptExport";
+                cmd.CommandText = sqlString;
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.CommandTimeout = 120;
                 cmd.Connection = con;
@@ -87,159 +84,202 @@ namespace ReceiptExport
 
                 IDataReader rdr = cmd.ExecuteReader();
 
-                while (rdr.Read())
-                {
-                    string value = rdr[0].ToString();
-                }
+                IDataAdapter adapter = factory.CreateDataAdapter();
+                DataSet ds = new DataSet();
+
+                adapter.Fill(ds);
+
+                DataTable table = (DataTable)ds.Tables["#tmp_ReceiptExport"];
+                return table;
             }
-            
+        }
+
+        private static void ProcessRecords()
+        {            
+            //header record
+            RecordType01 rec01 = new RecordType01();
+            rec01.CreationStamp = DateTime.Now;
+
+            DataTable table = GetReceipts();
+            Log.WriteLine(String.Format("GetReceipts() returned {0} records ", table.Rows.Count));
+
+                if (table.Rows.Count > 0)
+                {
+                    //Create array of type 05 records
+                    RecordType05[] rec05 = new RecordType05[table.Rows.Count];
+
+                    DataView dv = table.DefaultView;
+                    dv.Sort = "globalbatchid asc";
+
+                    DataTable sortedDT = dv.ToTable();
+
+                    int i = 0;
+                    string prevGlobalBatchId;
+                    bool batchHasUnidentified = false;
+                    #region loop records
+                    foreach (DataRow row in sortedDT.Rows)
+                    {
+                        prevGlobalBatchId = row["GlobalBatchId"].ToString().Trim();
+                        if (row["exportedAsUnidentified"].ToString() == "1")
+                            batchHasUnidentified = true;
+
+
+                        rec05[i] = new RecordType05();
+
+                        rec05[i].SduBatchId = row["GlobalBatchId"].ToString().Trim();
+                        rec05[i].SduTranId = row["SDUTranID"].ToString().Trim();
+                        rec05[i].ReceiptNumber = row["RTNumber"].ToString().Trim();
+                        #region retransmital
+                        DateTime exportedToChartsDate;
+                        DateTime processingDate;
+                        if (DateTime.TryParse(row["ProcessingDate"].ToString(), out processingDate))
+                        {
+                            if (DateTime.TryParse(row["ExportedToCHARTSDate"].ToString(), out exportedToChartsDate))
+                            {
+                                //If ProcessingDate is later than exportedToChartsDate
+                                if (DateTime.Compare(processingDate, exportedToChartsDate) > 0)
+                                    rec05[i].RetransmittalIndicator = true;
+                                else
+                                    rec05[i].RetransmittalIndicator = false;
+                            }
+                            else { } // processingDate is required
+                        }
+                        #endregion
+                        rec05[i].PayorID = row["ARP"].ToString().Trim();
+                        rec05[i].PayorSSN = row["SSN"].ToString().Trim();
+                        rec05[i].PaidBy = row["PaidBy"].ToString().Trim();
+                        rec05[i].PayorLastName = row["LastName"].ToString().Trim();
+                        rec05[i].PayorFirstName = row["FirstName"].ToString().Trim();
+                        rec05[i].PayorMiddleName = row["MiddleName"].ToString().Trim();
+                        rec05[i].PayorSuffix = row["Suffix"].ToString().Trim();
+                        rec05[i].Amount = String.IsNullOrEmpty(row["Amount"].ToString().Trim()) ?
+                                                0 : Double.Parse(row["Amount"].ToString().Trim());
+                        rec05[i].OfcAmount = String.IsNullOrEmpty(row["OFCAmount"].ToString().Trim()) ?
+                                                0 : Double.Parse(row["OFCAmount"].ToString().Trim());
+                        rec05[i].PaymentMode = row["PaymentMode"].ToString().Trim();
+                        rec05[i].PaymentSource = row["PaymentSource"].ToString().Trim();
+                        rec05[i].ReceiptReceivedDate = row["ProcessingDate"].ToString().Trim();
+                        rec05[i].ReceiptEffectiveDate = row["EffectiveDate"].ToString().Trim();
+                        rec05[i].CheckNumber = row["Serial"].ToString().Trim();
+                        rec05[i].ComplianceExemptionReason = row["ComplianceExemptionReason"].ToString().Trim();
+                        rec05[i].TargetedPaymentIndicator = row["TargetedPayment"].ToString().Trim();
+                        rec05[i].Fips = row["FIPS"].ToString().Trim();
+                        rec05[i].CourtCaseNumber = row["CaseNumber"].ToString().Trim();
+                        rec05[i].CourtJudgementNumber = row["CourtJudgment"].ToString().Trim();
+                        rec05[i].CourtGuidelineNumber = row["CourtGuideline"].ToString().Trim();
+                        rec05[i].ReasonCode = row["ReasonCode"].ToString().Trim();
+
+                        string currentRecord = rec05[i].RecordLine();
+
+                        if (currentRecord.Length != record05Length)
+                            LogErrorColumns(rec05[i]);
+
+                        //-----------------------------------------------------------------------------------------
+                        //update StubsDataEntry
+                        //SDUConnection ip_conn = new SDUConnection();
+
+                        string chartsStubPrefix = setChartsExportedDate.Year.ToString() + setChartsExportedDate.Month.ToString() + setChartsExportedDate.Day.ToString();
+                        string sduTranId = chartsStubPrefix + row["GlobalStubId"].ToString().PadLeft(12);
+
+
+
+
+                        string sqlString = String.Format(
+                            "UPDATE StubsDataEntry " +
+                            "SET ExportedToCHARTS = 1" +
+                            ", ExportedToCHARTSDate = '{0}'" +
+                            ", SDUTranID = COALESCE(SDUTranID, '{1}')" +
+                            ", CHARTSStubPrefix = COALESCE(CHARTSStubPrefix, '{2}') " +
+                            ", ExportedAsUnidentified = {3}" +
+                            "WHERE GlobalStubID = {4}"
+                            , setChartsExportedDate
+                            , sduTranId
+                            , chartsStubPrefix
+                            , row["ExportedAsUnidentified"].ToString()
+                            , row["GlobalStubId"].ToString()
+                            );
+
+
+                    DbProviderFactory factory = Database.GetFactory();
+
+                    using (IDbConnection con = factory.CreateConnection())
+                    {
+                        IDbCommand cmd = factory.CreateCommand();
+                        cmd.CommandText = sqlString;
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Connection = con;
+
+                        cmd.ExecuteNonQuery();
+                    }
+
+
+
+                        //conn.UpdateQuery(sqlString, itemprocessingConnString);
+
+                        // IF THEREIS ITEM UNIDENTIFIED SET THE BATCH TO INCOMPLETE ************************
+                        if (rec05[i].SduBatchId != prevGlobalBatchId)
+                        {
+
+
+                            if (batchHasUnidentified)
+                            {
+
+                                sqlString = String.Format(
+                                        "UPDATE Batch SET DEStatus = 3 WHERE GlobalBatchID = {0}", prevGlobalBatchId);
+
+                                //con.UpdateQuery(sqlString, itemprocessingConnString);
+                                var factory = DbProviderFactories.GetFactory();
+
+                                using (IDbConnection conn = (Database.GetFactory()).CreateConnection())
+                                {
+                                    IDbCommand cmd2 = DbProviderFactory.Create
+                                    cmd2.CommandText = sqlString;
+                                    cmd.CommandType = CommandType.Text;
+
+                                    cmd.ExecuteNonQuery();
+                                }
+
+                                batchHasUnidentified = false;
+                            }
+
+                            prevGlobalBatchId = rec05[i].SduBatchId;
+                        }
+                        //-----------------------------------------------------------------------------------------
+
+                        receiptWriter.WriteLine(currentRecord);
+
+                        i++;
+
+                        rec01.TotalAmount += rec05[i].Amount;
+                        if (rec05[i].RetransmittalIndicator)
+                        {
+                            rec01.FirstTimeRecordCount++;
+                            rec01.FirstTimeAmount += rec05[i].Amount;
+                        }
+                        else
+                        {
+                            rec01.RetransmittalRecordCount++;
+                            rec01.RetransmittalAmount += rec05[i].Amount;
+                        }
+                    }
+
+                    rec01.RecordCount = i;
+
+                    #endregion
+
+                }
+                else
+                {
+                    ; //no records found 
+                }
+
+            }
+
             //SDUConnection conn = new SDUConnection();
             //DataTable table = conn.GetDataTableWithStoredProcedure(sqlString, kidcareConnString);
 
-            //Log.WriteLine(String.Format("Procedure {0} returned {1} record(s)", sqlString, table.Rows.Count));
 
-            //if (table.Rows.Count > 0)
-            //{
-            //    //Create array of type 05 records
-            //    RecordType05[] rec05 = new RecordType05[table.Rows.Count];
-
-            //    DataView dv =  table.DefaultView;
-            //    dv.Sort = "globalbatchid asc";
-
-            //    DataTable sortedDT = dv.ToTable();
-
-            //    int i = 0;
-            //    string prevGlobalBatchId;
-            //    bool batchHasUnidentified = false;
-            //    #region loop records
-            //    foreach (DataRow row in sortedDT.Rows)
-            //    {
-            //        prevGlobalBatchId = row["GlobalBatchId"].ToString().Trim();
-            //        if( row["exportedAsUnidentified"].ToString() == "1" )
-            //            batchHasUnidentified = true;
-
-                    
-            //        rec05[i] = new RecordType05();
-
-            //        rec05[i].SduBatchId = row["GlobalBatchId"].ToString().Trim();
-            //        rec05[i].SduTranId = row["SDUTranID"].ToString().Trim();
-            //        rec05[i].ReceiptNumber = row["RTNumber"].ToString().Trim();                    
-            //        #region retransmital
-            //        DateTime exportedToChartsDate;
-            //        DateTime processingDate;
-            //        if (DateTime.TryParse(row["ProcessingDate"].ToString(), out processingDate))
-            //        {
-            //            if (DateTime.TryParse(row["ExportedToCHARTSDate"].ToString(), out exportedToChartsDate))
-            //            {
-            //                //If ProcessingDate is later than exportedToChartsDate
-            //                if (DateTime.Compare(processingDate, exportedToChartsDate) > 0)
-            //                    rec05[i].RetransmittalIndicator = true;
-            //                else
-            //                    rec05[i].RetransmittalIndicator = false;
-            //            }
-            //            else { } // processingDate is required
-            //        }
-            //        #endregion
-            //        rec05[i].PayorID = row["ARP"].ToString().Trim();
-            //        rec05[i].PayorSSN = row["SSN"].ToString().Trim();
-            //        rec05[i].PaidBy = row["PaidBy"].ToString().Trim();
-            //        rec05[i].PayorLastName = row["LastName"].ToString().Trim();
-            //        rec05[i].PayorFirstName = row["FirstName"].ToString().Trim();
-            //        rec05[i].PayorMiddleName = row["MiddleName"].ToString().Trim();
-            //        rec05[i].PayorSuffix = row["Suffix"].ToString().Trim();
-            //        rec05[i].Amount = String.IsNullOrEmpty(row["Amount"].ToString().Trim()) ? 
-            //                                0 : Double.Parse(row["Amount"].ToString().Trim());
-            //        rec05[i].OfcAmount = String.IsNullOrEmpty(row["OFCAmount"].ToString().Trim())? 
-            //                                0 : Double.Parse(row["OFCAmount"].ToString().Trim());
-            //        rec05[i].PaymentMode = row["PaymentMode"].ToString().Trim();
-            //        rec05[i].PaymentSource = row["PaymentSource"].ToString().Trim();
-            //        rec05[i].ReceiptReceivedDate = row["ProcessingDate"].ToString().Trim();
-            //        rec05[i].ReceiptEffectiveDate = row["EffectiveDate"].ToString().Trim();
-            //        rec05[i].CheckNumber = row["Serial"].ToString().Trim();
-            //        rec05[i].ComplianceExemptionReason = row["ComplianceExemptionReason"].ToString().Trim();
-            //        rec05[i].TargetedPaymentIndicator = row["TargetedPayment"].ToString().Trim();
-            //        rec05[i].Fips = row["FIPS"].ToString().Trim();
-            //        rec05[i].CourtCaseNumber = row["CaseNumber"].ToString().Trim();
-            //        rec05[i].CourtJudgementNumber = row["CourtJudgment"].ToString().Trim();
-            //        rec05[i].CourtGuidelineNumber = row["CourtGuideline"].ToString().Trim();
-            //        rec05[i].ReasonCode = row["ReasonCode"].ToString().Trim();
-
-            //        string currentRecord = rec05[i].RecordLine();
-
-            //        if (currentRecord.Length != record05Length)
-            //            LogErrorColumns(rec05[i]);
-
-            //        //-----------------------------------------------------------------------------------------
-            //        //update StubsDataEntry
-            //        SDUConnection ip_conn = new SDUConnection();
-
-            //        string chartsStubPrefix = setChartsExportedDate.Year.ToString() + setChartsExportedDate.Month.ToString() + setChartsExportedDate.Day.ToString();
-            //        string sduTranId = chartsStubPrefix + row["GlobalStubId"].ToString().PadLeft(12);
-
-            //        sqlString = String.Format(
-            //            "UPDATE StubsDataEntry " +
-            //            "SET ExportedToCHARTS = 1" +
-            //            ", ExportedToCHARTSDate = '{0}'" +
-            //            ", SDUTranID = COALESCE(SDUTranID, '{1}')" +
-            //            ", CHARTSStubPrefix = COALESCE(CHARTSStubPrefix, '{2}') " +
-            //            ", ExportedAsUnidentified = {3}" +
-            //            "WHERE GlobalStubID = {4}"
-            //            , setChartsExportedDate
-            //            , sduTranId
-            //            , chartsStubPrefix
-            //            , row["ExportedAsUnidentified"].ToString()
-            //            , row["GlobalStubId"].ToString()
-            //            );
-
-            //        //conn.UpdateQuery(sqlString, itemprocessingConnString);
-
-            //        // IF THEREIS ITEM UNIDENTIFIED SET THE BATCH TO INCOMPLETE ************************
-            //        if (rec05[i].SduBatchId != prevGlobalBatchId) 
-            //        {
-                        
-            //            if (batchHasUnidentified)
-            //            {
-
-            //                sqlString = String.Format(
-            //                        "UPDATE Batch SET DEStatus = 3 WHERE GlobalBatchID = {0}", prevGlobalBatchId);
-
-            //                conn.UpdateQuery(sqlString, itemprocessingConnString);
-
-            //                batchHasUnidentified = false;
-            //            }
-
-            //            prevGlobalBatchId = rec05[i].SduBatchId;
-            //        }
-            //        //-----------------------------------------------------------------------------------------
-
-            //        receiptWriter.WriteLine(currentRecord);
-                    
-            //        i++;
-
-            //        rec01.TotalAmount += rec05[i].Amount;
-            //        if(rec05[i].RetransmittalIndicator)
-            //        {
-            //            rec01.FirstTimeRecordCount++;
-            //            rec01.FirstTimeAmount += rec05[i].Amount;
-            //        }
-            //        else
-            //        {
-            //            rec01.RetransmittalRecordCount++;
-            //            rec01.RetransmittalAmount += rec05[i].Amount;
-            //        }
-            //    }
-
-            //    rec01.RecordCount = i;
-
-            //    #endregion
-
-            //}
-            //else
-            //{
-            //    ; //no records found 
-            //}
-        }
-
+        
         private static void GetParameters(string[] args)
         {
             int requiredNumberOfArguments = Int32.Parse(ConfigurationManager.AppSettings["CommandLineArguments"].ToString());
