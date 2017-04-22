@@ -94,41 +94,62 @@ namespace ReceiptExport
             }
         }
 
+        public static List<Receipt> GetReceiptList()
+        {
+            using(var db = new ReceiptDBContext())
+            {
+                List<Receipt> receiptList = db.Database.SqlQuery<Receipt>("ReceiptExport").ToList<Receipt>();
+
+                return receiptList;
+            }
+        }
+
         private static void ProcessRecords()
         {            
             //header record
             RecordType01 rec01 = new RecordType01();
             rec01.CreationStamp = DateTime.Now;
 
+            /*
             DataTable table = GetReceipts();
             Log.WriteLine(String.Format("GetReceipts() returned {0} records ", table.Rows.Count));
+            */
 
-                if (table.Rows.Count > 0)
+            List<Receipt> receipts = GetReceiptList().OrderBy(x => x.GlobalStubID).ToList<Receipt>();
+
+
+
+                if (receipts.Count > 0)
                 {
                     //Create array of type 05 records
-                    RecordType05[] rec05 = new RecordType05[table.Rows.Count];
+                    RecordType05[] rec05 = new RecordType05[receipts.Count];
 
-                    DataView dv = table.DefaultView;
-                    dv.Sort = "globalbatchid asc";
+                    //DataView dv = table.DefaultView;
+                    //dv.Sort = "globalbatchid asc";
 
-                    DataTable sortedDT = dv.ToTable();
+
+
+                    //DataTable sortedDT = dv.ToTable();
 
                     int i = 0;
                     string prevGlobalBatchId;
                     bool batchHasUnidentified = false;
+
                     #region loop records
-                    foreach (DataRow row in sortedDT.Rows)
+                    foreach (Receipt receipt in receipts)
                     {
-                        prevGlobalBatchId = row["GlobalBatchId"].ToString().Trim();
-                        if (row["exportedAsUnidentified"].ToString() == "1")
+                        prevGlobalBatchId = receipt.GlobalBatchID;
+
+                        if (receipt.ExportedAsUnidentified == "1")
                             batchHasUnidentified = true;
 
 
                         rec05[i] = new RecordType05();
 
-                        rec05[i].SduBatchId = row["GlobalBatchId"].ToString().Trim();
-                        rec05[i].SduTranId = row["SDUTranID"].ToString().Trim();
-                        rec05[i].ReceiptNumber = row["RTNumber"].ToString().Trim();
+                        rec05[i].SduBatchId = receipt.GlobalBatchID;
+                        rec05[i].SduTranId = receipt.SDUTranID;
+                        rec05[i].ReceiptNumber = receipt.RTNumber;
+
                         #region retransmital
                         DateTime exportedToChartsDate;
                         DateTime processingDate;
@@ -217,18 +238,15 @@ namespace ReceiptExport
                         //conn.UpdateQuery(sqlString, itemprocessingConnString);
 
                         // IF THEREIS ITEM UNIDENTIFIED SET THE BATCH TO INCOMPLETE ************************
-                        if (rec05[i].SduBatchId != prevGlobalBatchId)
+                       if (rec05[i].SduBatchId != prevGlobalBatchId)
                         {
-
-
                             if (batchHasUnidentified)
-                        {
-                            sqlString = UpdateBatch(prevGlobalBatchId);
+                            {
+                                UpdateBatch(prevGlobalBatchId);
+                                batchHasUnidentified = false;
+                            }
 
-                            batchHasUnidentified = false;
-                        }
-
-                        prevGlobalBatchId = rec05[i].SduBatchId;
+                            prevGlobalBatchId = rec05[i].SduBatchId;
                         }
                         //-----------------------------------------------------------------------------------------
 

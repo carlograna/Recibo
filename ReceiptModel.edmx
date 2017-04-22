@@ -1,0 +1,1682 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="ReceiptModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'item.dbo.Batch' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Batch">
+          <Key>
+            <PropertyRef Name="GlobalBatchID" />
+            <PropertyRef Name="BankID" />
+            <PropertyRef Name="LockboxID" />
+            <PropertyRef Name="ProcessingDate" />
+            <PropertyRef Name="BatchID" />
+            <PropertyRef Name="UseCustomer" />
+            <PropertyRef Name="SplitsEnded" />
+            <PropertyRef Name="ModificationDate" />
+            <PropertyRef Name="DecisionStatus" />
+            <PropertyRef Name="AllowDecisioning" />
+            <PropertyRef Name="RequireDEBeforeTwoPass" />
+            <PropertyRef Name="IsImageExchange" />
+            <PropertyRef Name="BatchSourceKey" />
+            <PropertyRef Name="NumOLDDaysRolled" />
+          </Key>
+          <Property Name="GlobalBatchID" Type="int" Nullable="false" />
+          <Property Name="BankID" Type="int" Nullable="false" />
+          <Property Name="LockboxID" Type="int" Nullable="false" />
+          <Property Name="DESetupID" Type="int" />
+          <Property Name="ProcessingDate" Type="datetime" Nullable="false" />
+          <Property Name="BatchID" Type="int" Nullable="false" />
+          <Property Name="DepositStatus" Type="int" />
+          <Property Name="BatchCueID" Type="int" />
+          <Property Name="CutOffStatus" Type="tinyint" />
+          <Property Name="BatchMode" Type="tinyint" />
+          <Property Name="SystemType" Type="tinyint" />
+          <Property Name="Priority" Type="tinyint" />
+          <Property Name="PrintLabels" Type="tinyint" />
+          <Property Name="BatchTypeCode" Type="int" />
+          <Property Name="BatchTypeSubCode" Type="smallint" />
+          <Property Name="BatchTypeText" Type="char" MaxLength="255" />
+          <Property Name="ConsolidationStatus" Type="tinyint" />
+          <Property Name="CARStatus" Type="tinyint" />
+          <Property Name="KFIStatus" Type="tinyint" />
+          <Property Name="FAXStatus" Type="tinyint" />
+          <Property Name="FloatAssignmentStatus" Type="tinyint" />
+          <Property Name="ScanStatus" Type="tinyint" />
+          <Property Name="DEStatus" Type="tinyint" />
+          <Property Name="ExtractSequenceNumber" Type="int" />
+          <Property Name="ImageExtractSequenceNumber" Type="int" />
+          <Property Name="DepositDate" Type="datetime" />
+          <Property Name="CheckCount" Type="int" />
+          <Property Name="CheckAmount" Type="money" />
+          <Property Name="StubCount" Type="int" />
+          <Property Name="StubAmount" Type="money" />
+          <Property Name="CreationDate" Type="datetime" />
+          <Property Name="BillingTC" Type="int" />
+          <Property Name="BillingRT" Type="int" />
+          <Property Name="BillingAccount" Type="int" />
+          <Property Name="BillingSerial" Type="int" />
+          <Property Name="WorkgroupID" Type="int" />
+          <Property Name="CurrencyCode" Type="int" />
+          <Property Name="MICRVerifyStatus" Type="tinyint" />
+          <Property Name="DEPrinted" Type="smallint" />
+          <Property Name="Is2Pass" Type="tinyint" />
+          <Property Name="UseCar" Type="tinyint" />
+          <Property Name="NoChecksEnclosed" Type="int" />
+          <Property Name="Rejects" Type="int" />
+          <Property Name="DepositTicketPrinted" Type="bit" />
+          <Property Name="DateLastUpdated" Type="datetime" />
+          <Property Name="TransportID" Type="int" />
+          <Property Name="TrayID" Type="int" />
+          <Property Name="SubTrayID" Type="int" />
+          <Property Name="UseCustomer" Type="tinyint" Nullable="false" />
+          <Property Name="DepositDDA" Type="char" MaxLength="40" />
+          <Property Name="EncodeComplete" Type="datetime" />
+          <Property Name="SplitsEnded" Type="bit" Nullable="false" />
+          <Property Name="SiteCode" Type="int" />
+          <Property Name="BitonalImageRemovalDate" Type="datetime" />
+          <Property Name="DataRemovalDate" Type="datetime" />
+          <Property Name="ModificationDate" Type="datetime" Nullable="false" />
+          <Property Name="TransportBatchID" Type="varchar" MaxLength="255" />
+          <Property Name="GrayScaleImageRemovalDate" Type="datetime" />
+          <Property Name="ColorImageRemovalDate" Type="datetime" />
+          <Property Name="CWDBDataRemovalDate" Type="datetime" />
+          <Property Name="CWDBBitonalImageRemovalDate" Type="datetime" />
+          <Property Name="CWDBGrayScaleImageRemovalDate" Type="datetime" />
+          <Property Name="CWDBColorImageRemovalDate" Type="datetime" />
+          <Property Name="BatchName" Type="varchar" MaxLength="80" />
+          <Property Name="BatchTypeID" Type="uniqueidentifier" />
+          <Property Name="DecisionStatus" Type="tinyint" Nullable="false" />
+          <Property Name="AllowDecisioning" Type="bit" Nullable="false" />
+          <Property Name="RequireDEBeforeTwoPass" Type="bit" Nullable="false" />
+          <Property Name="OriginalGlobalBatchID" Type="int" />
+          <Property Name="BatchExtractID" Type="varchar" MaxLength="10" />
+          <Property Name="IsImageExchange" Type="bit" Nullable="false" />
+          <Property Name="CaptureSiteCodeID" Type="int" />
+          <Property Name="BatchSourceKey" Type="tinyint" Nullable="false" />
+          <Property Name="NumOLDDaysRolled" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'item.dbo.BatchTrace' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="BatchTrace">
+          <Key>
+            <PropertyRef Name="GlobalBatchID" />
+          </Key>
+          <Property Name="GlobalBatchID" Type="int" Nullable="false" />
+          <Property Name="TypeOneCutoff" Type="datetime" />
+          <Property Name="IBMLFEI" Type="datetime" />
+          <Property Name="TransportType" Type="varchar" MaxLength="10" />
+          <Property Name="TransportName" Type="varchar" MaxLength="25" />
+          <Property Name="CheckFileID" Type="uniqueidentifier" />
+          <Property Name="TPRBatchName" Type="varchar" MaxLength="10" />
+          <Property Name="OpexImport" Type="datetime" />
+          <Property Name="ImageExchangeExtract" Type="datetime" />
+          <Property Name="ArchiveExpressExtrStatus" Type="datetime" />
+          <Property Name="WebDDLImporter" Type="datetime" />
+          <Property Name="OpexBackendImport" Type="datetime" />
+          <Property Name="ImageRPSImporter" Type="datetime" />
+          <Property Name="RMSExporter" Type="datetime" />
+          <Property Name="CWDBBatchStatus" Type="datetime" />
+          <Property Name="CWDBImageStatus" Type="datetime" />
+          <Property Name="CWDBConsolidationPriority" Type="tinyint" />
+          <Property Name="CWDBErrorCountAttempts" Type="tinyint" />
+          <Property Name="CeresoftExporter" Type="datetime" />
+          <Property Name="ACHImporter" Type="datetime" />
+          <Property Name="RTNumber" Type="char" MaxLength="7" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'item.dbo.Checks' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Checks">
+          <Key>
+            <PropertyRef Name="GlobalCheckID" />
+            <PropertyRef Name="GlobalBatchID" />
+            <PropertyRef Name="TransactionID" />
+            <PropertyRef Name="Timestamp" />
+            <PropertyRef Name="LARAmount" />
+            <PropertyRef Name="ImagePresentationCleaned" />
+            <PropertyRef Name="ImageRecognitionCleaned" />
+            <PropertyRef Name="ImageRegistered" />
+            <PropertyRef Name="ImageRequiresICR" />
+            <PropertyRef Name="ImageRecognized" />
+            <PropertyRef Name="IsIRD" />
+            <PropertyRef Name="CARMatch" />
+            <PropertyRef Name="CARMatch2" />
+            <PropertyRef Name="IQARequired" />
+            <PropertyRef Name="MICRQuality" />
+            <PropertyRef Name="ResolutionDPI" />
+            <PropertyRef Name="IsBusinessCheck" />
+            <PropertyRef Name="IsDuplicate" />
+          </Key>
+          <Property Name="GlobalCheckID" Type="int" Nullable="false" />
+          <Property Name="GlobalBatchID" Type="int" Nullable="false" />
+          <Property Name="TransactionID" Type="int" Nullable="false" />
+          <Property Name="TransactionSequence" Type="int" />
+          <Property Name="BatchSequence" Type="int" />
+          <Property Name="CheckSequence" Type="int" />
+          <Property Name="Status" Type="tinyint" />
+          <Property Name="RawMICR" Type="char" MaxLength="110" />
+          <Property Name="RT" Type="char" MaxLength="30" />
+          <Property Name="Serial" Type="char" MaxLength="30" />
+          <Property Name="Account" Type="char" MaxLength="30" />
+          <Property Name="TransactionCode" Type="char" MaxLength="30" />
+          <Property Name="Amount" Type="money" />
+          <Property Name="LogonAmount" Type="money" />
+          <Property Name="KFIAmount" Type="money" />
+          <Property Name="VerifyAmount" Type="money" />
+          <Property Name="EncodeAmount" Type="money" />
+          <Property Name="CARAmount" Type="money" />
+          <Property Name="PayeeID" Type="int" />
+          <Property Name="Tray" Type="int" />
+          <Property Name="LogicalPocket" Type="int" />
+          <Property Name="Pocket" Type="tinyint" />
+          <Property Name="KilledMethod" Type="int" />
+          <Property Name="KFIOperator" Type="char" MaxLength="15" />
+          <Property Name="KFIUnit" Type="int" />
+          <Property Name="KFIStation" Type="int" />
+          <Property Name="KFIVerificationOperator" Type="char" MaxLength="15" />
+          <Property Name="KFIVerificationUnit" Type="int" />
+          <Property Name="KFIVerificationStation" Type="int" />
+          <Property Name="KFIMCOperator" Type="char" MaxLength="15" />
+          <Property Name="KFIMCUnit" Type="int" />
+          <Property Name="KFIMCStation" Type="int" />
+          <Property Name="FloatAssigned" Type="money" />
+          <Property Name="PrintPhoto" Type="tinyint" />
+          <Property Name="DEOperator" Type="char" MaxLength="15" />
+          <Property Name="DEStation" Type="int" />
+          <Property Name="DEUnit" Type="int" />
+          <Property Name="DEVerifyOperator" Type="char" MaxLength="15" />
+          <Property Name="DEVerifyStation" Type="int" />
+          <Property Name="DEVerifyUnit" Type="int" />
+          <Property Name="DEBillingKeys" Type="int" />
+          <Property Name="DEDataKeys" Type="int" />
+          <Property Name="ItemDataKeys" Type="int" />
+          <Property Name="ItemRawKeys" Type="int" />
+          <Property Name="ItemBillingKeys" Type="int" />
+          <Property Name="Recapture" Type="tinyint" />
+          <Property Name="MICRRejected" Type="int" />
+          <Property Name="IsForeign" Type="int" />
+          <Property Name="IsDeleted" Type="tinyint" />
+          <Property Name="IsGhost" Type="bit" />
+          <Property Name="PocketType" Type="char" MaxLength="1" />
+          <Property Name="RemitterName" Type="char" MaxLength="60" />
+          <Property Name="Timestamp" Type="binary" MaxLength="8" Nullable="false" />
+          <Property Name="ICRTranKey" Type="varchar" MaxLength="50" />
+          <Property Name="LARAmount" Type="money" Nullable="false" />
+          <Property Name="CARConfidence" Type="int" />
+          <Property Name="TraceNumber" Type="varchar" MaxLength="128" />
+          <Property Name="ImagePresentationCleaned" Type="bit" Nullable="false" />
+          <Property Name="ImageRecognitionCleaned" Type="bit" Nullable="false" />
+          <Property Name="ImageRegistered" Type="bit" Nullable="false" />
+          <Property Name="ImageRequiresICR" Type="bit" Nullable="false" />
+          <Property Name="ImageRecognized" Type="bit" Nullable="false" />
+          <Property Name="IsIRD" Type="tinyint" Nullable="false" />
+          <Property Name="LockboxDecisioningReasonID" Type="uniqueidentifier" />
+          <Property Name="CARAmount2" Type="money" />
+          <Property Name="CARConfidence2" Type="int" />
+          <Property Name="CARMatch" Type="bit" Nullable="false" />
+          <Property Name="CARMatch2" Type="bit" Nullable="false" />
+          <Property Name="IQARequired" Type="bit" Nullable="false" />
+          <Property Name="ExtractAuditID" Type="uniqueidentifier" />
+          <Property Name="MICRQuality" Type="tinyint" Nullable="false" />
+          <Property Name="OCRRT" Type="varchar" MaxLength="30" />
+          <Property Name="OCRAccount" Type="varchar" MaxLength="30" />
+          <Property Name="OCRSerial" Type="varchar" MaxLength="30" />
+          <Property Name="OCRTransactionCode" Type="varchar" MaxLength="30" />
+          <Property Name="OCRRawMICR" Type="varchar" MaxLength="110" />
+          <Property Name="OriginalGlobalCheckID" Type="int" />
+          <Property Name="TemplateSetupID" Type="uniqueidentifier" />
+          <Property Name="ECLCashLetterID" Type="varchar" MaxLength="8" />
+          <Property Name="ECLBundleID" Type="int" />
+          <Property Name="ECLSequenceID" Type="int" />
+          <Property Name="OCRConfidence" Type="int" />
+          <Property Name="ResolutionDPI" Type="int" Nullable="false" />
+          <Property Name="IsBusinessCheck" Type="bit" Nullable="false" />
+          <Property Name="IsDuplicate" Type="bit" Nullable="false" />
+          <Property Name="StubAmount" Type="money" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'item.dbo.ChecksDataEntry' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ChecksDataEntry">
+          <Key>
+            <PropertyRef Name="GlobalCheckID" />
+            <PropertyRef Name="GlobalBatchID" />
+            <PropertyRef Name="TransactionID" />
+          </Key>
+          <Property Name="GlobalCheckID" Type="int" Nullable="false" />
+          <Property Name="GlobalBatchID" Type="int" Nullable="false" />
+          <Property Name="TransactionID" Type="int" Nullable="false" />
+          <Property Name="ACHDetailAccountNumber" Type="varchar" MaxLength="35" />
+          <Property Name="ACHBatchCompanyID" Type="varchar" MaxLength="10" />
+          <Property Name="ACHBatchCompanyName" Type="varchar" MaxLength="16" />
+          <Property Name="ACHBatchEntryClass" Type="char" MaxLength="3" />
+          <Property Name="ACHBatchCompanyData" Type="varchar" MaxLength="20" />
+          <Property Name="ACHBatchEntryDesc" Type="varchar" MaxLength="10" />
+          <Property Name="ACHBatchDescriptiveDate" Type="char" MaxLength="6" />
+          <Property Name="ACHBatchEffectiveDate" Type="datetime" />
+          <Property Name="ACHBatchSettlementDate" Type="datetime" />
+          <Property Name="ACHDetailIndividualID" Type="varchar" MaxLength="22" />
+          <Property Name="ACHDetailReceivingCompany" Type="varchar" MaxLength="22" />
+          <Property Name="ACHDetailTraceNumber" Type="varchar" MaxLength="15" />
+          <Property Name="ACHDetailDiscretionaryData" Type="char" MaxLength="2" />
+          <Property Name="ACHDetailIndividualName" Type="varchar" MaxLength="22" />
+          <Property Name="ACHDetailOFACIndicator1" Type="char" MaxLength="1" />
+          <Property Name="ACHDetailOFACIndicator2" Type="char" MaxLength="1" />
+          <Property Name="ACHDetailReceivingIndividual" Type="varchar" MaxLength="22" />
+          <Property Name="CheckDate" Type="datetime" />
+          <Property Name="ReasonCode" Type="smallint" />
+          <Property Name="CollectionStatus" Type="smallint" />
+          <Property Name="ReturnDate" Type="datetime" />
+          <Property Name="AmountToDate" Type="money" />
+          <Property Name="WriteOffDate" Type="datetime" />
+          <Property Name="PostedDate" Type="datetime" />
+          <Property Name="PostedAmount" Type="money" />
+          <Property Name="EntityType" Type="int" />
+          <Property Name="EntityID" Type="varchar" MaxLength="20" />
+          <Property Name="Collector" Type="char" MaxLength="15" />
+          <Property Name="DisbursementNumber" Type="int" />
+          <Property Name="Agency" Type="char" MaxLength="10" />
+          <Property Name="Is3rdParty" Type="tinyint" />
+          <Property Name="PredepositStatus" Type="int" />
+          <Property Name="PredepositReason" Type="int" />
+          <Property Name="PredepositDate" Type="datetime" />
+          <Property Name="PredictedReleaseDate" Type="datetime" />
+          <Property Name="ReleaseDate" Type="datetime" />
+          <Property Name="UnprocessedDate" Type="datetime" />
+          <Property Name="ModifiedStamp" Type="datetime" />
+          <Property Name="ModifiedBy" Type="char" MaxLength="20" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'item.dbo.KCPerson' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="KCPerson">
+          <Key>
+            <PropertyRef Name="KCPersonID" />
+            <PropertyRef Name="KCDeliveryMethodID" />
+            <PropertyRef Name="FVI" />
+            <PropertyRef Name="InvalidAddress" />
+            <PropertyRef Name="DenyWebAccess" />
+            <PropertyRef Name="PaymentNotification" />
+          </Key>
+          <Property Name="KCPersonID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SSN" Type="char" MaxLength="9" />
+          <Property Name="LastName" Type="varchar" MaxLength="50" />
+          <Property Name="FirstName" Type="varchar" MaxLength="40" />
+          <Property Name="MiddleName" Type="varchar" MaxLength="20" />
+          <Property Name="Suffix" Type="varchar" MaxLength="3" />
+          <Property Name="Address" Type="varchar" MaxLength="255" />
+          <Property Name="City" Type="varchar" MaxLength="25" />
+          <Property Name="State" Type="varchar" MaxLength="20" />
+          <Property Name="Zip" Type="varchar" MaxLength="10" />
+          <Property Name="HomePhone" Type="varchar" MaxLength="10" />
+          <Property Name="CellPhone" Type="varchar" MaxLength="10" />
+          <Property Name="WorkPhone" Type="varchar" MaxLength="10" />
+          <Property Name="WorkExtension" Type="varchar" MaxLength="5" />
+          <Property Name="eMail" Type="varchar" MaxLength="255" />
+          <Property Name="Country" Type="varchar" MaxLength="20" />
+          <Property Name="DateOfBirth" Type="datetime" />
+          <Property Name="DateOfDeath" Type="datetime" />
+          <Property Name="Notes" Type="varchar(max)" />
+          <Property Name="ModifiedStamp" Type="datetime" />
+          <Property Name="ModifiedBy" Type="char" MaxLength="32" />
+          <Property Name="PINNumber" Type="int" />
+          <Property Name="PersonID" Type="varchar" MaxLength="13" />
+          <Property Name="Pager" Type="varchar" MaxLength="10" />
+          <Property Name="AlternateEmail" Type="varchar" MaxLength="255" />
+          <Property Name="BillingEmail" Type="varchar" MaxLength="255" />
+          <Property Name="KCDeliveryMethodID" Type="tinyint" Nullable="false" />
+          <Property Name="FVI" Type="bit" Nullable="false" />
+          <Property Name="IsActive" Type="tinyint" />
+          <Property Name="InactiveDate" Type="datetime" />
+          <Property Name="InvalidAddress" Type="bit" Nullable="false" />
+          <Property Name="DenyWebAccess" Type="bit" Nullable="false" />
+          <Property Name="ChangeReasonCode" Type="tinyint" />
+          <Property Name="PaymentNotification" Type="bit" Nullable="false" />
+          <Property Name="CreationStamp" Type="datetime" />
+          <Property Name="KCPaymentMethodID" Type="tinyint" />
+          <Property Name="AddressStamp" Type="datetime" />
+          <Property Name="PhoneStamp" Type="datetime" />
+          <Property Name="EmailStamp" Type="datetime" />
+          <Property Name="BillingEmailStamp" Type="datetime" />
+          <Property Name="DeliveryMethodStamp" Type="datetime" />
+          <Property Name="DODStamp" Type="datetime" />
+          <Property Name="PaymentMethodStamp" Type="datetime" />
+          <Property Name="SignMeUpForEbs" Type="tinyint" />
+          <Property Name="IVDStatus" Type="bit" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'item.dbo.Stubs' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Stubs">
+          <Key>
+            <PropertyRef Name="GlobalBatchID" />
+            <PropertyRef Name="TransactionID" />
+            <PropertyRef Name="GlobalStubID" />
+            <PropertyRef Name="PageNo" />
+            <PropertyRef Name="IsSingleOccurrence" />
+          </Key>
+          <Property Name="GlobalBatchID" Type="int" Nullable="false" />
+          <Property Name="TransactionID" Type="int" Nullable="false" />
+          <Property Name="GlobalStubID" Type="int" Nullable="false" />
+          <Property Name="TransactionSequence" Type="int" />
+          <Property Name="BatchSequence" Type="int" />
+          <Property Name="StubSequence" Type="int" />
+          <Property Name="SplitNumber" Type="int" />
+          <Property Name="Status" Type="tinyint" />
+          <Property Name="AccountNumber" Type="char" MaxLength="80" />
+          <Property Name="Amount" Type="money" />
+          <Property Name="OCRAmount" Type="money" />
+          <Property Name="RawOCR1" Type="char" MaxLength="80" />
+          <Property Name="RawOCR2" Type="char" MaxLength="80" />
+          <Property Name="RawOCR3" Type="char" MaxLength="80" />
+          <Property Name="DEBillingKeys" Type="int" />
+          <Property Name="DEDataKeys" Type="int" />
+          <Property Name="ItemDataKeys" Type="int" />
+          <Property Name="ItemRawKeys" Type="int" />
+          <Property Name="ItemBillingKeys" Type="int" />
+          <Property Name="IsGhost" Type="bit" />
+          <Property Name="IsOMRDetected" Type="bit" />
+          <Property Name="Tray" Type="int" />
+          <Property Name="ICRTranKey" Type="varchar" MaxLength="50" />
+          <Property Name="IsOMRZone1Detected" Type="bit" />
+          <Property Name="IsOMRZone2Detected" Type="bit" />
+          <Property Name="IsOMRZone3Detected" Type="bit" />
+          <Property Name="IsOMRZone4Detected" Type="bit" />
+          <Property Name="PageNo" Type="int" Nullable="false" />
+          <Property Name="IsSingleOccurrence" Type="bit" Nullable="false" />
+          <Property Name="OriginalGlobalStubID" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'item.dbo.StubsDataEntry' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="StubsDataEntry">
+          <Key>
+            <PropertyRef Name="GlobalBatchID" />
+            <PropertyRef Name="TransactionID" />
+            <PropertyRef Name="GlobalStubID" />
+            <PropertyRef Name="ExportedToCHARTS" />
+          </Key>
+          <Property Name="GlobalBatchID" Type="int" Nullable="false" />
+          <Property Name="TransactionID" Type="int" Nullable="false" />
+          <Property Name="GlobalStubID" Type="int" Nullable="false" />
+          <Property Name="InvoiceNumber" Type="char" MaxLength="40" />
+          <Property Name="ACHAddendaBPRMonetaryAmount" Type="money" />
+          <Property Name="ACHAddendaBPRAccountNumber" Type="varchar" MaxLength="32" />
+          <Property Name="ACHAddendaRMRReferenceNumber" Type="varchar" MaxLength="32" />
+          <Property Name="ACHAddendaRMRMonetaryAmount" Type="money" />
+          <Property Name="ACHAddendaRMRTotalInvAmount" Type="money" />
+          <Property Name="ACHAddendaRMRDiscountAmount" Type="money" />
+          <Property Name="ARP" Type="char" MaxLength="13" />
+          <Property Name="PaymentMode" Type="char" MaxLength="2" />
+          <Property Name="PaymentSource" Type="char" MaxLength="4" />
+          <Property Name="EffectiveDate" Type="datetime" />
+          <Property Name="PaidBy" Type="char" MaxLength="13" />
+          <Property Name="OFCAmount" Type="money" />
+          <Property Name="FIPS" Type="char" MaxLength="7" />
+          <Property Name="TargetedPayment" Type="char" MaxLength="3" />
+          <Property Name="CaseNumber" Type="char" MaxLength="25" />
+          <Property Name="CourtJudgment" Type="char" MaxLength="3" />
+          <Property Name="CourtGuideline" Type="char" MaxLength="3" />
+          <Property Name="ReasonCode" Type="char" MaxLength="3" />
+          <Property Name="ExportedToCHARTS" Type="tinyint" Nullable="false" />
+          <Property Name="ExportedToCHARTSDate" Type="datetime" />
+          <Property Name="ExportedAsUnidentified" Type="tinyint" />
+          <Property Name="ResolvedDate" Type="datetime" />
+          <Property Name="CHARTSStubPrefix" Type="char" MaxLength="8" />
+          <Property Name="Archived" Type="tinyint" />
+          <Property Name="ArchivedStamp" Type="datetime" />
+          <Property Name="ArchivedBy" Type="char" MaxLength="15" />
+          <Property Name="TotalAmountDue" Type="money" />
+          <Property Name="Adjusted" Type="tinyint" />
+          <Property Name="AdjustedDate" Type="datetime" />
+          <Property Name="AdjustedBy" Type="char" MaxLength="15" />
+          <Property Name="AdjustmentReason" Type="int" />
+          <Property Name="CHARTSAdjustedDate" Type="datetime" />
+          <Property Name="SSN" Type="char" MaxLength="11" />
+          <Property Name="ErrorCode" Type="int" />
+          <Property Name="ErrorDate" Type="datetime" />
+          <Property Name="RAHoldStatus" Type="tinyint" />
+          <Property Name="RAHoldReason" Type="int" />
+          <Property Name="RAHoldDate" Type="datetime" />
+          <Property Name="RAHoldReleaseDate" Type="datetime" />
+          <Property Name="RAHoldBy" Type="char" MaxLength="15" />
+          <Property Name="RAReleaseBy" Type="char" MaxLength="15" />
+          <Property Name="ScanLine" Type="char" MaxLength="43" />
+          <Property Name="SDUTranID" Type="char" MaxLength="20" />
+          <Property Name="AddendaData" Type="varchar" MaxLength="94" />
+        </EntityType>
+        <Function Name="ReceiptExport" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <EntityContainer Name="ReceiptModelStoreContainer">
+          <EntitySet Name="Batch" EntityType="Self.Batch" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Batch].[GlobalBatchID] AS [GlobalBatchID], 
+    [Batch].[BankID] AS [BankID], 
+    [Batch].[LockboxID] AS [LockboxID], 
+    [Batch].[DESetupID] AS [DESetupID], 
+    [Batch].[ProcessingDate] AS [ProcessingDate], 
+    [Batch].[BatchID] AS [BatchID], 
+    [Batch].[DepositStatus] AS [DepositStatus], 
+    [Batch].[BatchCueID] AS [BatchCueID], 
+    [Batch].[CutOffStatus] AS [CutOffStatus], 
+    [Batch].[BatchMode] AS [BatchMode], 
+    [Batch].[SystemType] AS [SystemType], 
+    [Batch].[Priority] AS [Priority], 
+    [Batch].[PrintLabels] AS [PrintLabels], 
+    [Batch].[BatchTypeCode] AS [BatchTypeCode], 
+    [Batch].[BatchTypeSubCode] AS [BatchTypeSubCode], 
+    [Batch].[BatchTypeText] AS [BatchTypeText], 
+    [Batch].[ConsolidationStatus] AS [ConsolidationStatus], 
+    [Batch].[CARStatus] AS [CARStatus], 
+    [Batch].[KFIStatus] AS [KFIStatus], 
+    [Batch].[FAXStatus] AS [FAXStatus], 
+    [Batch].[FloatAssignmentStatus] AS [FloatAssignmentStatus], 
+    [Batch].[ScanStatus] AS [ScanStatus], 
+    [Batch].[DEStatus] AS [DEStatus], 
+    [Batch].[ExtractSequenceNumber] AS [ExtractSequenceNumber], 
+    [Batch].[ImageExtractSequenceNumber] AS [ImageExtractSequenceNumber], 
+    [Batch].[DepositDate] AS [DepositDate], 
+    [Batch].[CheckCount] AS [CheckCount], 
+    [Batch].[CheckAmount] AS [CheckAmount], 
+    [Batch].[StubCount] AS [StubCount], 
+    [Batch].[StubAmount] AS [StubAmount], 
+    [Batch].[CreationDate] AS [CreationDate], 
+    [Batch].[BillingTC] AS [BillingTC], 
+    [Batch].[BillingRT] AS [BillingRT], 
+    [Batch].[BillingAccount] AS [BillingAccount], 
+    [Batch].[BillingSerial] AS [BillingSerial], 
+    [Batch].[WorkgroupID] AS [WorkgroupID], 
+    [Batch].[CurrencyCode] AS [CurrencyCode], 
+    [Batch].[MICRVerifyStatus] AS [MICRVerifyStatus], 
+    [Batch].[DEPrinted] AS [DEPrinted], 
+    [Batch].[Is2Pass] AS [Is2Pass], 
+    [Batch].[UseCar] AS [UseCar], 
+    [Batch].[NoChecksEnclosed] AS [NoChecksEnclosed], 
+    [Batch].[Rejects] AS [Rejects], 
+    [Batch].[DepositTicketPrinted] AS [DepositTicketPrinted], 
+    [Batch].[DateLastUpdated] AS [DateLastUpdated], 
+    [Batch].[TransportID] AS [TransportID], 
+    [Batch].[TrayID] AS [TrayID], 
+    [Batch].[SubTrayID] AS [SubTrayID], 
+    [Batch].[UseCustomer] AS [UseCustomer], 
+    [Batch].[DepositDDA] AS [DepositDDA], 
+    [Batch].[EncodeComplete] AS [EncodeComplete], 
+    [Batch].[SplitsEnded] AS [SplitsEnded], 
+    [Batch].[SiteCode] AS [SiteCode], 
+    [Batch].[BitonalImageRemovalDate] AS [BitonalImageRemovalDate], 
+    [Batch].[DataRemovalDate] AS [DataRemovalDate], 
+    [Batch].[ModificationDate] AS [ModificationDate], 
+    [Batch].[TransportBatchID] AS [TransportBatchID], 
+    [Batch].[GrayScaleImageRemovalDate] AS [GrayScaleImageRemovalDate], 
+    [Batch].[ColorImageRemovalDate] AS [ColorImageRemovalDate], 
+    [Batch].[CWDBDataRemovalDate] AS [CWDBDataRemovalDate], 
+    [Batch].[CWDBBitonalImageRemovalDate] AS [CWDBBitonalImageRemovalDate], 
+    [Batch].[CWDBGrayScaleImageRemovalDate] AS [CWDBGrayScaleImageRemovalDate], 
+    [Batch].[CWDBColorImageRemovalDate] AS [CWDBColorImageRemovalDate], 
+    [Batch].[BatchName] AS [BatchName], 
+    [Batch].[BatchTypeID] AS [BatchTypeID], 
+    [Batch].[DecisionStatus] AS [DecisionStatus], 
+    [Batch].[AllowDecisioning] AS [AllowDecisioning], 
+    [Batch].[RequireDEBeforeTwoPass] AS [RequireDEBeforeTwoPass], 
+    [Batch].[OriginalGlobalBatchID] AS [OriginalGlobalBatchID], 
+    [Batch].[BatchExtractID] AS [BatchExtractID], 
+    [Batch].[IsImageExchange] AS [IsImageExchange], 
+    [Batch].[CaptureSiteCodeID] AS [CaptureSiteCodeID], 
+    [Batch].[BatchSourceKey] AS [BatchSourceKey], 
+    [Batch].[NumOLDDaysRolled] AS [NumOLDDaysRolled]
+    FROM [dbo].[Batch] AS [Batch]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="BatchTrace" EntityType="Self.BatchTrace" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [BatchTrace].[GlobalBatchID] AS [GlobalBatchID], 
+    [BatchTrace].[TypeOneCutoff] AS [TypeOneCutoff], 
+    [BatchTrace].[IBMLFEI] AS [IBMLFEI], 
+    [BatchTrace].[TransportType] AS [TransportType], 
+    [BatchTrace].[TransportName] AS [TransportName], 
+    [BatchTrace].[CheckFileID] AS [CheckFileID], 
+    [BatchTrace].[TPRBatchName] AS [TPRBatchName], 
+    [BatchTrace].[OpexImport] AS [OpexImport], 
+    [BatchTrace].[ImageExchangeExtract] AS [ImageExchangeExtract], 
+    [BatchTrace].[ArchiveExpressExtrStatus] AS [ArchiveExpressExtrStatus], 
+    [BatchTrace].[WebDDLImporter] AS [WebDDLImporter], 
+    [BatchTrace].[OpexBackendImport] AS [OpexBackendImport], 
+    [BatchTrace].[ImageRPSImporter] AS [ImageRPSImporter], 
+    [BatchTrace].[RMSExporter] AS [RMSExporter], 
+    [BatchTrace].[CWDBBatchStatus] AS [CWDBBatchStatus], 
+    [BatchTrace].[CWDBImageStatus] AS [CWDBImageStatus], 
+    [BatchTrace].[CWDBConsolidationPriority] AS [CWDBConsolidationPriority], 
+    [BatchTrace].[CWDBErrorCountAttempts] AS [CWDBErrorCountAttempts], 
+    [BatchTrace].[CeresoftExporter] AS [CeresoftExporter], 
+    [BatchTrace].[ACHImporter] AS [ACHImporter], 
+    [BatchTrace].[RTNumber] AS [RTNumber]
+    FROM [dbo].[BatchTrace] AS [BatchTrace]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Checks" EntityType="Self.Checks" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Checks].[GlobalCheckID] AS [GlobalCheckID], 
+    [Checks].[GlobalBatchID] AS [GlobalBatchID], 
+    [Checks].[TransactionID] AS [TransactionID], 
+    [Checks].[TransactionSequence] AS [TransactionSequence], 
+    [Checks].[BatchSequence] AS [BatchSequence], 
+    [Checks].[CheckSequence] AS [CheckSequence], 
+    [Checks].[Status] AS [Status], 
+    [Checks].[RawMICR] AS [RawMICR], 
+    [Checks].[RT] AS [RT], 
+    [Checks].[Serial] AS [Serial], 
+    [Checks].[Account] AS [Account], 
+    [Checks].[TransactionCode] AS [TransactionCode], 
+    [Checks].[Amount] AS [Amount], 
+    [Checks].[LogonAmount] AS [LogonAmount], 
+    [Checks].[KFIAmount] AS [KFIAmount], 
+    [Checks].[VerifyAmount] AS [VerifyAmount], 
+    [Checks].[EncodeAmount] AS [EncodeAmount], 
+    [Checks].[CARAmount] AS [CARAmount], 
+    [Checks].[PayeeID] AS [PayeeID], 
+    [Checks].[Tray] AS [Tray], 
+    [Checks].[LogicalPocket] AS [LogicalPocket], 
+    [Checks].[Pocket] AS [Pocket], 
+    [Checks].[KilledMethod] AS [KilledMethod], 
+    [Checks].[KFIOperator] AS [KFIOperator], 
+    [Checks].[KFIUnit] AS [KFIUnit], 
+    [Checks].[KFIStation] AS [KFIStation], 
+    [Checks].[KFIVerificationOperator] AS [KFIVerificationOperator], 
+    [Checks].[KFIVerificationUnit] AS [KFIVerificationUnit], 
+    [Checks].[KFIVerificationStation] AS [KFIVerificationStation], 
+    [Checks].[KFIMCOperator] AS [KFIMCOperator], 
+    [Checks].[KFIMCUnit] AS [KFIMCUnit], 
+    [Checks].[KFIMCStation] AS [KFIMCStation], 
+    [Checks].[FloatAssigned] AS [FloatAssigned], 
+    [Checks].[PrintPhoto] AS [PrintPhoto], 
+    [Checks].[DEOperator] AS [DEOperator], 
+    [Checks].[DEStation] AS [DEStation], 
+    [Checks].[DEUnit] AS [DEUnit], 
+    [Checks].[DEVerifyOperator] AS [DEVerifyOperator], 
+    [Checks].[DEVerifyStation] AS [DEVerifyStation], 
+    [Checks].[DEVerifyUnit] AS [DEVerifyUnit], 
+    [Checks].[DEBillingKeys] AS [DEBillingKeys], 
+    [Checks].[DEDataKeys] AS [DEDataKeys], 
+    [Checks].[ItemDataKeys] AS [ItemDataKeys], 
+    [Checks].[ItemRawKeys] AS [ItemRawKeys], 
+    [Checks].[ItemBillingKeys] AS [ItemBillingKeys], 
+    [Checks].[Recapture] AS [Recapture], 
+    [Checks].[MICRRejected] AS [MICRRejected], 
+    [Checks].[IsForeign] AS [IsForeign], 
+    [Checks].[IsDeleted] AS [IsDeleted], 
+    [Checks].[IsGhost] AS [IsGhost], 
+    [Checks].[PocketType] AS [PocketType], 
+    [Checks].[RemitterName] AS [RemitterName], 
+    [Checks].[Timestamp] AS [Timestamp], 
+    [Checks].[ICRTranKey] AS [ICRTranKey], 
+    [Checks].[LARAmount] AS [LARAmount], 
+    [Checks].[CARConfidence] AS [CARConfidence], 
+    [Checks].[TraceNumber] AS [TraceNumber], 
+    [Checks].[ImagePresentationCleaned] AS [ImagePresentationCleaned], 
+    [Checks].[ImageRecognitionCleaned] AS [ImageRecognitionCleaned], 
+    [Checks].[ImageRegistered] AS [ImageRegistered], 
+    [Checks].[ImageRequiresICR] AS [ImageRequiresICR], 
+    [Checks].[ImageRecognized] AS [ImageRecognized], 
+    [Checks].[IsIRD] AS [IsIRD], 
+    [Checks].[LockboxDecisioningReasonID] AS [LockboxDecisioningReasonID], 
+    [Checks].[CARAmount2] AS [CARAmount2], 
+    [Checks].[CARConfidence2] AS [CARConfidence2], 
+    [Checks].[CARMatch] AS [CARMatch], 
+    [Checks].[CARMatch2] AS [CARMatch2], 
+    [Checks].[IQARequired] AS [IQARequired], 
+    [Checks].[ExtractAuditID] AS [ExtractAuditID], 
+    [Checks].[MICRQuality] AS [MICRQuality], 
+    [Checks].[OCRRT] AS [OCRRT], 
+    [Checks].[OCRAccount] AS [OCRAccount], 
+    [Checks].[OCRSerial] AS [OCRSerial], 
+    [Checks].[OCRTransactionCode] AS [OCRTransactionCode], 
+    [Checks].[OCRRawMICR] AS [OCRRawMICR], 
+    [Checks].[OriginalGlobalCheckID] AS [OriginalGlobalCheckID], 
+    [Checks].[TemplateSetupID] AS [TemplateSetupID], 
+    [Checks].[ECLCashLetterID] AS [ECLCashLetterID], 
+    [Checks].[ECLBundleID] AS [ECLBundleID], 
+    [Checks].[ECLSequenceID] AS [ECLSequenceID], 
+    [Checks].[OCRConfidence] AS [OCRConfidence], 
+    [Checks].[ResolutionDPI] AS [ResolutionDPI], 
+    [Checks].[IsBusinessCheck] AS [IsBusinessCheck], 
+    [Checks].[IsDuplicate] AS [IsDuplicate], 
+    [Checks].[StubAmount] AS [StubAmount]
+    FROM [dbo].[Checks] AS [Checks]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="ChecksDataEntry" EntityType="Self.ChecksDataEntry" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ChecksDataEntry].[GlobalCheckID] AS [GlobalCheckID], 
+    [ChecksDataEntry].[GlobalBatchID] AS [GlobalBatchID], 
+    [ChecksDataEntry].[TransactionID] AS [TransactionID], 
+    [ChecksDataEntry].[ACHDetailAccountNumber] AS [ACHDetailAccountNumber], 
+    [ChecksDataEntry].[ACHBatchCompanyID] AS [ACHBatchCompanyID], 
+    [ChecksDataEntry].[ACHBatchCompanyName] AS [ACHBatchCompanyName], 
+    [ChecksDataEntry].[ACHBatchEntryClass] AS [ACHBatchEntryClass], 
+    [ChecksDataEntry].[ACHBatchCompanyData] AS [ACHBatchCompanyData], 
+    [ChecksDataEntry].[ACHBatchEntryDesc] AS [ACHBatchEntryDesc], 
+    [ChecksDataEntry].[ACHBatchDescriptiveDate] AS [ACHBatchDescriptiveDate], 
+    [ChecksDataEntry].[ACHBatchEffectiveDate] AS [ACHBatchEffectiveDate], 
+    [ChecksDataEntry].[ACHBatchSettlementDate] AS [ACHBatchSettlementDate], 
+    [ChecksDataEntry].[ACHDetailIndividualID] AS [ACHDetailIndividualID], 
+    [ChecksDataEntry].[ACHDetailReceivingCompany] AS [ACHDetailReceivingCompany], 
+    [ChecksDataEntry].[ACHDetailTraceNumber] AS [ACHDetailTraceNumber], 
+    [ChecksDataEntry].[ACHDetailDiscretionaryData] AS [ACHDetailDiscretionaryData], 
+    [ChecksDataEntry].[ACHDetailIndividualName] AS [ACHDetailIndividualName], 
+    [ChecksDataEntry].[ACHDetailOFACIndicator1] AS [ACHDetailOFACIndicator1], 
+    [ChecksDataEntry].[ACHDetailOFACIndicator2] AS [ACHDetailOFACIndicator2], 
+    [ChecksDataEntry].[ACHDetailReceivingIndividual] AS [ACHDetailReceivingIndividual], 
+    [ChecksDataEntry].[CheckDate] AS [CheckDate], 
+    [ChecksDataEntry].[ReasonCode] AS [ReasonCode], 
+    [ChecksDataEntry].[CollectionStatus] AS [CollectionStatus], 
+    [ChecksDataEntry].[ReturnDate] AS [ReturnDate], 
+    [ChecksDataEntry].[AmountToDate] AS [AmountToDate], 
+    [ChecksDataEntry].[WriteOffDate] AS [WriteOffDate], 
+    [ChecksDataEntry].[PostedDate] AS [PostedDate], 
+    [ChecksDataEntry].[PostedAmount] AS [PostedAmount], 
+    [ChecksDataEntry].[EntityType] AS [EntityType], 
+    [ChecksDataEntry].[EntityID] AS [EntityID], 
+    [ChecksDataEntry].[Collector] AS [Collector], 
+    [ChecksDataEntry].[DisbursementNumber] AS [DisbursementNumber], 
+    [ChecksDataEntry].[Agency] AS [Agency], 
+    [ChecksDataEntry].[Is3rdParty] AS [Is3rdParty], 
+    [ChecksDataEntry].[PredepositStatus] AS [PredepositStatus], 
+    [ChecksDataEntry].[PredepositReason] AS [PredepositReason], 
+    [ChecksDataEntry].[PredepositDate] AS [PredepositDate], 
+    [ChecksDataEntry].[PredictedReleaseDate] AS [PredictedReleaseDate], 
+    [ChecksDataEntry].[ReleaseDate] AS [ReleaseDate], 
+    [ChecksDataEntry].[UnprocessedDate] AS [UnprocessedDate], 
+    [ChecksDataEntry].[ModifiedStamp] AS [ModifiedStamp], 
+    [ChecksDataEntry].[ModifiedBy] AS [ModifiedBy]
+    FROM [dbo].[ChecksDataEntry] AS [ChecksDataEntry]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="KCPerson" EntityType="Self.KCPerson" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [KCPerson].[KCPersonID] AS [KCPersonID], 
+    [KCPerson].[SSN] AS [SSN], 
+    [KCPerson].[LastName] AS [LastName], 
+    [KCPerson].[FirstName] AS [FirstName], 
+    [KCPerson].[MiddleName] AS [MiddleName], 
+    [KCPerson].[Suffix] AS [Suffix], 
+    [KCPerson].[Address] AS [Address], 
+    [KCPerson].[City] AS [City], 
+    [KCPerson].[State] AS [State], 
+    [KCPerson].[Zip] AS [Zip], 
+    [KCPerson].[HomePhone] AS [HomePhone], 
+    [KCPerson].[CellPhone] AS [CellPhone], 
+    [KCPerson].[WorkPhone] AS [WorkPhone], 
+    [KCPerson].[WorkExtension] AS [WorkExtension], 
+    [KCPerson].[eMail] AS [eMail], 
+    [KCPerson].[Country] AS [Country], 
+    [KCPerson].[DateOfBirth] AS [DateOfBirth], 
+    [KCPerson].[DateOfDeath] AS [DateOfDeath], 
+    [KCPerson].[Notes] AS [Notes], 
+    [KCPerson].[ModifiedStamp] AS [ModifiedStamp], 
+    [KCPerson].[ModifiedBy] AS [ModifiedBy], 
+    [KCPerson].[PINNumber] AS [PINNumber], 
+    [KCPerson].[PersonID] AS [PersonID], 
+    [KCPerson].[Pager] AS [Pager], 
+    [KCPerson].[AlternateEmail] AS [AlternateEmail], 
+    [KCPerson].[BillingEmail] AS [BillingEmail], 
+    [KCPerson].[KCDeliveryMethodID] AS [KCDeliveryMethodID], 
+    [KCPerson].[FVI] AS [FVI], 
+    [KCPerson].[IsActive] AS [IsActive], 
+    [KCPerson].[InactiveDate] AS [InactiveDate], 
+    [KCPerson].[InvalidAddress] AS [InvalidAddress], 
+    [KCPerson].[DenyWebAccess] AS [DenyWebAccess], 
+    [KCPerson].[ChangeReasonCode] AS [ChangeReasonCode], 
+    [KCPerson].[PaymentNotification] AS [PaymentNotification], 
+    [KCPerson].[CreationStamp] AS [CreationStamp], 
+    [KCPerson].[KCPaymentMethodID] AS [KCPaymentMethodID], 
+    [KCPerson].[AddressStamp] AS [AddressStamp], 
+    [KCPerson].[PhoneStamp] AS [PhoneStamp], 
+    [KCPerson].[EmailStamp] AS [EmailStamp], 
+    [KCPerson].[BillingEmailStamp] AS [BillingEmailStamp], 
+    [KCPerson].[DeliveryMethodStamp] AS [DeliveryMethodStamp], 
+    [KCPerson].[DODStamp] AS [DODStamp], 
+    [KCPerson].[PaymentMethodStamp] AS [PaymentMethodStamp], 
+    [KCPerson].[SignMeUpForEbs] AS [SignMeUpForEbs], 
+    [KCPerson].[IVDStatus] AS [IVDStatus]
+    FROM [dbo].[KCPerson] AS [KCPerson]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Stubs" EntityType="Self.Stubs" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Stubs].[GlobalBatchID] AS [GlobalBatchID], 
+    [Stubs].[TransactionID] AS [TransactionID], 
+    [Stubs].[GlobalStubID] AS [GlobalStubID], 
+    [Stubs].[TransactionSequence] AS [TransactionSequence], 
+    [Stubs].[BatchSequence] AS [BatchSequence], 
+    [Stubs].[StubSequence] AS [StubSequence], 
+    [Stubs].[SplitNumber] AS [SplitNumber], 
+    [Stubs].[Status] AS [Status], 
+    [Stubs].[AccountNumber] AS [AccountNumber], 
+    [Stubs].[Amount] AS [Amount], 
+    [Stubs].[OCRAmount] AS [OCRAmount], 
+    [Stubs].[RawOCR1] AS [RawOCR1], 
+    [Stubs].[RawOCR2] AS [RawOCR2], 
+    [Stubs].[RawOCR3] AS [RawOCR3], 
+    [Stubs].[DEBillingKeys] AS [DEBillingKeys], 
+    [Stubs].[DEDataKeys] AS [DEDataKeys], 
+    [Stubs].[ItemDataKeys] AS [ItemDataKeys], 
+    [Stubs].[ItemRawKeys] AS [ItemRawKeys], 
+    [Stubs].[ItemBillingKeys] AS [ItemBillingKeys], 
+    [Stubs].[IsGhost] AS [IsGhost], 
+    [Stubs].[IsOMRDetected] AS [IsOMRDetected], 
+    [Stubs].[Tray] AS [Tray], 
+    [Stubs].[ICRTranKey] AS [ICRTranKey], 
+    [Stubs].[IsOMRZone1Detected] AS [IsOMRZone1Detected], 
+    [Stubs].[IsOMRZone2Detected] AS [IsOMRZone2Detected], 
+    [Stubs].[IsOMRZone3Detected] AS [IsOMRZone3Detected], 
+    [Stubs].[IsOMRZone4Detected] AS [IsOMRZone4Detected], 
+    [Stubs].[PageNo] AS [PageNo], 
+    [Stubs].[IsSingleOccurrence] AS [IsSingleOccurrence], 
+    [Stubs].[OriginalGlobalStubID] AS [OriginalGlobalStubID]
+    FROM [dbo].[Stubs] AS [Stubs]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="StubsDataEntry" EntityType="Self.StubsDataEntry" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [StubsDataEntry].[GlobalBatchID] AS [GlobalBatchID], 
+    [StubsDataEntry].[TransactionID] AS [TransactionID], 
+    [StubsDataEntry].[GlobalStubID] AS [GlobalStubID], 
+    [StubsDataEntry].[InvoiceNumber] AS [InvoiceNumber], 
+    [StubsDataEntry].[ACHAddendaBPRMonetaryAmount] AS [ACHAddendaBPRMonetaryAmount], 
+    [StubsDataEntry].[ACHAddendaBPRAccountNumber] AS [ACHAddendaBPRAccountNumber], 
+    [StubsDataEntry].[ACHAddendaRMRReferenceNumber] AS [ACHAddendaRMRReferenceNumber], 
+    [StubsDataEntry].[ACHAddendaRMRMonetaryAmount] AS [ACHAddendaRMRMonetaryAmount], 
+    [StubsDataEntry].[ACHAddendaRMRTotalInvAmount] AS [ACHAddendaRMRTotalInvAmount], 
+    [StubsDataEntry].[ACHAddendaRMRDiscountAmount] AS [ACHAddendaRMRDiscountAmount], 
+    [StubsDataEntry].[ARP] AS [ARP], 
+    [StubsDataEntry].[PaymentMode] AS [PaymentMode], 
+    [StubsDataEntry].[PaymentSource] AS [PaymentSource], 
+    [StubsDataEntry].[EffectiveDate] AS [EffectiveDate], 
+    [StubsDataEntry].[PaidBy] AS [PaidBy], 
+    [StubsDataEntry].[OFCAmount] AS [OFCAmount], 
+    [StubsDataEntry].[FIPS] AS [FIPS], 
+    [StubsDataEntry].[TargetedPayment] AS [TargetedPayment], 
+    [StubsDataEntry].[CaseNumber] AS [CaseNumber], 
+    [StubsDataEntry].[CourtJudgment] AS [CourtJudgment], 
+    [StubsDataEntry].[CourtGuideline] AS [CourtGuideline], 
+    [StubsDataEntry].[ReasonCode] AS [ReasonCode], 
+    [StubsDataEntry].[ExportedToCHARTS] AS [ExportedToCHARTS], 
+    [StubsDataEntry].[ExportedToCHARTSDate] AS [ExportedToCHARTSDate], 
+    [StubsDataEntry].[ExportedAsUnidentified] AS [ExportedAsUnidentified], 
+    [StubsDataEntry].[ResolvedDate] AS [ResolvedDate], 
+    [StubsDataEntry].[CHARTSStubPrefix] AS [CHARTSStubPrefix], 
+    [StubsDataEntry].[Archived] AS [Archived], 
+    [StubsDataEntry].[ArchivedStamp] AS [ArchivedStamp], 
+    [StubsDataEntry].[ArchivedBy] AS [ArchivedBy], 
+    [StubsDataEntry].[TotalAmountDue] AS [TotalAmountDue], 
+    [StubsDataEntry].[Adjusted] AS [Adjusted], 
+    [StubsDataEntry].[AdjustedDate] AS [AdjustedDate], 
+    [StubsDataEntry].[AdjustedBy] AS [AdjustedBy], 
+    [StubsDataEntry].[AdjustmentReason] AS [AdjustmentReason], 
+    [StubsDataEntry].[CHARTSAdjustedDate] AS [CHARTSAdjustedDate], 
+    [StubsDataEntry].[SSN] AS [SSN], 
+    [StubsDataEntry].[ErrorCode] AS [ErrorCode], 
+    [StubsDataEntry].[ErrorDate] AS [ErrorDate], 
+    [StubsDataEntry].[RAHoldStatus] AS [RAHoldStatus], 
+    [StubsDataEntry].[RAHoldReason] AS [RAHoldReason], 
+    [StubsDataEntry].[RAHoldDate] AS [RAHoldDate], 
+    [StubsDataEntry].[RAHoldReleaseDate] AS [RAHoldReleaseDate], 
+    [StubsDataEntry].[RAHoldBy] AS [RAHoldBy], 
+    [StubsDataEntry].[RAReleaseBy] AS [RAReleaseBy], 
+    [StubsDataEntry].[ScanLine] AS [ScanLine], 
+    [StubsDataEntry].[SDUTranID] AS [SDUTranID], 
+    [StubsDataEntry].[AddendaData] AS [AddendaData]
+    FROM [dbo].[StubsDataEntry] AS [StubsDataEntry]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ReceiptModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Batch">
+          <Key>
+            <PropertyRef Name="GlobalBatchID" />
+            <PropertyRef Name="BankID" />
+            <PropertyRef Name="LockboxID" />
+            <PropertyRef Name="ProcessingDate" />
+            <PropertyRef Name="BatchID" />
+            <PropertyRef Name="UseCustomer" />
+            <PropertyRef Name="SplitsEnded" />
+            <PropertyRef Name="ModificationDate" />
+            <PropertyRef Name="DecisionStatus" />
+            <PropertyRef Name="AllowDecisioning" />
+            <PropertyRef Name="RequireDEBeforeTwoPass" />
+            <PropertyRef Name="IsImageExchange" />
+            <PropertyRef Name="BatchSourceKey" />
+            <PropertyRef Name="NumOLDDaysRolled" />
+          </Key>
+          <Property Name="GlobalBatchID" Type="Int32" Nullable="false" />
+          <Property Name="BankID" Type="Int32" Nullable="false" />
+          <Property Name="LockboxID" Type="Int32" Nullable="false" />
+          <Property Name="DESetupID" Type="Int32" />
+          <Property Name="ProcessingDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="BatchID" Type="Int32" Nullable="false" />
+          <Property Name="DepositStatus" Type="Int32" />
+          <Property Name="BatchCueID" Type="Int32" />
+          <Property Name="CutOffStatus" Type="Byte" />
+          <Property Name="BatchMode" Type="Byte" />
+          <Property Name="SystemType" Type="Byte" />
+          <Property Name="Priority" Type="Byte" />
+          <Property Name="PrintLabels" Type="Byte" />
+          <Property Name="BatchTypeCode" Type="Int32" />
+          <Property Name="BatchTypeSubCode" Type="Int16" />
+          <Property Name="BatchTypeText" Type="String" MaxLength="255" FixedLength="true" Unicode="false" />
+          <Property Name="ConsolidationStatus" Type="Byte" />
+          <Property Name="CARStatus" Type="Byte" />
+          <Property Name="KFIStatus" Type="Byte" />
+          <Property Name="FAXStatus" Type="Byte" />
+          <Property Name="FloatAssignmentStatus" Type="Byte" />
+          <Property Name="ScanStatus" Type="Byte" />
+          <Property Name="DEStatus" Type="Byte" />
+          <Property Name="ExtractSequenceNumber" Type="Int32" />
+          <Property Name="ImageExtractSequenceNumber" Type="Int32" />
+          <Property Name="DepositDate" Type="DateTime" Precision="3" />
+          <Property Name="CheckCount" Type="Int32" />
+          <Property Name="CheckAmount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="StubCount" Type="Int32" />
+          <Property Name="StubAmount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="CreationDate" Type="DateTime" Precision="3" />
+          <Property Name="BillingTC" Type="Int32" />
+          <Property Name="BillingRT" Type="Int32" />
+          <Property Name="BillingAccount" Type="Int32" />
+          <Property Name="BillingSerial" Type="Int32" />
+          <Property Name="WorkgroupID" Type="Int32" />
+          <Property Name="CurrencyCode" Type="Int32" />
+          <Property Name="MICRVerifyStatus" Type="Byte" />
+          <Property Name="DEPrinted" Type="Int16" />
+          <Property Name="Is2Pass" Type="Byte" />
+          <Property Name="UseCar" Type="Byte" />
+          <Property Name="NoChecksEnclosed" Type="Int32" />
+          <Property Name="Rejects" Type="Int32" />
+          <Property Name="DepositTicketPrinted" Type="Boolean" />
+          <Property Name="DateLastUpdated" Type="DateTime" Precision="3" />
+          <Property Name="TransportID" Type="Int32" />
+          <Property Name="TrayID" Type="Int32" />
+          <Property Name="SubTrayID" Type="Int32" />
+          <Property Name="UseCustomer" Type="Byte" Nullable="false" />
+          <Property Name="DepositDDA" Type="String" MaxLength="40" FixedLength="true" Unicode="false" />
+          <Property Name="EncodeComplete" Type="DateTime" Precision="3" />
+          <Property Name="SplitsEnded" Type="Boolean" Nullable="false" />
+          <Property Name="SiteCode" Type="Int32" />
+          <Property Name="BitonalImageRemovalDate" Type="DateTime" Precision="3" />
+          <Property Name="DataRemovalDate" Type="DateTime" Precision="3" />
+          <Property Name="ModificationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="TransportBatchID" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="GrayScaleImageRemovalDate" Type="DateTime" Precision="3" />
+          <Property Name="ColorImageRemovalDate" Type="DateTime" Precision="3" />
+          <Property Name="CWDBDataRemovalDate" Type="DateTime" Precision="3" />
+          <Property Name="CWDBBitonalImageRemovalDate" Type="DateTime" Precision="3" />
+          <Property Name="CWDBGrayScaleImageRemovalDate" Type="DateTime" Precision="3" />
+          <Property Name="CWDBColorImageRemovalDate" Type="DateTime" Precision="3" />
+          <Property Name="BatchName" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="BatchTypeID" Type="Guid" />
+          <Property Name="DecisionStatus" Type="Byte" Nullable="false" />
+          <Property Name="AllowDecisioning" Type="Boolean" Nullable="false" />
+          <Property Name="RequireDEBeforeTwoPass" Type="Boolean" Nullable="false" />
+          <Property Name="OriginalGlobalBatchID" Type="Int32" />
+          <Property Name="BatchExtractID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="IsImageExchange" Type="Boolean" Nullable="false" />
+          <Property Name="CaptureSiteCodeID" Type="Int32" />
+          <Property Name="BatchSourceKey" Type="Byte" Nullable="false" />
+          <Property Name="NumOLDDaysRolled" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="BatchTrace">
+          <Key>
+            <PropertyRef Name="GlobalBatchID" />
+          </Key>
+          <Property Name="GlobalBatchID" Type="Int32" Nullable="false" />
+          <Property Name="TypeOneCutoff" Type="DateTime" Precision="3" />
+          <Property Name="IBMLFEI" Type="DateTime" Precision="3" />
+          <Property Name="TransportType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="TransportName" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="CheckFileID" Type="Guid" />
+          <Property Name="TPRBatchName" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="OpexImport" Type="DateTime" Precision="3" />
+          <Property Name="ImageExchangeExtract" Type="DateTime" Precision="3" />
+          <Property Name="ArchiveExpressExtrStatus" Type="DateTime" Precision="3" />
+          <Property Name="WebDDLImporter" Type="DateTime" Precision="3" />
+          <Property Name="OpexBackendImport" Type="DateTime" Precision="3" />
+          <Property Name="ImageRPSImporter" Type="DateTime" Precision="3" />
+          <Property Name="RMSExporter" Type="DateTime" Precision="3" />
+          <Property Name="CWDBBatchStatus" Type="DateTime" Precision="3" />
+          <Property Name="CWDBImageStatus" Type="DateTime" Precision="3" />
+          <Property Name="CWDBConsolidationPriority" Type="Byte" />
+          <Property Name="CWDBErrorCountAttempts" Type="Byte" />
+          <Property Name="CeresoftExporter" Type="DateTime" Precision="3" />
+          <Property Name="ACHImporter" Type="DateTime" Precision="3" />
+          <Property Name="RTNumber" Type="String" MaxLength="7" FixedLength="true" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Check">
+          <Key>
+            <PropertyRef Name="GlobalCheckID" />
+            <PropertyRef Name="GlobalBatchID" />
+            <PropertyRef Name="TransactionID" />
+            <PropertyRef Name="Timestamp" />
+            <PropertyRef Name="LARAmount" />
+            <PropertyRef Name="ImagePresentationCleaned" />
+            <PropertyRef Name="ImageRecognitionCleaned" />
+            <PropertyRef Name="ImageRegistered" />
+            <PropertyRef Name="ImageRequiresICR" />
+            <PropertyRef Name="ImageRecognized" />
+            <PropertyRef Name="IsIRD" />
+            <PropertyRef Name="CARMatch" />
+            <PropertyRef Name="CARMatch2" />
+            <PropertyRef Name="IQARequired" />
+            <PropertyRef Name="MICRQuality" />
+            <PropertyRef Name="ResolutionDPI" />
+            <PropertyRef Name="IsBusinessCheck" />
+            <PropertyRef Name="IsDuplicate" />
+          </Key>
+          <Property Name="GlobalCheckID" Type="Int32" Nullable="false" />
+          <Property Name="GlobalBatchID" Type="Int32" Nullable="false" />
+          <Property Name="TransactionID" Type="Int32" Nullable="false" />
+          <Property Name="TransactionSequence" Type="Int32" />
+          <Property Name="BatchSequence" Type="Int32" />
+          <Property Name="CheckSequence" Type="Int32" />
+          <Property Name="Status" Type="Byte" />
+          <Property Name="RawMICR" Type="String" MaxLength="110" FixedLength="true" Unicode="false" />
+          <Property Name="RT" Type="String" MaxLength="30" FixedLength="true" Unicode="false" />
+          <Property Name="Serial" Type="String" MaxLength="30" FixedLength="true" Unicode="false" />
+          <Property Name="Account" Type="String" MaxLength="30" FixedLength="true" Unicode="false" />
+          <Property Name="TransactionCode" Type="String" MaxLength="30" FixedLength="true" Unicode="false" />
+          <Property Name="Amount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="LogonAmount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="KFIAmount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="VerifyAmount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="EncodeAmount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="CARAmount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="PayeeID" Type="Int32" />
+          <Property Name="Tray" Type="Int32" />
+          <Property Name="LogicalPocket" Type="Int32" />
+          <Property Name="Pocket" Type="Byte" />
+          <Property Name="KilledMethod" Type="Int32" />
+          <Property Name="KFIOperator" Type="String" MaxLength="15" FixedLength="true" Unicode="false" />
+          <Property Name="KFIUnit" Type="Int32" />
+          <Property Name="KFIStation" Type="Int32" />
+          <Property Name="KFIVerificationOperator" Type="String" MaxLength="15" FixedLength="true" Unicode="false" />
+          <Property Name="KFIVerificationUnit" Type="Int32" />
+          <Property Name="KFIVerificationStation" Type="Int32" />
+          <Property Name="KFIMCOperator" Type="String" MaxLength="15" FixedLength="true" Unicode="false" />
+          <Property Name="KFIMCUnit" Type="Int32" />
+          <Property Name="KFIMCStation" Type="Int32" />
+          <Property Name="FloatAssigned" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="PrintPhoto" Type="Byte" />
+          <Property Name="DEOperator" Type="String" MaxLength="15" FixedLength="true" Unicode="false" />
+          <Property Name="DEStation" Type="Int32" />
+          <Property Name="DEUnit" Type="Int32" />
+          <Property Name="DEVerifyOperator" Type="String" MaxLength="15" FixedLength="true" Unicode="false" />
+          <Property Name="DEVerifyStation" Type="Int32" />
+          <Property Name="DEVerifyUnit" Type="Int32" />
+          <Property Name="DEBillingKeys" Type="Int32" />
+          <Property Name="DEDataKeys" Type="Int32" />
+          <Property Name="ItemDataKeys" Type="Int32" />
+          <Property Name="ItemRawKeys" Type="Int32" />
+          <Property Name="ItemBillingKeys" Type="Int32" />
+          <Property Name="Recapture" Type="Byte" />
+          <Property Name="MICRRejected" Type="Int32" />
+          <Property Name="IsForeign" Type="Int32" />
+          <Property Name="IsDeleted" Type="Byte" />
+          <Property Name="IsGhost" Type="Boolean" />
+          <Property Name="PocketType" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="RemitterName" Type="String" MaxLength="60" FixedLength="true" Unicode="false" />
+          <Property Name="Timestamp" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" />
+          <Property Name="ICRTranKey" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="LARAmount" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="CARConfidence" Type="Int32" />
+          <Property Name="TraceNumber" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="ImagePresentationCleaned" Type="Boolean" Nullable="false" />
+          <Property Name="ImageRecognitionCleaned" Type="Boolean" Nullable="false" />
+          <Property Name="ImageRegistered" Type="Boolean" Nullable="false" />
+          <Property Name="ImageRequiresICR" Type="Boolean" Nullable="false" />
+          <Property Name="ImageRecognized" Type="Boolean" Nullable="false" />
+          <Property Name="IsIRD" Type="Byte" Nullable="false" />
+          <Property Name="LockboxDecisioningReasonID" Type="Guid" />
+          <Property Name="CARAmount2" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="CARConfidence2" Type="Int32" />
+          <Property Name="CARMatch" Type="Boolean" Nullable="false" />
+          <Property Name="CARMatch2" Type="Boolean" Nullable="false" />
+          <Property Name="IQARequired" Type="Boolean" Nullable="false" />
+          <Property Name="ExtractAuditID" Type="Guid" />
+          <Property Name="MICRQuality" Type="Byte" Nullable="false" />
+          <Property Name="OCRRT" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="OCRAccount" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="OCRSerial" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="OCRTransactionCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="OCRRawMICR" Type="String" MaxLength="110" FixedLength="false" Unicode="false" />
+          <Property Name="OriginalGlobalCheckID" Type="Int32" />
+          <Property Name="TemplateSetupID" Type="Guid" />
+          <Property Name="ECLCashLetterID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="ECLBundleID" Type="Int32" />
+          <Property Name="ECLSequenceID" Type="Int32" />
+          <Property Name="OCRConfidence" Type="Int32" />
+          <Property Name="ResolutionDPI" Type="Int32" Nullable="false" />
+          <Property Name="IsBusinessCheck" Type="Boolean" Nullable="false" />
+          <Property Name="IsDuplicate" Type="Boolean" Nullable="false" />
+          <Property Name="StubAmount" Type="Decimal" Precision="19" Scale="4" />
+        </EntityType>
+        <EntityType Name="ChecksDataEntry">
+          <Key>
+            <PropertyRef Name="GlobalCheckID" />
+            <PropertyRef Name="GlobalBatchID" />
+            <PropertyRef Name="TransactionID" />
+          </Key>
+          <Property Name="GlobalCheckID" Type="Int32" Nullable="false" />
+          <Property Name="GlobalBatchID" Type="Int32" Nullable="false" />
+          <Property Name="TransactionID" Type="Int32" Nullable="false" />
+          <Property Name="ACHDetailAccountNumber" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+          <Property Name="ACHBatchCompanyID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ACHBatchCompanyName" Type="String" MaxLength="16" FixedLength="false" Unicode="false" />
+          <Property Name="ACHBatchEntryClass" Type="String" MaxLength="3" FixedLength="true" Unicode="false" />
+          <Property Name="ACHBatchCompanyData" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="ACHBatchEntryDesc" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ACHBatchDescriptiveDate" Type="String" MaxLength="6" FixedLength="true" Unicode="false" />
+          <Property Name="ACHBatchEffectiveDate" Type="DateTime" Precision="3" />
+          <Property Name="ACHBatchSettlementDate" Type="DateTime" Precision="3" />
+          <Property Name="ACHDetailIndividualID" Type="String" MaxLength="22" FixedLength="false" Unicode="false" />
+          <Property Name="ACHDetailReceivingCompany" Type="String" MaxLength="22" FixedLength="false" Unicode="false" />
+          <Property Name="ACHDetailTraceNumber" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="ACHDetailDiscretionaryData" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="ACHDetailIndividualName" Type="String" MaxLength="22" FixedLength="false" Unicode="false" />
+          <Property Name="ACHDetailOFACIndicator1" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="ACHDetailOFACIndicator2" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="ACHDetailReceivingIndividual" Type="String" MaxLength="22" FixedLength="false" Unicode="false" />
+          <Property Name="CheckDate" Type="DateTime" Precision="3" />
+          <Property Name="ReasonCode" Type="Int16" />
+          <Property Name="CollectionStatus" Type="Int16" />
+          <Property Name="ReturnDate" Type="DateTime" Precision="3" />
+          <Property Name="AmountToDate" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="WriteOffDate" Type="DateTime" Precision="3" />
+          <Property Name="PostedDate" Type="DateTime" Precision="3" />
+          <Property Name="PostedAmount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="EntityType" Type="Int32" />
+          <Property Name="EntityID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Collector" Type="String" MaxLength="15" FixedLength="true" Unicode="false" />
+          <Property Name="DisbursementNumber" Type="Int32" />
+          <Property Name="Agency" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="Is3rdParty" Type="Byte" />
+          <Property Name="PredepositStatus" Type="Int32" />
+          <Property Name="PredepositReason" Type="Int32" />
+          <Property Name="PredepositDate" Type="DateTime" Precision="3" />
+          <Property Name="PredictedReleaseDate" Type="DateTime" Precision="3" />
+          <Property Name="ReleaseDate" Type="DateTime" Precision="3" />
+          <Property Name="UnprocessedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedStamp" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="20" FixedLength="true" Unicode="false" />
+        </EntityType>
+        <EntityType Name="KCPerson">
+          <Key>
+            <PropertyRef Name="KCPersonID" />
+            <PropertyRef Name="KCDeliveryMethodID" />
+            <PropertyRef Name="FVI" />
+            <PropertyRef Name="InvalidAddress" />
+            <PropertyRef Name="DenyWebAccess" />
+            <PropertyRef Name="PaymentNotification" />
+          </Key>
+          <Property Name="KCPersonID" Type="Guid" Nullable="false" />
+          <Property Name="SSN" Type="String" MaxLength="9" FixedLength="true" Unicode="false" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="FirstName" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="MiddleName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Suffix" Type="String" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="City" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="State" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Zip" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="HomePhone" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="CellPhone" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="WorkPhone" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="WorkExtension" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="eMail" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Country" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="DateOfBirth" Type="DateTime" Precision="3" />
+          <Property Name="DateOfDeath" Type="DateTime" Precision="3" />
+          <Property Name="Notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedStamp" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="32" FixedLength="true" Unicode="false" />
+          <Property Name="PINNumber" Type="Int32" />
+          <Property Name="PersonID" Type="String" MaxLength="13" FixedLength="false" Unicode="false" />
+          <Property Name="Pager" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="AlternateEmail" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="BillingEmail" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="KCDeliveryMethodID" Type="Byte" Nullable="false" />
+          <Property Name="FVI" Type="Boolean" Nullable="false" />
+          <Property Name="IsActive" Type="Byte" />
+          <Property Name="InactiveDate" Type="DateTime" Precision="3" />
+          <Property Name="InvalidAddress" Type="Boolean" Nullable="false" />
+          <Property Name="DenyWebAccess" Type="Boolean" Nullable="false" />
+          <Property Name="ChangeReasonCode" Type="Byte" />
+          <Property Name="PaymentNotification" Type="Boolean" Nullable="false" />
+          <Property Name="CreationStamp" Type="DateTime" Precision="3" />
+          <Property Name="KCPaymentMethodID" Type="Byte" />
+          <Property Name="AddressStamp" Type="DateTime" Precision="3" />
+          <Property Name="PhoneStamp" Type="DateTime" Precision="3" />
+          <Property Name="EmailStamp" Type="DateTime" Precision="3" />
+          <Property Name="BillingEmailStamp" Type="DateTime" Precision="3" />
+          <Property Name="DeliveryMethodStamp" Type="DateTime" Precision="3" />
+          <Property Name="DODStamp" Type="DateTime" Precision="3" />
+          <Property Name="PaymentMethodStamp" Type="DateTime" Precision="3" />
+          <Property Name="SignMeUpForEbs" Type="Byte" />
+          <Property Name="IVDStatus" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Stub">
+          <Key>
+            <PropertyRef Name="GlobalBatchID" />
+            <PropertyRef Name="TransactionID" />
+            <PropertyRef Name="GlobalStubID" />
+            <PropertyRef Name="PageNo" />
+            <PropertyRef Name="IsSingleOccurrence" />
+          </Key>
+          <Property Name="GlobalBatchID" Type="Int32" Nullable="false" />
+          <Property Name="TransactionID" Type="Int32" Nullable="false" />
+          <Property Name="GlobalStubID" Type="Int32" Nullable="false" />
+          <Property Name="TransactionSequence" Type="Int32" />
+          <Property Name="BatchSequence" Type="Int32" />
+          <Property Name="StubSequence" Type="Int32" />
+          <Property Name="SplitNumber" Type="Int32" />
+          <Property Name="Status" Type="Byte" />
+          <Property Name="AccountNumber" Type="String" MaxLength="80" FixedLength="true" Unicode="false" />
+          <Property Name="Amount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="OCRAmount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="RawOCR1" Type="String" MaxLength="80" FixedLength="true" Unicode="false" />
+          <Property Name="RawOCR2" Type="String" MaxLength="80" FixedLength="true" Unicode="false" />
+          <Property Name="RawOCR3" Type="String" MaxLength="80" FixedLength="true" Unicode="false" />
+          <Property Name="DEBillingKeys" Type="Int32" />
+          <Property Name="DEDataKeys" Type="Int32" />
+          <Property Name="ItemDataKeys" Type="Int32" />
+          <Property Name="ItemRawKeys" Type="Int32" />
+          <Property Name="ItemBillingKeys" Type="Int32" />
+          <Property Name="IsGhost" Type="Boolean" />
+          <Property Name="IsOMRDetected" Type="Boolean" />
+          <Property Name="Tray" Type="Int32" />
+          <Property Name="ICRTranKey" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsOMRZone1Detected" Type="Boolean" />
+          <Property Name="IsOMRZone2Detected" Type="Boolean" />
+          <Property Name="IsOMRZone3Detected" Type="Boolean" />
+          <Property Name="IsOMRZone4Detected" Type="Boolean" />
+          <Property Name="PageNo" Type="Int32" Nullable="false" />
+          <Property Name="IsSingleOccurrence" Type="Boolean" Nullable="false" />
+          <Property Name="OriginalGlobalStubID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="StubsDataEntry">
+          <Key>
+            <PropertyRef Name="GlobalBatchID" />
+            <PropertyRef Name="TransactionID" />
+            <PropertyRef Name="GlobalStubID" />
+            <PropertyRef Name="ExportedToCHARTS" />
+          </Key>
+          <Property Name="GlobalBatchID" Type="Int32" Nullable="false" />
+          <Property Name="TransactionID" Type="Int32" Nullable="false" />
+          <Property Name="GlobalStubID" Type="Int32" Nullable="false" />
+          <Property Name="InvoiceNumber" Type="String" MaxLength="40" FixedLength="true" Unicode="false" />
+          <Property Name="ACHAddendaBPRMonetaryAmount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="ACHAddendaBPRAccountNumber" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="ACHAddendaRMRReferenceNumber" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="ACHAddendaRMRMonetaryAmount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="ACHAddendaRMRTotalInvAmount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="ACHAddendaRMRDiscountAmount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="ARP" Type="String" MaxLength="13" FixedLength="true" Unicode="false" />
+          <Property Name="PaymentMode" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="PaymentSource" Type="String" MaxLength="4" FixedLength="true" Unicode="false" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="3" />
+          <Property Name="PaidBy" Type="String" MaxLength="13" FixedLength="true" Unicode="false" />
+          <Property Name="OFCAmount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="FIPS" Type="String" MaxLength="7" FixedLength="true" Unicode="false" />
+          <Property Name="TargetedPayment" Type="String" MaxLength="3" FixedLength="true" Unicode="false" />
+          <Property Name="CaseNumber" Type="String" MaxLength="25" FixedLength="true" Unicode="false" />
+          <Property Name="CourtJudgment" Type="String" MaxLength="3" FixedLength="true" Unicode="false" />
+          <Property Name="CourtGuideline" Type="String" MaxLength="3" FixedLength="true" Unicode="false" />
+          <Property Name="ReasonCode" Type="String" MaxLength="3" FixedLength="true" Unicode="false" />
+          <Property Name="ExportedToCHARTS" Type="Byte" Nullable="false" />
+          <Property Name="ExportedToCHARTSDate" Type="DateTime" Precision="3" />
+          <Property Name="ExportedAsUnidentified" Type="Byte" />
+          <Property Name="ResolvedDate" Type="DateTime" Precision="3" />
+          <Property Name="CHARTSStubPrefix" Type="String" MaxLength="8" FixedLength="true" Unicode="false" />
+          <Property Name="Archived" Type="Byte" />
+          <Property Name="ArchivedStamp" Type="DateTime" Precision="3" />
+          <Property Name="ArchivedBy" Type="String" MaxLength="15" FixedLength="true" Unicode="false" />
+          <Property Name="TotalAmountDue" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Adjusted" Type="Byte" />
+          <Property Name="AdjustedDate" Type="DateTime" Precision="3" />
+          <Property Name="AdjustedBy" Type="String" MaxLength="15" FixedLength="true" Unicode="false" />
+          <Property Name="AdjustmentReason" Type="Int32" />
+          <Property Name="CHARTSAdjustedDate" Type="DateTime" Precision="3" />
+          <Property Name="SSN" Type="String" MaxLength="11" FixedLength="true" Unicode="false" />
+          <Property Name="ErrorCode" Type="Int32" />
+          <Property Name="ErrorDate" Type="DateTime" Precision="3" />
+          <Property Name="RAHoldStatus" Type="Byte" />
+          <Property Name="RAHoldReason" Type="Int32" />
+          <Property Name="RAHoldDate" Type="DateTime" Precision="3" />
+          <Property Name="RAHoldReleaseDate" Type="DateTime" Precision="3" />
+          <Property Name="RAHoldBy" Type="String" MaxLength="15" FixedLength="true" Unicode="false" />
+          <Property Name="RAReleaseBy" Type="String" MaxLength="15" FixedLength="true" Unicode="false" />
+          <Property Name="ScanLine" Type="String" MaxLength="43" FixedLength="true" Unicode="false" />
+          <Property Name="SDUTranID" Type="String" MaxLength="20" FixedLength="true" Unicode="false" />
+          <Property Name="AddendaData" Type="String" MaxLength="94" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityContainer Name="ReceiptDBContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Batches" EntityType="Self.Batch" />
+          <EntitySet Name="BatchTraces" EntityType="Self.BatchTrace" />
+          <EntitySet Name="Checks" EntityType="Self.Check" />
+          <EntitySet Name="ChecksDataEntries" EntityType="Self.ChecksDataEntry" />
+          <EntitySet Name="KCPersons" EntityType="Self.KCPerson" />
+          <EntitySet Name="Stubs" EntityType="Self.Stub" />
+          <EntitySet Name="StubsDataEntries" EntityType="Self.StubsDataEntry" />
+          <FunctionImport Name="ReceiptExport" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ReceiptModelStoreContainer" CdmEntityContainer="ReceiptDBContext">
+          <EntitySetMapping Name="Batches">
+            <EntityTypeMapping TypeName="ReceiptModel.Batch">
+              <MappingFragment StoreEntitySet="Batch">
+                <ScalarProperty Name="GlobalBatchID" ColumnName="GlobalBatchID" />
+                <ScalarProperty Name="BankID" ColumnName="BankID" />
+                <ScalarProperty Name="LockboxID" ColumnName="LockboxID" />
+                <ScalarProperty Name="DESetupID" ColumnName="DESetupID" />
+                <ScalarProperty Name="ProcessingDate" ColumnName="ProcessingDate" />
+                <ScalarProperty Name="BatchID" ColumnName="BatchID" />
+                <ScalarProperty Name="DepositStatus" ColumnName="DepositStatus" />
+                <ScalarProperty Name="BatchCueID" ColumnName="BatchCueID" />
+                <ScalarProperty Name="CutOffStatus" ColumnName="CutOffStatus" />
+                <ScalarProperty Name="BatchMode" ColumnName="BatchMode" />
+                <ScalarProperty Name="SystemType" ColumnName="SystemType" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+                <ScalarProperty Name="PrintLabels" ColumnName="PrintLabels" />
+                <ScalarProperty Name="BatchTypeCode" ColumnName="BatchTypeCode" />
+                <ScalarProperty Name="BatchTypeSubCode" ColumnName="BatchTypeSubCode" />
+                <ScalarProperty Name="BatchTypeText" ColumnName="BatchTypeText" />
+                <ScalarProperty Name="ConsolidationStatus" ColumnName="ConsolidationStatus" />
+                <ScalarProperty Name="CARStatus" ColumnName="CARStatus" />
+                <ScalarProperty Name="KFIStatus" ColumnName="KFIStatus" />
+                <ScalarProperty Name="FAXStatus" ColumnName="FAXStatus" />
+                <ScalarProperty Name="FloatAssignmentStatus" ColumnName="FloatAssignmentStatus" />
+                <ScalarProperty Name="ScanStatus" ColumnName="ScanStatus" />
+                <ScalarProperty Name="DEStatus" ColumnName="DEStatus" />
+                <ScalarProperty Name="ExtractSequenceNumber" ColumnName="ExtractSequenceNumber" />
+                <ScalarProperty Name="ImageExtractSequenceNumber" ColumnName="ImageExtractSequenceNumber" />
+                <ScalarProperty Name="DepositDate" ColumnName="DepositDate" />
+                <ScalarProperty Name="CheckCount" ColumnName="CheckCount" />
+                <ScalarProperty Name="CheckAmount" ColumnName="CheckAmount" />
+                <ScalarProperty Name="StubCount" ColumnName="StubCount" />
+                <ScalarProperty Name="StubAmount" ColumnName="StubAmount" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="BillingTC" ColumnName="BillingTC" />
+                <ScalarProperty Name="BillingRT" ColumnName="BillingRT" />
+                <ScalarProperty Name="BillingAccount" ColumnName="BillingAccount" />
+                <ScalarProperty Name="BillingSerial" ColumnName="BillingSerial" />
+                <ScalarProperty Name="WorkgroupID" ColumnName="WorkgroupID" />
+                <ScalarProperty Name="CurrencyCode" ColumnName="CurrencyCode" />
+                <ScalarProperty Name="MICRVerifyStatus" ColumnName="MICRVerifyStatus" />
+                <ScalarProperty Name="DEPrinted" ColumnName="DEPrinted" />
+                <ScalarProperty Name="Is2Pass" ColumnName="Is2Pass" />
+                <ScalarProperty Name="UseCar" ColumnName="UseCar" />
+                <ScalarProperty Name="NoChecksEnclosed" ColumnName="NoChecksEnclosed" />
+                <ScalarProperty Name="Rejects" ColumnName="Rejects" />
+                <ScalarProperty Name="DepositTicketPrinted" ColumnName="DepositTicketPrinted" />
+                <ScalarProperty Name="DateLastUpdated" ColumnName="DateLastUpdated" />
+                <ScalarProperty Name="TransportID" ColumnName="TransportID" />
+                <ScalarProperty Name="TrayID" ColumnName="TrayID" />
+                <ScalarProperty Name="SubTrayID" ColumnName="SubTrayID" />
+                <ScalarProperty Name="UseCustomer" ColumnName="UseCustomer" />
+                <ScalarProperty Name="DepositDDA" ColumnName="DepositDDA" />
+                <ScalarProperty Name="EncodeComplete" ColumnName="EncodeComplete" />
+                <ScalarProperty Name="SplitsEnded" ColumnName="SplitsEnded" />
+                <ScalarProperty Name="SiteCode" ColumnName="SiteCode" />
+                <ScalarProperty Name="BitonalImageRemovalDate" ColumnName="BitonalImageRemovalDate" />
+                <ScalarProperty Name="DataRemovalDate" ColumnName="DataRemovalDate" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="TransportBatchID" ColumnName="TransportBatchID" />
+                <ScalarProperty Name="GrayScaleImageRemovalDate" ColumnName="GrayScaleImageRemovalDate" />
+                <ScalarProperty Name="ColorImageRemovalDate" ColumnName="ColorImageRemovalDate" />
+                <ScalarProperty Name="CWDBDataRemovalDate" ColumnName="CWDBDataRemovalDate" />
+                <ScalarProperty Name="CWDBBitonalImageRemovalDate" ColumnName="CWDBBitonalImageRemovalDate" />
+                <ScalarProperty Name="CWDBGrayScaleImageRemovalDate" ColumnName="CWDBGrayScaleImageRemovalDate" />
+                <ScalarProperty Name="CWDBColorImageRemovalDate" ColumnName="CWDBColorImageRemovalDate" />
+                <ScalarProperty Name="BatchName" ColumnName="BatchName" />
+                <ScalarProperty Name="BatchTypeID" ColumnName="BatchTypeID" />
+                <ScalarProperty Name="DecisionStatus" ColumnName="DecisionStatus" />
+                <ScalarProperty Name="AllowDecisioning" ColumnName="AllowDecisioning" />
+                <ScalarProperty Name="RequireDEBeforeTwoPass" ColumnName="RequireDEBeforeTwoPass" />
+                <ScalarProperty Name="OriginalGlobalBatchID" ColumnName="OriginalGlobalBatchID" />
+                <ScalarProperty Name="BatchExtractID" ColumnName="BatchExtractID" />
+                <ScalarProperty Name="IsImageExchange" ColumnName="IsImageExchange" />
+                <ScalarProperty Name="CaptureSiteCodeID" ColumnName="CaptureSiteCodeID" />
+                <ScalarProperty Name="BatchSourceKey" ColumnName="BatchSourceKey" />
+                <ScalarProperty Name="NumOLDDaysRolled" ColumnName="NumOLDDaysRolled" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BatchTraces">
+            <EntityTypeMapping TypeName="ReceiptModel.BatchTrace">
+              <MappingFragment StoreEntitySet="BatchTrace">
+                <ScalarProperty Name="GlobalBatchID" ColumnName="GlobalBatchID" />
+                <ScalarProperty Name="TypeOneCutoff" ColumnName="TypeOneCutoff" />
+                <ScalarProperty Name="IBMLFEI" ColumnName="IBMLFEI" />
+                <ScalarProperty Name="TransportType" ColumnName="TransportType" />
+                <ScalarProperty Name="TransportName" ColumnName="TransportName" />
+                <ScalarProperty Name="CheckFileID" ColumnName="CheckFileID" />
+                <ScalarProperty Name="TPRBatchName" ColumnName="TPRBatchName" />
+                <ScalarProperty Name="OpexImport" ColumnName="OpexImport" />
+                <ScalarProperty Name="ImageExchangeExtract" ColumnName="ImageExchangeExtract" />
+                <ScalarProperty Name="ArchiveExpressExtrStatus" ColumnName="ArchiveExpressExtrStatus" />
+                <ScalarProperty Name="WebDDLImporter" ColumnName="WebDDLImporter" />
+                <ScalarProperty Name="OpexBackendImport" ColumnName="OpexBackendImport" />
+                <ScalarProperty Name="ImageRPSImporter" ColumnName="ImageRPSImporter" />
+                <ScalarProperty Name="RMSExporter" ColumnName="RMSExporter" />
+                <ScalarProperty Name="CWDBBatchStatus" ColumnName="CWDBBatchStatus" />
+                <ScalarProperty Name="CWDBImageStatus" ColumnName="CWDBImageStatus" />
+                <ScalarProperty Name="CWDBConsolidationPriority" ColumnName="CWDBConsolidationPriority" />
+                <ScalarProperty Name="CWDBErrorCountAttempts" ColumnName="CWDBErrorCountAttempts" />
+                <ScalarProperty Name="CeresoftExporter" ColumnName="CeresoftExporter" />
+                <ScalarProperty Name="ACHImporter" ColumnName="ACHImporter" />
+                <ScalarProperty Name="RTNumber" ColumnName="RTNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Checks">
+            <EntityTypeMapping TypeName="ReceiptModel.Check">
+              <MappingFragment StoreEntitySet="Checks">
+                <ScalarProperty Name="GlobalCheckID" ColumnName="GlobalCheckID" />
+                <ScalarProperty Name="GlobalBatchID" ColumnName="GlobalBatchID" />
+                <ScalarProperty Name="TransactionID" ColumnName="TransactionID" />
+                <ScalarProperty Name="TransactionSequence" ColumnName="TransactionSequence" />
+                <ScalarProperty Name="BatchSequence" ColumnName="BatchSequence" />
+                <ScalarProperty Name="CheckSequence" ColumnName="CheckSequence" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="RawMICR" ColumnName="RawMICR" />
+                <ScalarProperty Name="RT" ColumnName="RT" />
+                <ScalarProperty Name="Serial" ColumnName="Serial" />
+                <ScalarProperty Name="Account" ColumnName="Account" />
+                <ScalarProperty Name="TransactionCode" ColumnName="TransactionCode" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="LogonAmount" ColumnName="LogonAmount" />
+                <ScalarProperty Name="KFIAmount" ColumnName="KFIAmount" />
+                <ScalarProperty Name="VerifyAmount" ColumnName="VerifyAmount" />
+                <ScalarProperty Name="EncodeAmount" ColumnName="EncodeAmount" />
+                <ScalarProperty Name="CARAmount" ColumnName="CARAmount" />
+                <ScalarProperty Name="PayeeID" ColumnName="PayeeID" />
+                <ScalarProperty Name="Tray" ColumnName="Tray" />
+                <ScalarProperty Name="LogicalPocket" ColumnName="LogicalPocket" />
+                <ScalarProperty Name="Pocket" ColumnName="Pocket" />
+                <ScalarProperty Name="KilledMethod" ColumnName="KilledMethod" />
+                <ScalarProperty Name="KFIOperator" ColumnName="KFIOperator" />
+                <ScalarProperty Name="KFIUnit" ColumnName="KFIUnit" />
+                <ScalarProperty Name="KFIStation" ColumnName="KFIStation" />
+                <ScalarProperty Name="KFIVerificationOperator" ColumnName="KFIVerificationOperator" />
+                <ScalarProperty Name="KFIVerificationUnit" ColumnName="KFIVerificationUnit" />
+                <ScalarProperty Name="KFIVerificationStation" ColumnName="KFIVerificationStation" />
+                <ScalarProperty Name="KFIMCOperator" ColumnName="KFIMCOperator" />
+                <ScalarProperty Name="KFIMCUnit" ColumnName="KFIMCUnit" />
+                <ScalarProperty Name="KFIMCStation" ColumnName="KFIMCStation" />
+                <ScalarProperty Name="FloatAssigned" ColumnName="FloatAssigned" />
+                <ScalarProperty Name="PrintPhoto" ColumnName="PrintPhoto" />
+                <ScalarProperty Name="DEOperator" ColumnName="DEOperator" />
+                <ScalarProperty Name="DEStation" ColumnName="DEStation" />
+                <ScalarProperty Name="DEUnit" ColumnName="DEUnit" />
+                <ScalarProperty Name="DEVerifyOperator" ColumnName="DEVerifyOperator" />
+                <ScalarProperty Name="DEVerifyStation" ColumnName="DEVerifyStation" />
+                <ScalarProperty Name="DEVerifyUnit" ColumnName="DEVerifyUnit" />
+                <ScalarProperty Name="DEBillingKeys" ColumnName="DEBillingKeys" />
+                <ScalarProperty Name="DEDataKeys" ColumnName="DEDataKeys" />
+                <ScalarProperty Name="ItemDataKeys" ColumnName="ItemDataKeys" />
+                <ScalarProperty Name="ItemRawKeys" ColumnName="ItemRawKeys" />
+                <ScalarProperty Name="ItemBillingKeys" ColumnName="ItemBillingKeys" />
+                <ScalarProperty Name="Recapture" ColumnName="Recapture" />
+                <ScalarProperty Name="MICRRejected" ColumnName="MICRRejected" />
+                <ScalarProperty Name="IsForeign" ColumnName="IsForeign" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="IsGhost" ColumnName="IsGhost" />
+                <ScalarProperty Name="PocketType" ColumnName="PocketType" />
+                <ScalarProperty Name="RemitterName" ColumnName="RemitterName" />
+                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+                <ScalarProperty Name="ICRTranKey" ColumnName="ICRTranKey" />
+                <ScalarProperty Name="LARAmount" ColumnName="LARAmount" />
+                <ScalarProperty Name="CARConfidence" ColumnName="CARConfidence" />
+                <ScalarProperty Name="TraceNumber" ColumnName="TraceNumber" />
+                <ScalarProperty Name="ImagePresentationCleaned" ColumnName="ImagePresentationCleaned" />
+                <ScalarProperty Name="ImageRecognitionCleaned" ColumnName="ImageRecognitionCleaned" />
+                <ScalarProperty Name="ImageRegistered" ColumnName="ImageRegistered" />
+                <ScalarProperty Name="ImageRequiresICR" ColumnName="ImageRequiresICR" />
+                <ScalarProperty Name="ImageRecognized" ColumnName="ImageRecognized" />
+                <ScalarProperty Name="IsIRD" ColumnName="IsIRD" />
+                <ScalarProperty Name="LockboxDecisioningReasonID" ColumnName="LockboxDecisioningReasonID" />
+                <ScalarProperty Name="CARAmount2" ColumnName="CARAmount2" />
+                <ScalarProperty Name="CARConfidence2" ColumnName="CARConfidence2" />
+                <ScalarProperty Name="CARMatch" ColumnName="CARMatch" />
+                <ScalarProperty Name="CARMatch2" ColumnName="CARMatch2" />
+                <ScalarProperty Name="IQARequired" ColumnName="IQARequired" />
+                <ScalarProperty Name="ExtractAuditID" ColumnName="ExtractAuditID" />
+                <ScalarProperty Name="MICRQuality" ColumnName="MICRQuality" />
+                <ScalarProperty Name="OCRRT" ColumnName="OCRRT" />
+                <ScalarProperty Name="OCRAccount" ColumnName="OCRAccount" />
+                <ScalarProperty Name="OCRSerial" ColumnName="OCRSerial" />
+                <ScalarProperty Name="OCRTransactionCode" ColumnName="OCRTransactionCode" />
+                <ScalarProperty Name="OCRRawMICR" ColumnName="OCRRawMICR" />
+                <ScalarProperty Name="OriginalGlobalCheckID" ColumnName="OriginalGlobalCheckID" />
+                <ScalarProperty Name="TemplateSetupID" ColumnName="TemplateSetupID" />
+                <ScalarProperty Name="ECLCashLetterID" ColumnName="ECLCashLetterID" />
+                <ScalarProperty Name="ECLBundleID" ColumnName="ECLBundleID" />
+                <ScalarProperty Name="ECLSequenceID" ColumnName="ECLSequenceID" />
+                <ScalarProperty Name="OCRConfidence" ColumnName="OCRConfidence" />
+                <ScalarProperty Name="ResolutionDPI" ColumnName="ResolutionDPI" />
+                <ScalarProperty Name="IsBusinessCheck" ColumnName="IsBusinessCheck" />
+                <ScalarProperty Name="IsDuplicate" ColumnName="IsDuplicate" />
+                <ScalarProperty Name="StubAmount" ColumnName="StubAmount" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ChecksDataEntries">
+            <EntityTypeMapping TypeName="ReceiptModel.ChecksDataEntry">
+              <MappingFragment StoreEntitySet="ChecksDataEntry">
+                <ScalarProperty Name="GlobalCheckID" ColumnName="GlobalCheckID" />
+                <ScalarProperty Name="GlobalBatchID" ColumnName="GlobalBatchID" />
+                <ScalarProperty Name="TransactionID" ColumnName="TransactionID" />
+                <ScalarProperty Name="ACHDetailAccountNumber" ColumnName="ACHDetailAccountNumber" />
+                <ScalarProperty Name="ACHBatchCompanyID" ColumnName="ACHBatchCompanyID" />
+                <ScalarProperty Name="ACHBatchCompanyName" ColumnName="ACHBatchCompanyName" />
+                <ScalarProperty Name="ACHBatchEntryClass" ColumnName="ACHBatchEntryClass" />
+                <ScalarProperty Name="ACHBatchCompanyData" ColumnName="ACHBatchCompanyData" />
+                <ScalarProperty Name="ACHBatchEntryDesc" ColumnName="ACHBatchEntryDesc" />
+                <ScalarProperty Name="ACHBatchDescriptiveDate" ColumnName="ACHBatchDescriptiveDate" />
+                <ScalarProperty Name="ACHBatchEffectiveDate" ColumnName="ACHBatchEffectiveDate" />
+                <ScalarProperty Name="ACHBatchSettlementDate" ColumnName="ACHBatchSettlementDate" />
+                <ScalarProperty Name="ACHDetailIndividualID" ColumnName="ACHDetailIndividualID" />
+                <ScalarProperty Name="ACHDetailReceivingCompany" ColumnName="ACHDetailReceivingCompany" />
+                <ScalarProperty Name="ACHDetailTraceNumber" ColumnName="ACHDetailTraceNumber" />
+                <ScalarProperty Name="ACHDetailDiscretionaryData" ColumnName="ACHDetailDiscretionaryData" />
+                <ScalarProperty Name="ACHDetailIndividualName" ColumnName="ACHDetailIndividualName" />
+                <ScalarProperty Name="ACHDetailOFACIndicator1" ColumnName="ACHDetailOFACIndicator1" />
+                <ScalarProperty Name="ACHDetailOFACIndicator2" ColumnName="ACHDetailOFACIndicator2" />
+                <ScalarProperty Name="ACHDetailReceivingIndividual" ColumnName="ACHDetailReceivingIndividual" />
+                <ScalarProperty Name="CheckDate" ColumnName="CheckDate" />
+                <ScalarProperty Name="ReasonCode" ColumnName="ReasonCode" />
+                <ScalarProperty Name="CollectionStatus" ColumnName="CollectionStatus" />
+                <ScalarProperty Name="ReturnDate" ColumnName="ReturnDate" />
+                <ScalarProperty Name="AmountToDate" ColumnName="AmountToDate" />
+                <ScalarProperty Name="WriteOffDate" ColumnName="WriteOffDate" />
+                <ScalarProperty Name="PostedDate" ColumnName="PostedDate" />
+                <ScalarProperty Name="PostedAmount" ColumnName="PostedAmount" />
+                <ScalarProperty Name="EntityType" ColumnName="EntityType" />
+                <ScalarProperty Name="EntityID" ColumnName="EntityID" />
+                <ScalarProperty Name="Collector" ColumnName="Collector" />
+                <ScalarProperty Name="DisbursementNumber" ColumnName="DisbursementNumber" />
+                <ScalarProperty Name="Agency" ColumnName="Agency" />
+                <ScalarProperty Name="Is3rdParty" ColumnName="Is3rdParty" />
+                <ScalarProperty Name="PredepositStatus" ColumnName="PredepositStatus" />
+                <ScalarProperty Name="PredepositReason" ColumnName="PredepositReason" />
+                <ScalarProperty Name="PredepositDate" ColumnName="PredepositDate" />
+                <ScalarProperty Name="PredictedReleaseDate" ColumnName="PredictedReleaseDate" />
+                <ScalarProperty Name="ReleaseDate" ColumnName="ReleaseDate" />
+                <ScalarProperty Name="UnprocessedDate" ColumnName="UnprocessedDate" />
+                <ScalarProperty Name="ModifiedStamp" ColumnName="ModifiedStamp" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="KCPersons">
+            <EntityTypeMapping TypeName="ReceiptModel.KCPerson">
+              <MappingFragment StoreEntitySet="KCPerson">
+                <ScalarProperty Name="KCPersonID" ColumnName="KCPersonID" />
+                <ScalarProperty Name="SSN" ColumnName="SSN" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+                <ScalarProperty Name="Suffix" ColumnName="Suffix" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="Zip" ColumnName="Zip" />
+                <ScalarProperty Name="HomePhone" ColumnName="HomePhone" />
+                <ScalarProperty Name="CellPhone" ColumnName="CellPhone" />
+                <ScalarProperty Name="WorkPhone" ColumnName="WorkPhone" />
+                <ScalarProperty Name="WorkExtension" ColumnName="WorkExtension" />
+                <ScalarProperty Name="eMail" ColumnName="eMail" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
+                <ScalarProperty Name="DateOfDeath" ColumnName="DateOfDeath" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="ModifiedStamp" ColumnName="ModifiedStamp" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="PINNumber" ColumnName="PINNumber" />
+                <ScalarProperty Name="PersonID" ColumnName="PersonID" />
+                <ScalarProperty Name="Pager" ColumnName="Pager" />
+                <ScalarProperty Name="AlternateEmail" ColumnName="AlternateEmail" />
+                <ScalarProperty Name="BillingEmail" ColumnName="BillingEmail" />
+                <ScalarProperty Name="KCDeliveryMethodID" ColumnName="KCDeliveryMethodID" />
+                <ScalarProperty Name="FVI" ColumnName="FVI" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="InactiveDate" ColumnName="InactiveDate" />
+                <ScalarProperty Name="InvalidAddress" ColumnName="InvalidAddress" />
+                <ScalarProperty Name="DenyWebAccess" ColumnName="DenyWebAccess" />
+                <ScalarProperty Name="ChangeReasonCode" ColumnName="ChangeReasonCode" />
+                <ScalarProperty Name="PaymentNotification" ColumnName="PaymentNotification" />
+                <ScalarProperty Name="CreationStamp" ColumnName="CreationStamp" />
+                <ScalarProperty Name="KCPaymentMethodID" ColumnName="KCPaymentMethodID" />
+                <ScalarProperty Name="AddressStamp" ColumnName="AddressStamp" />
+                <ScalarProperty Name="PhoneStamp" ColumnName="PhoneStamp" />
+                <ScalarProperty Name="EmailStamp" ColumnName="EmailStamp" />
+                <ScalarProperty Name="BillingEmailStamp" ColumnName="BillingEmailStamp" />
+                <ScalarProperty Name="DeliveryMethodStamp" ColumnName="DeliveryMethodStamp" />
+                <ScalarProperty Name="DODStamp" ColumnName="DODStamp" />
+                <ScalarProperty Name="PaymentMethodStamp" ColumnName="PaymentMethodStamp" />
+                <ScalarProperty Name="SignMeUpForEbs" ColumnName="SignMeUpForEbs" />
+                <ScalarProperty Name="IVDStatus" ColumnName="IVDStatus" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Stubs">
+            <EntityTypeMapping TypeName="ReceiptModel.Stub">
+              <MappingFragment StoreEntitySet="Stubs">
+                <ScalarProperty Name="GlobalBatchID" ColumnName="GlobalBatchID" />
+                <ScalarProperty Name="TransactionID" ColumnName="TransactionID" />
+                <ScalarProperty Name="GlobalStubID" ColumnName="GlobalStubID" />
+                <ScalarProperty Name="TransactionSequence" ColumnName="TransactionSequence" />
+                <ScalarProperty Name="BatchSequence" ColumnName="BatchSequence" />
+                <ScalarProperty Name="StubSequence" ColumnName="StubSequence" />
+                <ScalarProperty Name="SplitNumber" ColumnName="SplitNumber" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="AccountNumber" ColumnName="AccountNumber" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="OCRAmount" ColumnName="OCRAmount" />
+                <ScalarProperty Name="RawOCR1" ColumnName="RawOCR1" />
+                <ScalarProperty Name="RawOCR2" ColumnName="RawOCR2" />
+                <ScalarProperty Name="RawOCR3" ColumnName="RawOCR3" />
+                <ScalarProperty Name="DEBillingKeys" ColumnName="DEBillingKeys" />
+                <ScalarProperty Name="DEDataKeys" ColumnName="DEDataKeys" />
+                <ScalarProperty Name="ItemDataKeys" ColumnName="ItemDataKeys" />
+                <ScalarProperty Name="ItemRawKeys" ColumnName="ItemRawKeys" />
+                <ScalarProperty Name="ItemBillingKeys" ColumnName="ItemBillingKeys" />
+                <ScalarProperty Name="IsGhost" ColumnName="IsGhost" />
+                <ScalarProperty Name="IsOMRDetected" ColumnName="IsOMRDetected" />
+                <ScalarProperty Name="Tray" ColumnName="Tray" />
+                <ScalarProperty Name="ICRTranKey" ColumnName="ICRTranKey" />
+                <ScalarProperty Name="IsOMRZone1Detected" ColumnName="IsOMRZone1Detected" />
+                <ScalarProperty Name="IsOMRZone2Detected" ColumnName="IsOMRZone2Detected" />
+                <ScalarProperty Name="IsOMRZone3Detected" ColumnName="IsOMRZone3Detected" />
+                <ScalarProperty Name="IsOMRZone4Detected" ColumnName="IsOMRZone4Detected" />
+                <ScalarProperty Name="PageNo" ColumnName="PageNo" />
+                <ScalarProperty Name="IsSingleOccurrence" ColumnName="IsSingleOccurrence" />
+                <ScalarProperty Name="OriginalGlobalStubID" ColumnName="OriginalGlobalStubID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StubsDataEntries">
+            <EntityTypeMapping TypeName="ReceiptModel.StubsDataEntry">
+              <MappingFragment StoreEntitySet="StubsDataEntry">
+                <ScalarProperty Name="GlobalBatchID" ColumnName="GlobalBatchID" />
+                <ScalarProperty Name="TransactionID" ColumnName="TransactionID" />
+                <ScalarProperty Name="GlobalStubID" ColumnName="GlobalStubID" />
+                <ScalarProperty Name="InvoiceNumber" ColumnName="InvoiceNumber" />
+                <ScalarProperty Name="ACHAddendaBPRMonetaryAmount" ColumnName="ACHAddendaBPRMonetaryAmount" />
+                <ScalarProperty Name="ACHAddendaBPRAccountNumber" ColumnName="ACHAddendaBPRAccountNumber" />
+                <ScalarProperty Name="ACHAddendaRMRReferenceNumber" ColumnName="ACHAddendaRMRReferenceNumber" />
+                <ScalarProperty Name="ACHAddendaRMRMonetaryAmount" ColumnName="ACHAddendaRMRMonetaryAmount" />
+                <ScalarProperty Name="ACHAddendaRMRTotalInvAmount" ColumnName="ACHAddendaRMRTotalInvAmount" />
+                <ScalarProperty Name="ACHAddendaRMRDiscountAmount" ColumnName="ACHAddendaRMRDiscountAmount" />
+                <ScalarProperty Name="ARP" ColumnName="ARP" />
+                <ScalarProperty Name="PaymentMode" ColumnName="PaymentMode" />
+                <ScalarProperty Name="PaymentSource" ColumnName="PaymentSource" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="PaidBy" ColumnName="PaidBy" />
+                <ScalarProperty Name="OFCAmount" ColumnName="OFCAmount" />
+                <ScalarProperty Name="FIPS" ColumnName="FIPS" />
+                <ScalarProperty Name="TargetedPayment" ColumnName="TargetedPayment" />
+                <ScalarProperty Name="CaseNumber" ColumnName="CaseNumber" />
+                <ScalarProperty Name="CourtJudgment" ColumnName="CourtJudgment" />
+                <ScalarProperty Name="CourtGuideline" ColumnName="CourtGuideline" />
+                <ScalarProperty Name="ReasonCode" ColumnName="ReasonCode" />
+                <ScalarProperty Name="ExportedToCHARTS" ColumnName="ExportedToCHARTS" />
+                <ScalarProperty Name="ExportedToCHARTSDate" ColumnName="ExportedToCHARTSDate" />
+                <ScalarProperty Name="ExportedAsUnidentified" ColumnName="ExportedAsUnidentified" />
+                <ScalarProperty Name="ResolvedDate" ColumnName="ResolvedDate" />
+                <ScalarProperty Name="CHARTSStubPrefix" ColumnName="CHARTSStubPrefix" />
+                <ScalarProperty Name="Archived" ColumnName="Archived" />
+                <ScalarProperty Name="ArchivedStamp" ColumnName="ArchivedStamp" />
+                <ScalarProperty Name="ArchivedBy" ColumnName="ArchivedBy" />
+                <ScalarProperty Name="TotalAmountDue" ColumnName="TotalAmountDue" />
+                <ScalarProperty Name="Adjusted" ColumnName="Adjusted" />
+                <ScalarProperty Name="AdjustedDate" ColumnName="AdjustedDate" />
+                <ScalarProperty Name="AdjustedBy" ColumnName="AdjustedBy" />
+                <ScalarProperty Name="AdjustmentReason" ColumnName="AdjustmentReason" />
+                <ScalarProperty Name="CHARTSAdjustedDate" ColumnName="CHARTSAdjustedDate" />
+                <ScalarProperty Name="SSN" ColumnName="SSN" />
+                <ScalarProperty Name="ErrorCode" ColumnName="ErrorCode" />
+                <ScalarProperty Name="ErrorDate" ColumnName="ErrorDate" />
+                <ScalarProperty Name="RAHoldStatus" ColumnName="RAHoldStatus" />
+                <ScalarProperty Name="RAHoldReason" ColumnName="RAHoldReason" />
+                <ScalarProperty Name="RAHoldDate" ColumnName="RAHoldDate" />
+                <ScalarProperty Name="RAHoldReleaseDate" ColumnName="RAHoldReleaseDate" />
+                <ScalarProperty Name="RAHoldBy" ColumnName="RAHoldBy" />
+                <ScalarProperty Name="RAReleaseBy" ColumnName="RAReleaseBy" />
+                <ScalarProperty Name="ScanLine" ColumnName="ScanLine" />
+                <ScalarProperty Name="SDUTranID" ColumnName="SDUTranID" />
+                <ScalarProperty Name="AddendaData" ColumnName="AddendaData" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="ReceiptExport" FunctionName="ReceiptModel.Store.ReceiptExport" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
