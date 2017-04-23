@@ -41,8 +41,6 @@ namespace ReceiptExport
         static string flagFileName;
         static string errMsg;
         static string paramServer;
-        static string kidcareConnString;
-        static string itemprocessingConnString;
 
         static int record05Length = 300;
         static int addressErrorCount = 0;
@@ -66,39 +64,11 @@ namespace ReceiptExport
             System.Environment.Exit((int)ExitCode.Success); //exit
         }
 
-        private static DataTable GetReceipts()
-        {
-            DbProviderFactory factory = Database.GetFactory();
-
-            using (IDbConnection con = factory.CreateConnection())
-            {
-                con.ConnectionString = itemprocCS;
-                string sqlString = "ReceiptExport";
-
-                IDbCommand cmd = factory.CreateCommand();
-                cmd.CommandText = sqlString;
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.CommandTimeout = 120;
-                cmd.Connection = con;
-                cmd.Connection.Open();
-
-                IDataReader rdr = cmd.ExecuteReader();
-
-                IDataAdapter adapter = factory.CreateDataAdapter();
-                DataSet ds = new DataSet();
-
-                adapter.Fill(ds);
-
-                DataTable table = (DataTable)ds.Tables["#tmp_ReceiptExport"];
-                return table;
-            }
-        }
-
         public static List<Receipt> GetReceiptList()
         {
             using(var db = new ReceiptDBContext())
             {
-                List<Receipt> receiptList = db.Database.SqlQuery<Receipt>("ReceiptExport").ToList<Receipt>();
+                List<Receipt> receiptList = db.Database.SqlQuery<Receipt>("proc_Custom_ReceiptExport").ToList<Receipt>();
 
                 return receiptList;
             }
@@ -111,7 +81,7 @@ namespace ReceiptExport
             rec01.CreationStamp = DateTime.Now;
 
             /*
-            DataTable table = GetReceipts();
+       
             Log.WriteLine(String.Format("GetReceipts() returned {0} records ", table.Rows.Count));
             */
 
@@ -121,41 +91,32 @@ namespace ReceiptExport
 
                 if (receipts.Count > 0)
                 {
-                    //Create array of type 05 records
-                    RecordType05[] rec05 = new RecordType05[receipts.Count];
-
-                    //DataView dv = table.DefaultView;
-                    //dv.Sort = "globalbatchid asc";
-
-
-
-                    //DataTable sortedDT = dv.ToTable();
+                //Create array of type 05 records
+                RecordType05[] rec05 = new RecordType05[receipts.Count];
 
                     int i = 0;
-                    string prevGlobalBatchId;
+                    int prevGlobalBatchId = 0;
                     bool batchHasUnidentified = false;
 
                     #region loop records
                     foreach (Receipt receipt in receipts)
                     {
-                        prevGlobalBatchId = receipt.GlobalBatchID;
-
-                        if (receipt.ExportedAsUnidentified == "1")
+                        if (receipt.ExportedAsUnidentified ==  1)
                             batchHasUnidentified = true;
-
 
                         rec05[i] = new RecordType05();
 
-                        rec05[i].SduBatchId = receipt.GlobalBatchID;
+                        rec05[i].SduBatchId = receipt.GlobalBatchID.ToString();
                         rec05[i].SduTranId = receipt.SDUTranID;
                         rec05[i].ReceiptNumber = receipt.RTNumber;
 
                         #region retransmital
                         DateTime exportedToChartsDate;
                         DateTime processingDate;
-                        if (DateTime.TryParse(row["ProcessingDate"].ToString(), out processingDate))
+
+                        if (DateTime.TryParse(receipt.ProcessingDate, out processingDate))
                         {
-                            if (DateTime.TryParse(row["ExportedToCHARTSDate"].ToString(), out exportedToChartsDate))
+                            if (DateTime.TryParse(receipt.ExportedToCHARTSDate, out exportedToChartsDate))
                             {
                                 //If ProcessingDate is later than exportedToChartsDate
                                 if (DateTime.Compare(processingDate, exportedToChartsDate) > 0)
@@ -166,79 +127,59 @@ namespace ReceiptExport
                             else { } // processingDate is required
                         }
                         #endregion
-                        rec05[i].PayorID = row["ARP"].ToString().Trim();
-                        rec05[i].PayorSSN = row["SSN"].ToString().Trim();
-                        rec05[i].PaidBy = row["PaidBy"].ToString().Trim();
-                        rec05[i].PayorLastName = row["LastName"].ToString().Trim();
-                        rec05[i].PayorFirstName = row["FirstName"].ToString().Trim();
-                        rec05[i].PayorMiddleName = row["MiddleName"].ToString().Trim();
-                        rec05[i].PayorSuffix = row["Suffix"].ToString().Trim();
-                        rec05[i].Amount = String.IsNullOrEmpty(row["Amount"].ToString().Trim()) ?
-                                                0 : Double.Parse(row["Amount"].ToString().Trim());
-                        rec05[i].OfcAmount = String.IsNullOrEmpty(row["OFCAmount"].ToString().Trim()) ?
-                                                0 : Double.Parse(row["OFCAmount"].ToString().Trim());
-                        rec05[i].PaymentMode = row["PaymentMode"].ToString().Trim();
-                        rec05[i].PaymentSource = row["PaymentSource"].ToString().Trim();
-                        rec05[i].ReceiptReceivedDate = row["ProcessingDate"].ToString().Trim();
-                        rec05[i].ReceiptEffectiveDate = row["EffectiveDate"].ToString().Trim();
-                        rec05[i].CheckNumber = row["Serial"].ToString().Trim();
-                        rec05[i].ComplianceExemptionReason = row["ComplianceExemptionReason"].ToString().Trim();
-                        rec05[i].TargetedPaymentIndicator = row["TargetedPayment"].ToString().Trim();
-                        rec05[i].Fips = row["FIPS"].ToString().Trim();
-                        rec05[i].CourtCaseNumber = row["CaseNumber"].ToString().Trim();
-                        rec05[i].CourtJudgementNumber = row["CourtJudgment"].ToString().Trim();
-                        rec05[i].CourtGuidelineNumber = row["CourtGuideline"].ToString().Trim();
-                        rec05[i].ReasonCode = row["ReasonCode"].ToString().Trim();
+
+                        rec05[i].PayorID = receipt.PersonID;
+                        rec05[i].PayorSSN = receipt.SSN;
+                        rec05[i].PaidBy = receipt.PaidBy;
+                        rec05[i].PayorLastName = receipt.LastName;
+                        rec05[i].PayorFirstName = receipt.FirstName;
+                        rec05[i].PayorMiddleName = receipt.MiddleName;
+                        rec05[i].PayorSuffix = receipt.Suffix;
+                        rec05[i].Amount = String.IsNullOrEmpty(receipt.Amount) ?
+                                                0 : Double.Parse(receipt.Amount);
+                        rec05[i].OfcAmount = String.IsNullOrEmpty(receipt.OFCAmount) ?
+                                                0 : Double.Parse(receipt.OFCAmount);
+                        rec05[i].PaymentMode = receipt.PaymentMode;
+                        rec05[i].PaymentSource = receipt.PaymentSource;
+                        rec05[i].ReceiptReceivedDate = receipt.ProcessingDate;
+                        rec05[i].ReceiptEffectiveDate = receipt.EffectiveDate;
+                        rec05[i].CheckNumber = receipt.Serial;
+                    /// ComplianceExemptionReason doesn't exist on Receipt *******
+                        //rec05[i].ComplianceExemptionReason = receipt.ComplianceExemptionReason;
+                        rec05[i].TargetedPaymentIndicator = receipt.TargetedPayment;
+                        rec05[i].Fips = receipt.FIPS;
+                        rec05[i].CourtCaseNumber = receipt.CaseNumber;
+                        rec05[i].CourtJudgementNumber = receipt.CourtJudgment;
+                        rec05[i].CourtGuidelineNumber = receipt.CourtGuideline;
+                        rec05[i].ReasonCode = receipt.ReasonCode;
 
                         string currentRecord = rec05[i].RecordLine();
 
                         if (currentRecord.Length != record05Length)
                             LogErrorColumns(rec05[i]);
 
-                        //-----------------------------------------------------------------------------------------
-                        //update StubsDataEntry
-                        //SDUConnection ip_conn = new SDUConnection();
-
-                        string chartsStubPrefix = setChartsExportedDate.Year.ToString() + setChartsExportedDate.Month.ToString() + setChartsExportedDate.Day.ToString();
-                        string sduTranId = chartsStubPrefix + row["GlobalStubId"].ToString().PadLeft(12);
+                        string chartsStubPrefix = setChartsExportedDate.Year.ToString().PadLeft(2) 
+                                                + setChartsExportedDate.Month.ToString().PadLeft(2)
+                                                + setChartsExportedDate.Day.ToString();
+                        string sduTranId = chartsStubPrefix + receipt.GlobalStubID.ToString().PadLeft(12);
 
 
+                        using (var db = new ReceiptDBContext())
+                        {
+                            StubsDataEntry sde = db.StubsDataEntries.FirstOrDefault(x => x.GlobalStubID == receipt.GlobalStubID);
+                            sde.ExportedToCHARTSDate = setChartsExportedDate;
+                            sde.SDUTranID = sduTranId;
+                            sde.CHARTSStubPrefix = chartsStubPrefix;
+                            sde.ExportedAsUnidentified = receipt.ExportedAsUnidentified;
 
+                            //db.SaveChanges();
 
-                        string sqlString = String.Format(
-                            "UPDATE StubsDataEntry " +
-                            "SET ExportedToCHARTS = 1" +
-                            ", ExportedToCHARTSDate = '{0}'" +
-                            ", SDUTranID = COALESCE(SDUTranID, '{1}')" +
-                            ", CHARTSStubPrefix = COALESCE(CHARTSStubPrefix, '{2}') " +
-                            ", ExportedAsUnidentified = {3}" +
-                            "WHERE GlobalStubID = {4}"
-                            , setChartsExportedDate
-                            , sduTranId
-                            , chartsStubPrefix
-                            , row["ExportedAsUnidentified"].ToString()
-                            , row["GlobalStubId"].ToString()
-                            );
-
-
-                    DbProviderFactory factory = Database.GetFactory();
-
-                    using (IDbConnection con = factory.CreateConnection())
-                    {
-                        IDbCommand cmd = factory.CreateCommand();
-                        cmd.CommandText = sqlString;
-                        cmd.CommandType = CommandType.Text;
-                        cmd.Connection = con;
-
-                        cmd.ExecuteNonQuery();
-                    }
+                        }
 
 
 
-                        //conn.UpdateQuery(sqlString, itemprocessingConnString);
-
-                        // IF THEREIS ITEM UNIDENTIFIED SET THE BATCH TO INCOMPLETE ************************
-                       if (rec05[i].SduBatchId != prevGlobalBatchId)
+                    // IF THEREIS ITEM UNIDENTIFIED SET THE BATCH TO INCOMPLETE ************************
+                        if (receipt.GlobalBatchID != prevGlobalBatchId)
                         {
                             if (batchHasUnidentified)
                             {
@@ -246,8 +187,9 @@ namespace ReceiptExport
                                 batchHasUnidentified = false;
                             }
 
-                            prevGlobalBatchId = rec05[i].SduBatchId;
+                            prevGlobalBatchId = receipt.GlobalBatchID;
                         }
+                    
                         //-----------------------------------------------------------------------------------------
 
                         receiptWriter.WriteLine(currentRecord);
@@ -274,29 +216,36 @@ namespace ReceiptExport
                 }
                 else
                 {
-                    ; //no records found 
+                    //no records found 
+                    Log.WriteLine("Receipt Export returned 0 records");
                 }
 
             }
 
-        private static string UpdateBatch(string prevGlobalBatchId)
+        private static void UpdateBatch(int prevGlobalBatchId)
         {
-            string sqlString = String.Format(
-                    "UPDATE Batch SET DEStatus = 3 WHERE GlobalBatchID = {0}", prevGlobalBatchId);
-
-            //con.UpdateQuery(sqlString, itemprocessingConnString);
-            var factory = Database.GetFactory();
-
-            using (IDbConnection conn = (Database.GetFactory()).CreateConnection())
+            using (var db = new ReceiptDBContext())
             {
-                IDbCommand cmd = factory.CreateCommand();
-                cmd.CommandText = sqlString;
-                cmd.CommandType = CommandType.Text;
-
-                cmd.ExecuteNonQuery();
+                Batch b = db.Batches.FirstOrDefault(x => x.GlobalBatchID == prevGlobalBatchId);
+                b.DEStatus = 3;
+                //db.SaveChanges();
             }
+            //    string sqlString = String.Format(
+            //            "UPDATE Batch SET DEStatus = 3 WHERE GlobalBatchID = {0}", prevGlobalBatchId);
 
-            return sqlString;
+            ////con.UpdateQuery(sqlString, itemprocessingConnString);
+            //var factory = Database.GetFactory();
+
+            //using (IDbConnection conn = (Database.GetFactory()).CreateConnection())
+            //{
+            //    IDbCommand cmd = factory.CreateCommand();
+            //    cmd.CommandText = sqlString;
+            //    cmd.CommandType = CommandType.Text;
+
+            //    cmd.ExecuteNonQuery();
+            //}
+
+            //return sqlString;
         }
 
         //SDUConnection conn = new SDUConnection();

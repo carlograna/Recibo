@@ -7,9 +7,9 @@ namespace ReceiptExport.classes
 {
     class Receipt
     {
-        public string GlobalBatchID { get; set; }
-        public string TransactionID { get; set; }
-        public string GlobalStubID { get; set; }
+        public int GlobalBatchID { get; set; }
+        public int TransactionID { get; set; }
+        public int GlobalStubID { get; set; }
         public string ProcessingDate { get; set; }
         public string PersonID { get; set; }
         public string CaseNumber { get; set; }
@@ -26,7 +26,7 @@ namespace ReceiptExport.classes
         public string ExportedToCHARTSDate { get; set; }
         public string CHARTSStubPrefix { get; set; }
         public string SDUTranID { get; set; }
-        public string ExportedAsUnidentified { get; set; }
+        public byte ExportedAsUnidentified { get; set; }
         public string Amount { get; set; }
         public string RTNumber { get; set; }
         public string Serial { get; set; }

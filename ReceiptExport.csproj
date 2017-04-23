@@ -53,11 +53,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Batch.cs" />
+    <Compile Include="BatchTrace.cs" />
+    <Compile Include="Check.cs" />
+    <Compile Include="ChecksDataEntry.cs" />
     <Compile Include="classes\Connection.cs" />
     <Compile Include="classes\Database.cs" />
     <Compile Include="classes\Log.cs" />
+    <Compile Include="classes\Receipt.cs" />
     <Compile Include="classes\RecordType01.cs" />
     <Compile Include="classes\RecordType05.cs" />
+    <Compile Include="KCPerson.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReceiptModel.Context.cs">
@@ -70,6 +76,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ReceiptModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Stub.cs" />
+    <Compile Include="StubsDataEntry.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="bin\Debug\ReceiptExport.vshost.exe" />
