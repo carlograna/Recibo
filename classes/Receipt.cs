@@ -17,7 +17,7 @@ namespace ReceiptExport.classes
         public string CourtJudgment { get; set; }
         public DateTime? EffectiveDate { get; set; }
         public string FIPS { get; set; }
-        public Decimal OFCAmount { get; set; }
+        public Decimal? OFCAmount { get; set; }
         public string PaidBy { get; set; }
         public string PaymentMode { get; set; }
         public string PaymentSource { get; set; }
@@ -27,7 +27,7 @@ namespace ReceiptExport.classes
         public string CHARTSStubPrefix { get; set; }
         public string SDUTranID { get; set; }
         public byte? ExportedAsUnidentified { get; set; }
-        public Decimal Amount { get; set; }
+        public Decimal? Amount { get; set; }
         public string RTNumber { get; set; }
         public string Serial { get; set; }
         public string LastName { get; set; }

@@ -241,20 +241,6 @@ namespace ReceiptExport
             }
             //    string sqlString = String.Format(
             //            "UPDATE Batch SET DEStatus = 3 WHERE GlobalBatchID = {0}", prevGlobalBatchId);
-
-            ////con.UpdateQuery(sqlString, itemprocessingConnString);
-            //var factory = Database.GetFactory();
-
-            //using (IDbConnection conn = (Database.GetFactory()).CreateConnection())
-            //{
-            //    IDbCommand cmd = factory.CreateCommand();
-            //    cmd.CommandText = sqlString;
-            //    cmd.CommandType = CommandType.Text;
-
-            //    cmd.ExecuteNonQuery();
-            //}
-
-            //return sqlString;
         }
 
         //SDUConnection conn = new SDUConnection();
@@ -389,30 +375,30 @@ namespace ReceiptExport
             }
         }
 
-        private static void PreExit()
-        {
-            try
-            {
-                Log.WriteLine("");//enter
+        //private static void PreExit()
+        //{
+        //    try
+        //    {
+        //        Log.WriteLine("");//enter
 
-                Log.WriteLine(String.Format("(05) Error Count: {0}", addressErrorCount));
-                Log.WriteLine(String.Format("(05) Records Written: {0}", NumOf05RecordsWritten));
-                Log.WriteLine(String.Format("(05) Total Records: {0}", total05Records));
-                Log.WriteLine(String.Format("{0}----- Done: {1} -----", Environment.NewLine, DateTime.Now.ToString()));
+        //        Log.WriteLine(String.Format("(05) Error Count: {0}", addressErrorCount));
+        //        Log.WriteLine(String.Format("(05) Records Written: {0}", NumOf05RecordsWritten));
+        //        Log.WriteLine(String.Format("(05) Total Records: {0}", total05Records));
+        //        Log.WriteLine(String.Format("{0}----- Done: {1} -----", Environment.NewLine, DateTime.Now.ToString()));
 
-                if (receiptWriter != null)
-                    receiptWriter.Close();
-                if (!Log.IsLogWriterNull())
-                    Log.Close();
+        //        if (receiptWriter != null)
+        //            receiptWriter.Close();
+        //        if (!Log.IsLogWriterNull())
+        //            Log.Close();
 
-            }
-            catch (Exception ex)
-            {
-                errMsg = Environment.NewLine + "Error in PreExit()";
-                errMsg += ex.Message + ex.InnerException;
-                Log.Exit(errMsg, ExitCode.UnknownError);
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        errMsg = Environment.NewLine + "Error in PreExit()";
+        //        errMsg += ex.Message + ex.InnerException;
+        //        Log.Exit(errMsg, ExitCode.UnknownError);
+        //    }
+        //}
 
         private static void LogErrorColumns(RecordType05 rec05)
         {

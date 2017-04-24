@@ -191,7 +191,7 @@ namespace ReceiptExport
         }
         public string Fips
         {
-            get { return fips; }
+            get { return fips.ToSafeString(); }
             set { fips = value; }
         }
         public string CourtCaseNumber
