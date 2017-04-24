@@ -53,11 +53,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Batch.cs">
+      <DependentUpon>ReceiptModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="BatchTrace.cs">
+      <DependentUpon>ReceiptModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Check.cs">
+      <DependentUpon>ReceiptModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ChecksDataEntry.cs">
+      <DependentUpon>ReceiptModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="classes\Connection.cs" />
     <Compile Include="classes\Database.cs" />
     <Compile Include="classes\Log.cs" />
+    <Compile Include="classes\Receipt.cs" />
     <Compile Include="classes\RecordType01.cs" />
     <Compile Include="classes\RecordType05.cs" />
+    <Compile Include="KCPerson.cs">
+      <DependentUpon>ReceiptModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReceiptModel.Context.cs">
@@ -65,10 +81,21 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ReceiptModel.Context.tt</DependentUpon>
     </Compile>
+    <Compile Include="ReceiptModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ReceiptModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="ReceiptModel.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ReceiptModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Stub.cs">
+      <DependentUpon>ReceiptModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="StubsDataEntry.cs">
+      <DependentUpon>ReceiptModel.tt</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +103,12 @@
     <Content Include="ReceiptModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ReceiptModel.Context.cs</LastGenOutput>
+      <DependentUpon>ReceiptModel.edmx</DependentUpon>
+    </Content>
+    <Content Include="ReceiptModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ReceiptModel.edmx</DependentUpon>
+      <LastGenOutput>ReceiptModel.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <ItemGroup>
