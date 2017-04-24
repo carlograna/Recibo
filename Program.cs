@@ -68,6 +68,7 @@ namespace ReceiptExport
         {
             using(var db = new ReceiptDBContext())
             {
+                db.Database.CommandTimeout = 1800;
                 List<Receipt> receiptList = db.Database.SqlQuery<Receipt>("proc_Custom_ReceiptExport").ToList<Receipt>();
 
                 return receiptList;
@@ -80,8 +81,7 @@ namespace ReceiptExport
             RecordType01 rec01 = new RecordType01();
             rec01.CreationStamp = DateTime.Now;
 
-            /*
-       
+            /*       
             Log.WriteLine(String.Format("GetReceipts() returned {0} records ", table.Rows.Count));
             */
 
@@ -107,42 +107,42 @@ namespace ReceiptExport
                         rec05[i] = new RecordType05();
 
                         rec05[i].SduBatchId = receipt.GlobalBatchID.ToString();
-                        rec05[i].SduTranId = receipt.SDUTranID;
+                        rec05[i].SduTranId = CreateSduTranID(receipt.GlobalStubID);
                         rec05[i].ReceiptNumber = receipt.RTNumber;
 
-                        #region retransmital
-                        DateTime exportedToChartsDate;
-                        DateTime processingDate;
+                    #region retransmital
 
-                        if (DateTime.TryParse(receipt.ProcessingDate, out processingDate))
-                        {
-                            if (DateTime.TryParse(receipt.ExportedToCHARTSDate, out exportedToChartsDate))
-                            {
-                                //If ProcessingDate is later than exportedToChartsDate
-                                if (DateTime.Compare(processingDate, exportedToChartsDate) > 0)
+                        if(receipt.ProcessingDate != null && receipt.ExportedToCHARTSDate != null) { 
+                            //If ProcessingDate is later than exportedToChartsDate
+                            if (DateTime.Compare((DateTime)receipt.ProcessingDate, (DateTime)receipt.ExportedToCHARTSDate) > 0)
                                     rec05[i].RetransmittalIndicator = true;
                                 else
                                     rec05[i].RetransmittalIndicator = false;
-                            }
-                            else { } // processingDate is required
                         }
-                        #endregion
+                        else {
+                            if (receipt.ProcessingDate != null)
+                                rec05[i].RetransmittalIndicator = false;
+                            else
+                                Log.Exit("Processing Date is required for Stub: " + receipt.GlobalStubID, ExitCode.InvalidData);
+                        } // processingDate is required
+                    //}
+                    #endregion
 
-                        rec05[i].PayorID = receipt.PersonID;
+                    rec05[i].PayorID = receipt.PersonID;
                         rec05[i].PayorSSN = receipt.SSN;
                         rec05[i].PaidBy = receipt.PaidBy;
                         rec05[i].PayorLastName = receipt.LastName;
                         rec05[i].PayorFirstName = receipt.FirstName;
                         rec05[i].PayorMiddleName = receipt.MiddleName;
                         rec05[i].PayorSuffix = receipt.Suffix;
-                        rec05[i].Amount = String.IsNullOrEmpty(receipt.Amount) ?
-                                                0 : Double.Parse(receipt.Amount);
-                        rec05[i].OfcAmount = String.IsNullOrEmpty(receipt.OFCAmount) ?
-                                                0 : Double.Parse(receipt.OFCAmount);
+                        rec05[i].Amount = String.IsNullOrEmpty(receipt.Amount.ToString()) ?
+                                                0 : Double.Parse(receipt.Amount.ToString());
+                        rec05[i].OfcAmount = String.IsNullOrEmpty(receipt.OFCAmount.ToString()) ?
+                                                0 : Double.Parse(receipt.OFCAmount.ToString());
                         rec05[i].PaymentMode = receipt.PaymentMode;
                         rec05[i].PaymentSource = receipt.PaymentSource;
-                        rec05[i].ReceiptReceivedDate = receipt.ProcessingDate;
-                        rec05[i].ReceiptEffectiveDate = receipt.EffectiveDate;
+                        rec05[i].ReceiptReceivedDate = receipt.ProcessingDate.ToString();
+                        rec05[i].ReceiptEffectiveDate = receipt.EffectiveDate.ToString();
                         rec05[i].CheckNumber = receipt.Serial;
                     /// ComplianceExemptionReason doesn't exist on Receipt *******
                         //rec05[i].ComplianceExemptionReason = receipt.ComplianceExemptionReason;
@@ -158,37 +158,30 @@ namespace ReceiptExport
                         if (currentRecord.Length != record05Length)
                             LogErrorColumns(rec05[i]);
 
-                        string chartsStubPrefix = setChartsExportedDate.Year.ToString().PadLeft(2) 
-                                                + setChartsExportedDate.Month.ToString().PadLeft(2)
-                                                + setChartsExportedDate.Day.ToString();
-                        string sduTranId = chartsStubPrefix + receipt.GlobalStubID.ToString().PadLeft(12);
 
+                    //********************************************************************** UNCOMMENT
+                    //using (var db = new ReceiptDBContext())
+                    //{
+                    //    StubsDataEntry sde = db.StubsDataEntries.FirstOrDefault(x => x.GlobalStubID == receipt.GlobalStubID);
+                    //    sde.ExportedToCHARTSDate = setChartsExportedDate;
+                    //    sde.SDUTranID = rec05[i].SduTranId;
+                    //    sde.CHARTSStubPrefix = rec05[i].SduTranId.Substring(0, 8);
+                    //    sde.ExportedAsUnidentified = receipt.ExportedAsUnidentified;
 
-                        using (var db = new ReceiptDBContext())
-                        {
-                            StubsDataEntry sde = db.StubsDataEntries.FirstOrDefault(x => x.GlobalStubID == receipt.GlobalStubID);
-                            sde.ExportedToCHARTSDate = setChartsExportedDate;
-                            sde.SDUTranID = sduTranId;
-                            sde.CHARTSStubPrefix = chartsStubPrefix;
-                            sde.ExportedAsUnidentified = receipt.ExportedAsUnidentified;
+                    //    //db.SaveChanges();
 
-                            //db.SaveChanges();
-
-                        }
-
-
-
+                    //}
                     // IF THEREIS ITEM UNIDENTIFIED SET THE BATCH TO INCOMPLETE ************************
-                        if (receipt.GlobalBatchID != prevGlobalBatchId)
+                    if (receipt.GlobalBatchID != prevGlobalBatchId)
+                    {
+                        if (batchHasUnidentified)
                         {
-                            if (batchHasUnidentified)
-                            {
-                                UpdateBatch(prevGlobalBatchId);
-                                batchHasUnidentified = false;
-                            }
-
-                            prevGlobalBatchId = receipt.GlobalBatchID;
+                            //UpdateBatch(prevGlobalBatchId); *****************************************UNCOMMENT
+                            batchHasUnidentified = false;
                         }
+
+                        prevGlobalBatchId = receipt.GlobalBatchID;
+                    }
                     
                         //-----------------------------------------------------------------------------------------
 
@@ -221,6 +214,22 @@ namespace ReceiptExport
                 }
 
             }
+
+        private static string CreateSduTranID(int globalStubID)
+        {
+            try
+            {
+                string chartsStubPrefix = setChartsExportedDate.Year.ToString().PadLeft(2)
+                                                + setChartsExportedDate.Month.ToString().PadLeft(2)
+                                                + setChartsExportedDate.Day.ToString();
+
+                return chartsStubPrefix + globalStubID.ToString().PadLeft(12); //EX: 20100101000012345678
+            }
+            catch
+            {
+                throw;
+            }
+        }
 
         private static void UpdateBatch(int prevGlobalBatchId)
         {
