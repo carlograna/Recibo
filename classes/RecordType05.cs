@@ -70,17 +70,17 @@ namespace ReceiptExport
 
         public string SduBatchId
         {
-            get{ return sduBatchId; }
-            set{ sduBatchId = value; }
+            get { return sduBatchId.ToSafeString(); }
+            set { sduBatchId = value; }
         }
         public string SduTranId
         {
-            get { return sduTranId; }
+            get { return sduTranId.ToSafeString(); }
             set { sduTranId = value; }
         }
         public string ReceiptNumber
         {
-            get { return receiptNumber; }
+            get { return receiptNumber.ToSafeString(); }
             set { receiptNumber = value; }
         }
         public bool RetransmittalIndicator
@@ -90,37 +90,37 @@ namespace ReceiptExport
         }
         public string PayorID
         {
-            get { return payorID; }
+            get { return payorID.ToSafeString(); }
             set { payorID = value; }
         }
         public string PayorSSN
         {
-            get { return payorSSN; }
+            get { return payorSSN.ToSafeString(); }
             set { payorSSN = value; }
         }
         public string PaidBy
         {
-            get { return paidBy; }
+            get { return paidBy.ToSafeString(); }
             set { paidBy = value; }
         }
         public string PayorLastName
         {
-            get { return payorLastName; }
+            get { return payorLastName.ToSafeString(); }
             set { payorLastName = value; }
         }
         public string PayorFirstName
         {
-            get { return payorFirstName; }
+            get { return payorFirstName.ToSafeString(); }
             set { payorFirstName = value; }
         }
         public string PayorMiddleName
         {
-            get { return payorMiddleName; }
+            get { return payorMiddleName.ToSafeString(); }
             set { payorMiddleName = value; }
         }
         public string PayorSuffix
         {
-            get { return payorSuffix; }
+            get { return payorSuffix.ToSafeString(); }
             set { payorSuffix = value; }
         }
         public double Amount
@@ -135,12 +135,12 @@ namespace ReceiptExport
         }
         public string PaymentMode
         {
-            get { return paymentMode; }
+            get { return paymentMode.ToSafeString(); }
             set { paymentMode = value; }
         }
         public string PaymentSource
         {
-            get { return paymentSource; }
+            get { return paymentSource.ToSafeString(); }
             set { paymentSource = value; }
         }
         public string ReceiptReceivedDate
@@ -161,32 +161,32 @@ namespace ReceiptExport
         {
             get {
                 DateTime date;
-                if (DateTime.TryParse(receiptEffectiveDate, out date))
+                if (DateTime.TryParse(receiptEffectiveDate.ToSafeString(), out date))
                 {
                     receiptEffectiveDate = date.ToString("yyyyMMdd");
                 }
                 else
                 {
-                    Log.Exit("Invalid receiptEffectiveDate" + receiptEffectiveDate, ExitCode.InvalidData);
+                    Log.WriteLine("Invalid receiptEffectiveDate" + receiptEffectiveDate);
                 }
-                
+
                 return receiptEffectiveDate;
             }
             set { receiptEffectiveDate = value; }
         }
         public string CheckNumber
         {
-            get { return checkNumber; }
+            get { return checkNumber.ToSafeString(); }
             set { checkNumber = value; }
         }
         public string ComplianceExemptionReason
         {
-            get { return complianceExemptionReason; }
+            get { return complianceExemptionReason.ToSafeString(); }
             set { complianceExemptionReason = value; }
         }
         public string TargetedPaymentIndicator
         {
-            get { return targetedPaymentIndicator; }
+            get { return targetedPaymentIndicator.ToSafeString(); }
             set { targetedPaymentIndicator = value; }
         }
         public string Fips
@@ -196,22 +196,22 @@ namespace ReceiptExport
         }
         public string CourtCaseNumber
         {
-            get { return courtCaseNumber; }
+            get { return courtCaseNumber.ToSafeString(); }
             set { courtCaseNumber = value; }
         }
         public string CourtJudgementNumber
         {
-            get { return courtJudgementNumber; }
+            get { return courtJudgementNumber.ToSafeString(); }
             set { courtJudgementNumber = value; }
         }
         public string CourtGuidelineNumber
         {
-            get { return courtGuidelineNumber; }
+            get { return courtGuidelineNumber.ToSafeString(); }
             set { courtGuidelineNumber = value; }
         }
         public string ReasonCode
         {
-            get { return reasonCode; }
+            get { return reasonCode.ToSafeString(); }
             set { reasonCode = value; }
         }
 
@@ -221,7 +221,7 @@ namespace ReceiptExport
             get
             {
                 //string strAmount = Amount.ToString().Replace(".", ""); 
-                string strAmount = ((int)(Amount * 100)).ToString(); 
+                string strAmount = ((int)(Amount * 100)).ToString();
                 return strAmount;
             }
         }
@@ -243,21 +243,14 @@ namespace ReceiptExport
             }
         }
 
-        
-  
-
-        // continue adding public accessors for the private fields.
-
         public string RecordLine()
         {
             StringBuilder sb = new StringBuilder();
 
-            //sb.Append(recordType.PadRight(2));
             sb.Append(recordType); // (2) - static length
             sb.Append(SduBatchId.PadLeft(20, '0'));
-            //sb.Append(SduTranId.PadRight(20));
             sb.Append(SduTranId); //(20) - static length
-            sb.Append(ReceiptNumber.ToString().PadLeft(7, '0'));
+            sb.Append(ReceiptNumber.PadLeft(7, '0'));
             sb.Append(StrRetransmittalIndicator.PadRight(1));
             sb.Append(PayorID.PadRight(13));
             sb.Append(PayorSSN.PadRight(9));
@@ -270,11 +263,11 @@ namespace ReceiptExport
             sb.Append(StrOfcAmount.PadLeft(15, '0'));
             sb.Append(PaymentMode.PadRight(2));
             sb.Append(PaymentSource.PadRight(4));
-            sb.Append(ReceiptReceivedDate.ToString().PadRight(8));
-            sb.Append(ReceiptEffectiveDate.ToString().PadRight(8));
+            sb.Append(ReceiptReceivedDate.PadRight(8));
+            sb.Append(ReceiptEffectiveDate.PadRight(8));
             sb.Append(CheckNumber.PadRight(18));
             sb.Append(ComplianceExemptionReason.PadRight(1));
-            sb.Append(TargetedPaymentIndicator.ToString().PadRight(1));
+            sb.Append(TargetedPaymentIndicator.PadRight(1));
             sb.Append(Fips.PadRight(7));
             sb.Append(CourtCaseNumber.PadRight(25));
             sb.Append(CourtJudgementNumber.PadLeft(3, '0'));
@@ -282,9 +275,11 @@ namespace ReceiptExport
             sb.Append(ReasonCode.PadRight(3));
             sb.Append(filler.PadRight(32));
 
+            int i = 1;
+            i.ToString();
+
             return sb.ToString();
         }
-                                                                   
+
     }
 }
-
