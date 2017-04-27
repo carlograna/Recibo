@@ -31,7 +31,7 @@ namespace ReceiptExport
         private int retransmittalRecordCount;
         private double retransmittalAmount;
         private DateTime creationStamp;
-        private string filler;
+        private string filler = "";
 
         public int RecordCount
         {

@@ -46,7 +46,6 @@ namespace ReceiptExport
         static int addressErrorCount = 0;
         static int NumOf05RecordsWritten = 0;
         static int total05Records = 0;
-        static StreamWriter receiptWriter;
         static DateTime setChartsExportedDate = DateTime.Now;
         static string itemprocCS = ConfigurationManager.ConnectionStrings["itemCS"].ToString();
 
@@ -56,9 +55,7 @@ namespace ReceiptExport
             //GetParameters(args);
             fileDir = ConfigurationManager.AppSettings["fileDir"].ToString();
             Log.CreateLogFile(FileDir);
-            CreateOutputFile();
             ProcessRecords();
-            receiptWriter.Close();
             Log.Close();            
 
             System.Environment.Exit((int)ExitCode.Success); //exit
@@ -77,100 +74,79 @@ namespace ReceiptExport
 
         private static void ProcessRecords()
         {            
-            //header record
-            RecordType01 rec01 = new RecordType01();
-            rec01.CreationStamp = DateTime.Now;
 
-            /*       
-            Log.WriteLine(String.Format("GetReceipts() returned {0} records ", table.Rows.Count));
-            */
 
             List<Receipt> receipts = GetReceiptList().OrderBy(x => x.GlobalStubID).ToList<Receipt>();
 
+            Log.WriteLine(String.Format("GetReceipts() returned {0} records ", receipts.Count));
 
 
-                if (receipts.Count > 0)
+            if (receipts.Count > 0)
+            {
+                RecordType01 rec01 = new RecordType01();//header
+                rec01.CreationStamp = DateTime.Now;
+
+                RecordType05[] rec05 = new RecordType05[receipts.Count];//detail
+
+                int i = 0;
+                int prevGlobalBatchId = 0;
+                bool batchHasUnidentified = false;
+
+                foreach (Receipt receipt in receipts)
                 {
-                //Create array of type 05 records
-                RecordType05[] rec05 = new RecordType05[receipts.Count];
+                    if (receipt.ExportedAsUnidentified == 1)
+                        batchHasUnidentified = true;
 
-                    int i = 0;
-                    int prevGlobalBatchId = 0;
-                    bool batchHasUnidentified = false;
+                    rec05[i] = new RecordType05();
 
-                    #region loop records
-                    foreach (Receipt receipt in receipts)
-                    {
-                        if (receipt.ExportedAsUnidentified ==  1)
-                            batchHasUnidentified = true;
-
-                        rec05[i] = new RecordType05();
-
-                        rec05[i].SduBatchId = receipt.GlobalBatchID.ToString();
-                        rec05[i].SduTranId = CreateSduTranID(receipt.GlobalStubID);
-                        rec05[i].ReceiptNumber = receipt.RTNumber;
-
-                    #region retransmital
-
-                        if(receipt.ProcessingDate != null && receipt.ExportedToCHARTSDate != null) { 
-                            //If ProcessingDate is later than exportedToChartsDate
-                            if (DateTime.Compare((DateTime)receipt.ProcessingDate, (DateTime)receipt.ExportedToCHARTSDate) > 0)
-                                    rec05[i].RetransmittalIndicator = true;
-                                else
-                                    rec05[i].RetransmittalIndicator = false;
-                        }
-                        else {
-                            if (receipt.ProcessingDate != null)
-                                rec05[i].RetransmittalIndicator = false;
-                            else
-                                Log.Exit("Processing Date is required for Stub: " + receipt.GlobalStubID, ExitCode.InvalidData);
-                        } // processingDate is required
-                    //}
-                    #endregion
-
+                    rec05[i].SduBatchId = receipt.GlobalBatchID.ToString();
+                    rec05[i].SduTranId = CreateSduTranID(receipt.GlobalStubID);
+                    rec05[i].ReceiptNumber = receipt.RTNumber;
+                    rec05[i].RetransmittalIndicator = IsRetransmittal(receipt); // processingDate is required
                     rec05[i].PayorID = receipt.PersonID;
-                        rec05[i].PayorSSN = receipt.SSN;
-                        rec05[i].PaidBy = receipt.PaidBy;
-                        rec05[i].PayorLastName = receipt.LastName;
-                        rec05[i].PayorFirstName = receipt.FirstName;
-                        rec05[i].PayorMiddleName = receipt.MiddleName;
-                        rec05[i].PayorSuffix = receipt.Suffix;
-                        rec05[i].Amount = String.IsNullOrEmpty(receipt.Amount.ToString()) ?
-                                                0 : Double.Parse(receipt.Amount.ToString());
-                        rec05[i].OfcAmount = String.IsNullOrEmpty(receipt.OFCAmount.ToString()) ?
-                                                0 : Double.Parse(receipt.OFCAmount.ToString());
-                        rec05[i].PaymentMode = receipt.PaymentMode;
-                        rec05[i].PaymentSource = receipt.PaymentSource;
-                        rec05[i].ReceiptReceivedDate = receipt.ProcessingDate.ToString();
-                        rec05[i].ReceiptEffectiveDate = receipt.EffectiveDate.ToString();
-                        rec05[i].CheckNumber = receipt.Serial;
+                    rec05[i].PayorSSN = receipt.SSN;
+                    rec05[i].PaidBy = receipt.PaidBy;
+                    rec05[i].PayorLastName = receipt.LastName;
+                    rec05[i].PayorFirstName = receipt.FirstName;
+                    rec05[i].PayorMiddleName = receipt.MiddleName;
+                    rec05[i].PayorSuffix = receipt.Suffix;
+                    rec05[i].Amount = String.IsNullOrEmpty(receipt.Amount.ToString()) ?
+                                            0 : Double.Parse(receipt.Amount.ToString());
+                    rec05[i].OfcAmount = String.IsNullOrEmpty(receipt.OFCAmount.ToString()) ?
+                                            0 : Double.Parse(receipt.OFCAmount.ToString());
+                    rec05[i].PaymentMode = receipt.PaymentMode;
+                    rec05[i].PaymentSource = receipt.PaymentSource;
+                    rec05[i].ReceiptReceivedDate = receipt.ProcessingDate.ToString();
+                    rec05[i].ReceiptEffectiveDate = receipt.EffectiveDate.ToString();
+                    rec05[i].CheckNumber = receipt.Serial;
                     /// ComplianceExemptionReason doesn't exist on Receipt *******
-                        //rec05[i].ComplianceExemptionReason = receipt.ComplianceExemptionReason;
-                        rec05[i].TargetedPaymentIndicator = receipt.TargetedPayment;
-                        rec05[i].Fips = receipt.FIPS;
-                        rec05[i].CourtCaseNumber = receipt.CaseNumber;
-                        rec05[i].CourtJudgementNumber = receipt.CourtJudgment;
-                        rec05[i].CourtGuidelineNumber = receipt.CourtGuideline;
-                        rec05[i].ReasonCode = receipt.ReasonCode;
-
-                        string currentRecord = rec05[i].RecordLine();
-
-                        if (currentRecord.Length != record05Length)
-                            LogErrorColumns(rec05[i]);
-
+                    //rec05[i].ComplianceExemptionReason = receipt.ComplianceExemptionReason;
+                    rec05[i].TargetedPaymentIndicator = receipt.TargetedPayment;
+                    rec05[i].Fips = receipt.FIPS;
+                    rec05[i].CourtCaseNumber = receipt.CaseNumber;
+                    rec05[i].CourtJudgementNumber = receipt.CourtJudgment;
+                    rec05[i].CourtGuidelineNumber = receipt.CourtGuideline;
+                    rec05[i].ReasonCode = receipt.ReasonCode;
 
                     //********************************************************************** UNCOMMENT
-                    //using (var db = new ReceiptDBContext())
-                    //{
-                    //    StubsDataEntry sde = db.StubsDataEntries.FirstOrDefault(x => x.GlobalStubID == receipt.GlobalStubID);
-                    //    sde.ExportedToCHARTSDate = setChartsExportedDate;
-                    //    sde.SDUTranID = rec05[i].SduTranId;
-                    //    sde.CHARTSStubPrefix = rec05[i].SduTranId.Substring(0, 8);
-                    //    sde.ExportedAsUnidentified = receipt.ExportedAsUnidentified;
+                    using (var db = new ReceiptDBContext())
+                    {
+                        StubsDataEntry sde = db.StubsDataEntries.FirstOrDefault(x => x.GlobalStubID == receipt.GlobalStubID);
+                        if (sde != null)
+                        {
+                            sde.ExportedToCHARTSDate = setChartsExportedDate;
+                            sde.SDUTranID = rec05[i].SduTranId;
+                            sde.CHARTSStubPrefix = rec05[i].SduTranId.Substring(0, 8);
+                            sde.ExportedAsUnidentified = receipt.ExportedAsUnidentified;
+                            //db.SaveChanges();
+                        }
+                        else
+                        {
+                            Log.WriteLine("Stub not found. GlobalStubID: " + receipt.GlobalStubID);
+                        }
+                    }
 
-                    //    //db.SaveChanges();
 
-                    //}
                     // IF THEREIS ITEM UNIDENTIFIED SET THE BATCH TO INCOMPLETE ************************
                     if (receipt.GlobalBatchID != prevGlobalBatchId)
                     {
@@ -182,38 +158,104 @@ namespace ReceiptExport
 
                         prevGlobalBatchId = receipt.GlobalBatchID;
                     }
-                    
-                        //-----------------------------------------------------------------------------------------
 
-                        receiptWriter.WriteLine(currentRecord);
+                    //-----------------------------------------------------------------------------------------
 
-                        i++;
+                    rec01.TotalAmount += rec05[i].Amount;
 
-                        rec01.TotalAmount += rec05[i].Amount;
-                        if (rec05[i].RetransmittalIndicator)
-                        {
-                            rec01.FirstTimeRecordCount++;
-                            rec01.FirstTimeAmount += rec05[i].Amount;
-                        }
-                        else
-                        {
-                            rec01.RetransmittalRecordCount++;
-                            rec01.RetransmittalAmount += rec05[i].Amount;
-                        }
+                    if (rec05[i].RetransmittalIndicator)
+                    {
+                        rec01.RetransmittalRecordCount++;
+                        rec01.RetransmittalAmount += rec05[i].Amount;
+                    }
+                    else
+                    {
+                        rec01.FirstTimeRecordCount++;
+                        rec01.FirstTimeAmount += rec05[i].Amount;
                     }
 
-                    rec01.RecordCount = i;
+                    i++;
+                }
 
-                    #endregion
+                rec01.RecordCount = i;
+                Log.WriteLine("Total Records read: " + i.ToString());
+                Log.WriteLine("Retransmitted records: " + rec01.RetransmittalRecordCount.ToString());
+                Log.WriteLine("First time records: " + rec01.FirstTimeRecordCount.ToString());
 
+                WriteToReceiptFile(rec01, rec05);
+            }
+            else
+            {
+            //no records found 
+                Log.Exit("Receipt Export found " + receipts.Count + " to process", ExitCode.InvalidParameter);
+            }
+        }
+
+        private static void WriteToReceiptFile(RecordType01 rec01, RecordType05[] rec05)
+        {
+            using (StreamWriter receiptWriter = CreateReceiptFile())
+            {
+                receiptWriter.WriteLine(rec01.RecordLine());
+
+                for (int i = 0; i < rec05.Length; i++)
+                {
+                    string currentRecord = rec05[i].RecordLine();
+
+                    if (currentRecord.Length == record05Length)
+                        receiptWriter.WriteLine(currentRecord);
+                    else
+                        LogErrorColumns(rec05[i]);
+                }
+            }
+        }
+
+        public static StreamWriter CreateReceiptFile()
+        {
+            StreamWriter sw = null;
+            try
+            {
+                receiptFilePath = String.Format("{0}RCP{1:MMddyyyy}.dat", FileDir, DateTime.Now);
+
+                if (!File.Exists(receiptFilePath))
+                {
+                    sw = new StreamWriter(receiptFilePath);
                 }
                 else
+                    Log.Exit("File already exists: " + receiptFilePath, ExitCode.CreateReceiptFileError);
+
+                return sw;
+            }
+            catch
+            {
+                errMsg = "CreateReceiptFile()\n";
+                errMsg += "Unable to Create Receipt Data File";
+                Log.Exit(errMsg, ExitCode.CreateReceiptFileError);
+                return sw;
+            }
+        }
+
+        private static bool IsRetransmittal(Receipt receipt)
+        {
+            try
+            {
+                bool isRetransmittal = false;
+
+                if (receipt.ProcessingDate != null && receipt.ExportedToCHARTSDate != null)
                 {
-                    //no records found 
-                    Log.WriteLine("Receipt Export returned 0 records");
+                    //If ProcessingDate is later than exportedToChartsDate
+                    if (DateTime.Compare((DateTime)receipt.ProcessingDate, (DateTime)receipt.ExportedToCHARTSDate) > 0)
+                        isRetransmittal = true;
+                    else
+                        isRetransmittal = false;
                 }
 
+                return isRetransmittal;
             }
+            catch
+            {
+                throw;
+            }
+        }
 
         private static string CreateSduTranID(int globalStubID)
         {
@@ -242,11 +284,6 @@ namespace ReceiptExport
             //    string sqlString = String.Format(
             //            "UPDATE Batch SET DEStatus = 3 WHERE GlobalBatchID = {0}", prevGlobalBatchId);
         }
-
-        //SDUConnection conn = new SDUConnection();
-        //DataTable table = conn.GetDataTableWithStoredProcedure(sqlString, kidcareConnString);
-
-
 
         private static void GetParameters(string[] args)
         {
@@ -339,26 +376,6 @@ namespace ReceiptExport
 
         }
 
-        public static void CreateOutputFile()
-        {
-            try
-            {
-                string strDate = String.Format("{0:MMddyyyy}", Log.CurrentDateTime);
-                receiptFilePath = String.Format("{0}RCP{1}.dat", FileDir, strDate);
-
-                if (!File.Exists(receiptFilePath))
-                    receiptWriter = new StreamWriter(receiptFilePath);
-                else
-                    Log.Exit("File already exists: " + receiptFilePath, ExitCode.CreateReceiptFileError);
-            }
-            catch
-            {
-                errMsg = "CreateOutputFile()\n";
-                errMsg += "Unable to Create Receipt Data File";
-                Log.Exit(errMsg, ExitCode.CreateReceiptFileError);
-            }
-        }
-
         public static void CreateFlagFile()
         {
             try
@@ -374,31 +391,6 @@ namespace ReceiptExport
                 Log.Exit(errMsg, ExitCode.CreateFlagFileError);
             }
         }
-
-        //private static void PreExit()
-        //{
-        //    try
-        //    {
-        //        Log.WriteLine("");//enter
-
-        //        Log.WriteLine(String.Format("(05) Error Count: {0}", addressErrorCount));
-        //        Log.WriteLine(String.Format("(05) Records Written: {0}", NumOf05RecordsWritten));
-        //        Log.WriteLine(String.Format("(05) Total Records: {0}", total05Records));
-        //        Log.WriteLine(String.Format("{0}----- Done: {1} -----", Environment.NewLine, DateTime.Now.ToString()));
-
-        //        if (receiptWriter != null)
-        //            receiptWriter.Close();
-        //        if (!Log.IsLogWriterNull())
-        //            Log.Close();
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        errMsg = Environment.NewLine + "Error in PreExit()";
-        //        errMsg += ex.Message + ex.InnerException;
-        //        Log.Exit(errMsg, ExitCode.UnknownError);
-        //    }
-        //}
 
         private static void LogErrorColumns(RecordType05 rec05)
         {
@@ -455,13 +447,8 @@ namespace ReceiptExport
             if (rec05.ReasonCode.Length > (int)FieldLength.ReasonCode)
                 errMsg += String.Format("{0}ReasonCode length: {1}. Max is: {2}", Environment.NewLine, rec05.ReasonCode.Length, FieldLength.ReasonCode);
 
-            
-            Log.Exit(errMsg, ExitCode.InvalidRecordLength);
-            //Log.Exit(errMsg + Environment.NewLine + rec05.Address1
-            //    + Environment.NewLine + rec05.Address2
-            //    + Environment.NewLine + rec05.Address3, ExitCode.InvalidRecordLength);
+            Log.WriteLine(errMsg);
         }
-
 
     }
 }

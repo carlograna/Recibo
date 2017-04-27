@@ -147,13 +147,14 @@ namespace ReceiptExport
         {
             get {
                 DateTime date;
+                string yyyyMMdd="";
                 if (DateTime.TryParse(receiptReceivedDate, out date))
                 {
-                    receiptReceivedDate = date.ToString("yyyyMMdd");
+                    yyyyMMdd = date.ToString("yyyyMMdd");
                 }
-                else Log.WriteLine("Invalid ReceiptReceivedDate" + receiptReceivedDate);
+                else Log.WriteLine("Invalid ReceiptReceivedDate " + receiptReceivedDate);
 
-                return receiptReceivedDate;
+                return yyyyMMdd;
             }
             set { receiptReceivedDate = value; }
         }
@@ -161,16 +162,17 @@ namespace ReceiptExport
         {
             get {
                 DateTime date;
+                string yyyyMMdd="";
                 if (DateTime.TryParse(receiptEffectiveDate.ToSafeString(), out date))
                 {
-                    receiptEffectiveDate = date.ToString("yyyyMMdd");
+                    yyyyMMdd = date.ToString("yyyyMMdd");
                 }
                 else
                 {
                     Log.WriteLine("Invalid receiptEffectiveDate" + receiptEffectiveDate);
                 }
 
-                return receiptEffectiveDate;
+                return yyyyMMdd;
             }
             set { receiptEffectiveDate = value; }
         }
@@ -274,9 +276,6 @@ namespace ReceiptExport
             sb.Append(CourtGuidelineNumber.PadLeft(3, '0'));
             sb.Append(ReasonCode.PadRight(3));
             sb.Append(filler.PadRight(32));
-
-            int i = 1;
-            i.ToString();
 
             return sb.ToString();
         }

@@ -75,6 +75,7 @@ namespace ReceiptExport
 
         public static void Close()
         {
+            logWriter.WriteLine(String.Format("----- Done: {0} -----", DateTime.Now.ToString()));
             logWriter.Close();
         }
         public static bool IsLogWriterNull()

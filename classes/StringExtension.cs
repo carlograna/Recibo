@@ -15,7 +15,7 @@ namespace ReceiptExport
             }
             else
             {
-                return str.ToString();
+                return str.ToString().Trim();
             }
         }
     }
