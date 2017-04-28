@@ -46,7 +46,7 @@ namespace ReceiptExport
         static int addressErrorCount = 0;
         static int NumOf05RecordsWritten = 0;
         static int total05Records = 0;
-        static DateTime setChartsExportedDate = DateTime.Now;
+        static DateTime CurrentDate = DateTime.Now;
         static string itemprocCS = ConfigurationManager.ConnectionStrings["itemCS"].ToString();
 
 
@@ -56,6 +56,7 @@ namespace ReceiptExport
             fileDir = ConfigurationManager.AppSettings["fileDir"].ToString();
             Log.CreateLogFile(FileDir);
             ProcessRecords();
+            CreateFlagFile();
             Log.Close();            
 
             System.Environment.Exit((int)ExitCode.Success); //exit
@@ -84,7 +85,7 @@ namespace ReceiptExport
             if (receipts.Count > 0)
             {
                 RecordType01 rec01 = new RecordType01();//header
-                rec01.CreationStamp = DateTime.Now;
+                rec01.CreationStamp = CurrentDate;
 
                 RecordType05[] rec05 = new RecordType05[receipts.Count];//detail
 
@@ -94,8 +95,12 @@ namespace ReceiptExport
 
                 foreach (Receipt receipt in receipts)
                 {
-                    if (receipt.ExportedAsUnidentified == 1)
-                        batchHasUnidentified = true;
+                    //if (receipt.ExportedAsUnidentified == 1)//this tells me that it has previously been exported and it was so as an unidentified ARP.
+                    //    batchHasUnidentified = true;
+                    if (batchHasUnidentified == false)//compare only if it has been set 
+                    {
+                        if (receipt.PersonID == "0") batchHasUnidentified = true; // this tells me that it is currently an unidentified stub.
+                    }
 
                     rec05[i] = new RecordType05();
 
@@ -103,7 +108,7 @@ namespace ReceiptExport
                     rec05[i].SduTranId = CreateSduTranID(receipt.GlobalStubID);
                     rec05[i].ReceiptNumber = receipt.RTNumber;
                     rec05[i].RetransmittalIndicator = IsRetransmittal(receipt); // processingDate is required
-                    rec05[i].PayorID = receipt.PersonID;
+                    rec05[i].PayorID = receipt.PersonID == "0" ? "AR00000000000" : receipt.PersonID;
                     rec05[i].PayorSSN = receipt.SSN;
                     rec05[i].PaidBy = receipt.PaidBy;
                     rec05[i].PayorLastName = receipt.LastName;
@@ -134,10 +139,12 @@ namespace ReceiptExport
                         StubsDataEntry sde = db.StubsDataEntries.FirstOrDefault(x => x.GlobalStubID == receipt.GlobalStubID);
                         if (sde != null)
                         {
-                            sde.ExportedToCHARTSDate = setChartsExportedDate;
+                            sde.ExportedToCHARTSDate = CurrentDate;
                             sde.SDUTranID = rec05[i].SduTranId;
                             sde.CHARTSStubPrefix = rec05[i].SduTranId.Substring(0, 8);
-                            sde.ExportedAsUnidentified = receipt.ExportedAsUnidentified;
+                            sde.ExportedAsUnidentified = receipt.PersonID == "0" ? (byte)1 : (byte)0;
+                            if (rec05[i].RetransmittalIndicator && rec05[i].PayorID != "AR00000000000")
+                                sde.ResolvedDate = CurrentDate;
                             //db.SaveChanges();
                         }
                         else
@@ -261,9 +268,9 @@ namespace ReceiptExport
         {
             try
             {
-                string chartsStubPrefix = setChartsExportedDate.Year.ToString().PadLeft(2)
-                                                + setChartsExportedDate.Month.ToString().PadLeft(2)
-                                                + setChartsExportedDate.Day.ToString();
+                string chartsStubPrefix = CurrentDate.Year.ToString().PadLeft(2)
+                                                + CurrentDate.Month.ToString().PadLeft(2)
+                                                + CurrentDate.Day.ToString();
 
                 return chartsStubPrefix + globalStubID.ToString().PadLeft(12); //EX: 20100101000012345678
             }

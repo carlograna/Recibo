@@ -71,7 +71,8 @@ namespace ReceiptExport
 
         public DateTime CreationStamp
         {
-            get { return creationStamp; }
+            get {
+                return creationStamp; }
             set { creationStamp = value; }
         }
 
@@ -86,13 +87,13 @@ namespace ReceiptExport
             StringBuilder sb = new StringBuilder();
 
             sb.Append(recordType.PadRight(2));
-            sb.Append(recordCount.ToString().PadRight(7));
+            sb.Append(recordCount.ToString().PadLeft(7, '0'));
             sb.Append(totalAmount.ToString().PadRight(15));
             sb.Append(firstTimeRecordCount.ToString().PadRight(7));
             sb.Append(firstTimeAmount.ToString().PadRight(15));
             sb.Append(retransmittalRecordCount.ToString().PadRight(7));
             sb.Append(retransmittalAmount.ToString().PadRight(15));
-            sb.Append(creationStamp.ToString().PadRight(26));
+            sb.Append(creationStamp.ToString("yyyy-MM-dd.hh:mm:ss.ffffff").PadRight(26));
             sb.Append(filler.PadRight(173));
 
             return sb.ToString();
