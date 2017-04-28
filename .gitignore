@@ -4,3 +4,4 @@ sh.exe.stackdump
 bin/
 obj/
 .vs/
+temp/
