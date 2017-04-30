@@ -33,5 +33,6 @@ namespace ReceiptExport.classes
         public string MiddleName { get; set; }
         public string Suffix { get; set; }
         public string SSN { get; set; }
+        public Nullable<byte> ComplianceExemptionReason { get; set; }
     }
 }

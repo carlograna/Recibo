@@ -385,7 +385,7 @@
           <Property Name="ScanLine" Type="char" MaxLength="43" />
           <Property Name="SDUTranID" Type="char" MaxLength="20" />
           <Property Name="AddendaData" Type="varchar" MaxLength="94" />
-          <Property Name="ComplianceExemptReason" Type="tinyint" />
+          <Property Name="ComplianceExemptionReason" Type="tinyint" />
         </EntityType>
         <Function Name="proc_Custom_ReceiptExport" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="proc_Custom_ReceiptExport_UpdateStubDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
@@ -798,7 +798,7 @@
           <Property Name="ScanLine" Type="String" MaxLength="43" FixedLength="true" Unicode="false" />
           <Property Name="SDUTranID" Type="String" MaxLength="20" FixedLength="true" Unicode="false" />
           <Property Name="AddendaData" Type="String" MaxLength="94" FixedLength="false" Unicode="false" />
-          <Property Name="ComplianceExemptReason" Type="Byte" />
+          <Property Name="ComplianceExemptionReason" Type="Byte" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1145,7 +1145,7 @@
           <EntitySetMapping Name="StubsDataEntries">
             <EntityTypeMapping TypeName="ReceiptModel.StubsDataEntry">
               <MappingFragment StoreEntitySet="StubsDataEntry">
-                <ScalarProperty Name="ComplianceExemptReason" ColumnName="ComplianceExemptReason" />
+                <ScalarProperty Name="ComplianceExemptionReason" ColumnName="ComplianceExemptionReason" />
                 <ScalarProperty Name="AddendaData" ColumnName="AddendaData" />
                 <ScalarProperty Name="SDUTranID" ColumnName="SDUTranID" />
                 <ScalarProperty Name="ScanLine" ColumnName="ScanLine" />

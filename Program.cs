@@ -124,7 +124,7 @@ namespace ReceiptExport
                     rec05[i].ReceiptReceivedDate = receipt.ProcessingDate.ToString();
                     rec05[i].ReceiptEffectiveDate = receipt.EffectiveDate.ToString();
                     rec05[i].CheckNumber = receipt.Serial;
-                    rec05[i].ComplianceExemptionReason = GetComplianceExemptionReason(receipt);
+                    rec05[i].ComplianceExemptionReason = GetComplianceExemptionReason(receipt).ToString();
                     rec05[i].TargetedPaymentIndicator = receipt.TargetedPayment;
                     rec05[i].Fips = receipt.FIPS;
                     rec05[i].CourtCaseNumber = receipt.CaseNumber;
@@ -142,6 +142,7 @@ namespace ReceiptExport
                             sde.CHARTSStubPrefix = rec05[i].SduTranId.Substring(0, 8);
                             sde.ExportedAsUnidentified = receipt.PersonID == "0" ? (byte)1 : (byte)0;
                             sde.ExportedToCHARTS = 1;
+                            sde.ComplianceExemptionReason = GetComplianceExemptionReason(receipt);
                             if (rec05[i].RetransmittalIndicator && rec05[i].PayorID != "AR00000000000")
                                 sde.ResolvedDate = CurrentDate;
                         }
@@ -199,16 +200,16 @@ namespace ReceiptExport
             }
         }
 
-        private static string GetComplianceExemptionReason(Receipt receipt)
+        private static byte? GetComplianceExemptionReason(Receipt receipt)
         {
             if (receipt.ExportedToCHARTSDate == null && receipt.PersonID != "0")
                 return null;// normal
             else if (receipt.PersonID == "0")
-                return "0";// unidentified
+                return 0;// unidentified
             else if (receipt.PredepositStatus == 1 || receipt.PredepositStatus == 3)
-                return "1";// predeposited
+                return 1;// predeposited
             else
-                return "2";// other
+                return 2;// other
         }
 
         private static void WriteToReceiptFile(RecordType01 rec01, RecordType05[] rec05)
