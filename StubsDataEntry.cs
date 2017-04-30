@@ -62,5 +62,6 @@ namespace ReceiptExport
         public string ScanLine { get; set; }
         public string SDUTranID { get; set; }
         public string AddendaData { get; set; }
+        public Nullable<byte> ComplianceExemptReason { get; set; }
     }
 }

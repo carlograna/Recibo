@@ -67,7 +67,7 @@ namespace ReceiptExport
             using(var db = new ReceiptDBContext())
             {
                 db.Database.CommandTimeout = 1800;
-                List<Receipt> receiptList = db.Database.SqlQuery<Receipt>("proc_Custom_ReceiptExport").ToList<Receipt>();
+                List<Receipt> receiptList = db.Database.SqlQuery<Receipt>("proc_Custom_ReceiptExport").ToList();
 
                 return receiptList;
             }
@@ -124,8 +124,7 @@ namespace ReceiptExport
                     rec05[i].ReceiptReceivedDate = receipt.ProcessingDate.ToString();
                     rec05[i].ReceiptEffectiveDate = receipt.EffectiveDate.ToString();
                     rec05[i].CheckNumber = receipt.Serial;
-                    /// ComplianceExemptionReason doesn't exist on Receipt *******
-                    //rec05[i].ComplianceExemptionReason = receipt.ComplianceExemptionReason;
+                    rec05[i].ComplianceExemptionReason = GetComplianceExemptionReason(receipt);
                     rec05[i].TargetedPaymentIndicator = receipt.TargetedPayment;
                     rec05[i].Fips = receipt.FIPS;
                     rec05[i].CourtCaseNumber = receipt.CaseNumber;
@@ -133,7 +132,6 @@ namespace ReceiptExport
                     rec05[i].CourtGuidelineNumber = receipt.CourtGuideline;
                     rec05[i].ReasonCode = receipt.ReasonCode;
 
-                    //********************************************************************** UNCOMMENT
                     using (var db = new ReceiptDBContext())
                     {
                         StubsDataEntry sde = db.StubsDataEntries.FirstOrDefault(x => x.GlobalStubID == receipt.GlobalStubID);
@@ -143,29 +141,32 @@ namespace ReceiptExport
                             sde.SDUTranID = rec05[i].SduTranId;
                             sde.CHARTSStubPrefix = rec05[i].SduTranId.Substring(0, 8);
                             sde.ExportedAsUnidentified = receipt.PersonID == "0" ? (byte)1 : (byte)0;
+                            sde.ExportedToCHARTS = 1;
                             if (rec05[i].RetransmittalIndicator && rec05[i].PayorID != "AR00000000000")
                                 sde.ResolvedDate = CurrentDate;
-                            //db.SaveChanges();
                         }
                         else
                         {
                             Log.WriteLine("Stub not found. GlobalStubID: " + receipt.GlobalStubID);
                         }
-                    }
+                        
+                        //update vertical and horizontal tables
+                        SqlParameter pGlobalStubID = new SqlParameter("globalStubID", receipt.GlobalStubID);
+                        //db.Database.ExecuteSqlCommand("proc_Custom_ReceiptExport_UpdateStubDE @GlobalStubID", pGlobalStubID);
 
+                        //db.SaveChanges();
+                    }
 
                     // IF THEREIS ITEM UNIDENTIFIED SET THE BATCH TO INCOMPLETE ************************
                     if (receipt.GlobalBatchID != prevGlobalBatchId)
                     {
                         if (batchHasUnidentified)
                         {
-                            //UpdateBatch(prevGlobalBatchId); *****************************************UNCOMMENT
                             batchHasUnidentified = false;
                         }
 
                         prevGlobalBatchId = receipt.GlobalBatchID;
                     }
-
                     //-----------------------------------------------------------------------------------------
 
                     rec01.TotalAmount += rec05[i].Amount;
@@ -196,6 +197,18 @@ namespace ReceiptExport
             //no records found 
                 Log.Exit("Receipt Export found " + receipts.Count + " to process", ExitCode.InvalidParameter);
             }
+        }
+
+        private static string GetComplianceExemptionReason(Receipt receipt)
+        {
+            if (receipt.ExportedToCHARTSDate == null && receipt.PersonID != "0")
+                return null;// normal
+            else if (receipt.PersonID == "0")
+                return "0";// unidentified
+            else if (receipt.PredepositStatus == 1 || receipt.PredepositStatus == 3)
+                return "1";// predeposited
+            else
+                return "2";// other
         }
 
         private static void WriteToReceiptFile(RecordType01 rec01, RecordType05[] rec05)

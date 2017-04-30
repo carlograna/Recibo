@@ -8,6 +8,7 @@ namespace ReceiptExport.classes
         public int TransactionID { get; set; }
         public int GlobalStubID { get; set; }
         public DateTime? ProcessingDate { get; set; }
+        public byte? PredepositStatus { get; set; }
         public string PersonID { get; set; }
         public string CaseNumber { get; set; }
         public string CourtGuideline { get; set; }

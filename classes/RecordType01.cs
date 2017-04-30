@@ -94,7 +94,7 @@ namespace ReceiptExport
             sb.Append(retransmittalRecordCount.ToString().PadRight(7));
             sb.Append(retransmittalAmount.ToString().PadRight(15));
             sb.Append(creationStamp.ToString("yyyy-MM-dd.hh:mm:ss.ffffff").PadRight(26));
-            sb.Append(filler.PadRight(173));
+            sb.Append(filler.PadRight(206));
 
             return sb.ToString();
         }

@@ -4,25 +4,10 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="ReceiptModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'item.dbo.Batch' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+    <Schema Namespace="ReceiptModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Batch">
           <Key>
             <PropertyRef Name="GlobalBatchID" />
-            <PropertyRef Name="BankID" />
-            <PropertyRef Name="LockboxID" />
-            <PropertyRef Name="ProcessingDate" />
-            <PropertyRef Name="BatchID" />
-            <PropertyRef Name="UseCustomer" />
-            <PropertyRef Name="SplitsEnded" />
-            <PropertyRef Name="ModificationDate" />
-            <PropertyRef Name="DecisionStatus" />
-            <PropertyRef Name="AllowDecisioning" />
-            <PropertyRef Name="RequireDEBeforeTwoPass" />
-            <PropertyRef Name="IsImageExchange" />
-            <PropertyRef Name="BatchSourceKey" />
-            <PropertyRef Name="NumOLDDaysRolled" />
           </Key>
           <Property Name="GlobalBatchID" Type="int" Nullable="false" />
           <Property Name="BankID" Type="int" Nullable="false" />
@@ -99,8 +84,6 @@ warning 6002: The table/view 'item.dbo.Batch' does not have a primary key define
           <Property Name="BatchSourceKey" Type="tinyint" Nullable="false" />
           <Property Name="NumOLDDaysRolled" Type="int" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'item.dbo.BatchTrace' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="BatchTrace">
           <Key>
             <PropertyRef Name="GlobalBatchID" />
@@ -127,28 +110,9 @@ warning 6002: The table/view 'item.dbo.BatchTrace' does not have a primary key d
           <Property Name="ACHImporter" Type="datetime" />
           <Property Name="RTNumber" Type="char" MaxLength="7" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'item.dbo.Checks' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Checks">
           <Key>
             <PropertyRef Name="GlobalCheckID" />
-            <PropertyRef Name="GlobalBatchID" />
-            <PropertyRef Name="TransactionID" />
-            <PropertyRef Name="Timestamp" />
-            <PropertyRef Name="LARAmount" />
-            <PropertyRef Name="ImagePresentationCleaned" />
-            <PropertyRef Name="ImageRecognitionCleaned" />
-            <PropertyRef Name="ImageRegistered" />
-            <PropertyRef Name="ImageRequiresICR" />
-            <PropertyRef Name="ImageRecognized" />
-            <PropertyRef Name="IsIRD" />
-            <PropertyRef Name="CARMatch" />
-            <PropertyRef Name="CARMatch2" />
-            <PropertyRef Name="IQARequired" />
-            <PropertyRef Name="MICRQuality" />
-            <PropertyRef Name="ResolutionDPI" />
-            <PropertyRef Name="IsBusinessCheck" />
-            <PropertyRef Name="IsDuplicate" />
           </Key>
           <Property Name="GlobalCheckID" Type="int" Nullable="false" />
           <Property Name="GlobalBatchID" Type="int" Nullable="false" />
@@ -237,13 +201,9 @@ warning 6002: The table/view 'item.dbo.Checks' does not have a primary key defin
           <Property Name="IsDuplicate" Type="bit" Nullable="false" />
           <Property Name="StubAmount" Type="money" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'item.dbo.ChecksDataEntry' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ChecksDataEntry">
           <Key>
             <PropertyRef Name="GlobalCheckID" />
-            <PropertyRef Name="GlobalBatchID" />
-            <PropertyRef Name="TransactionID" />
           </Key>
           <Property Name="GlobalCheckID" Type="int" Nullable="false" />
           <Property Name="GlobalBatchID" Type="int" Nullable="false" />
@@ -288,16 +248,9 @@ warning 6002: The table/view 'item.dbo.ChecksDataEntry' does not have a primary 
           <Property Name="ModifiedStamp" Type="datetime" />
           <Property Name="ModifiedBy" Type="char" MaxLength="20" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'item.dbo.KCPerson' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="KCPerson">
           <Key>
             <PropertyRef Name="KCPersonID" />
-            <PropertyRef Name="KCDeliveryMethodID" />
-            <PropertyRef Name="FVI" />
-            <PropertyRef Name="InvalidAddress" />
-            <PropertyRef Name="DenyWebAccess" />
-            <PropertyRef Name="PaymentNotification" />
           </Key>
           <Property Name="KCPersonID" Type="uniqueidentifier" Nullable="false" />
           <Property Name="SSN" Type="char" MaxLength="9" />
@@ -345,15 +298,9 @@ warning 6002: The table/view 'item.dbo.KCPerson' does not have a primary key def
           <Property Name="SignMeUpForEbs" Type="tinyint" />
           <Property Name="IVDStatus" Type="bit" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'item.dbo.Stubs' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Stubs">
           <Key>
-            <PropertyRef Name="GlobalBatchID" />
-            <PropertyRef Name="TransactionID" />
             <PropertyRef Name="GlobalStubID" />
-            <PropertyRef Name="PageNo" />
-            <PropertyRef Name="IsSingleOccurrence" />
           </Key>
           <Property Name="GlobalBatchID" Type="int" Nullable="false" />
           <Property Name="TransactionID" Type="int" Nullable="false" />
@@ -386,14 +333,9 @@ warning 6002: The table/view 'item.dbo.Stubs' does not have a primary key define
           <Property Name="IsSingleOccurrence" Type="bit" Nullable="false" />
           <Property Name="OriginalGlobalStubID" Type="int" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'item.dbo.StubsDataEntry' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="StubsDataEntry">
           <Key>
-            <PropertyRef Name="GlobalBatchID" />
-            <PropertyRef Name="TransactionID" />
             <PropertyRef Name="GlobalStubID" />
-            <PropertyRef Name="ExportedToCHARTS" />
           </Key>
           <Property Name="GlobalBatchID" Type="int" Nullable="false" />
           <Property Name="TransactionID" Type="int" Nullable="false" />
@@ -443,405 +385,42 @@ warning 6002: The table/view 'item.dbo.StubsDataEntry' does not have a primary k
           <Property Name="ScanLine" Type="char" MaxLength="43" />
           <Property Name="SDUTranID" Type="char" MaxLength="20" />
           <Property Name="AddendaData" Type="varchar" MaxLength="94" />
+          <Property Name="ComplianceExemptReason" Type="tinyint" />
         </EntityType>
-        <Function Name="ReceiptExport" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="proc_Custom_ReceiptExport" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="proc_Custom_ReceiptExport_UpdateStubDE" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="GlobalStubID" Type="int" Mode="In" />
+        </Function>
         <EntityContainer Name="ReceiptModelStoreContainer">
-          <EntitySet Name="Batch" EntityType="Self.Batch" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [Batch].[GlobalBatchID] AS [GlobalBatchID], 
-    [Batch].[BankID] AS [BankID], 
-    [Batch].[LockboxID] AS [LockboxID], 
-    [Batch].[DESetupID] AS [DESetupID], 
-    [Batch].[ProcessingDate] AS [ProcessingDate], 
-    [Batch].[BatchID] AS [BatchID], 
-    [Batch].[DepositStatus] AS [DepositStatus], 
-    [Batch].[BatchCueID] AS [BatchCueID], 
-    [Batch].[CutOffStatus] AS [CutOffStatus], 
-    [Batch].[BatchMode] AS [BatchMode], 
-    [Batch].[SystemType] AS [SystemType], 
-    [Batch].[Priority] AS [Priority], 
-    [Batch].[PrintLabels] AS [PrintLabels], 
-    [Batch].[BatchTypeCode] AS [BatchTypeCode], 
-    [Batch].[BatchTypeSubCode] AS [BatchTypeSubCode], 
-    [Batch].[BatchTypeText] AS [BatchTypeText], 
-    [Batch].[ConsolidationStatus] AS [ConsolidationStatus], 
-    [Batch].[CARStatus] AS [CARStatus], 
-    [Batch].[KFIStatus] AS [KFIStatus], 
-    [Batch].[FAXStatus] AS [FAXStatus], 
-    [Batch].[FloatAssignmentStatus] AS [FloatAssignmentStatus], 
-    [Batch].[ScanStatus] AS [ScanStatus], 
-    [Batch].[DEStatus] AS [DEStatus], 
-    [Batch].[ExtractSequenceNumber] AS [ExtractSequenceNumber], 
-    [Batch].[ImageExtractSequenceNumber] AS [ImageExtractSequenceNumber], 
-    [Batch].[DepositDate] AS [DepositDate], 
-    [Batch].[CheckCount] AS [CheckCount], 
-    [Batch].[CheckAmount] AS [CheckAmount], 
-    [Batch].[StubCount] AS [StubCount], 
-    [Batch].[StubAmount] AS [StubAmount], 
-    [Batch].[CreationDate] AS [CreationDate], 
-    [Batch].[BillingTC] AS [BillingTC], 
-    [Batch].[BillingRT] AS [BillingRT], 
-    [Batch].[BillingAccount] AS [BillingAccount], 
-    [Batch].[BillingSerial] AS [BillingSerial], 
-    [Batch].[WorkgroupID] AS [WorkgroupID], 
-    [Batch].[CurrencyCode] AS [CurrencyCode], 
-    [Batch].[MICRVerifyStatus] AS [MICRVerifyStatus], 
-    [Batch].[DEPrinted] AS [DEPrinted], 
-    [Batch].[Is2Pass] AS [Is2Pass], 
-    [Batch].[UseCar] AS [UseCar], 
-    [Batch].[NoChecksEnclosed] AS [NoChecksEnclosed], 
-    [Batch].[Rejects] AS [Rejects], 
-    [Batch].[DepositTicketPrinted] AS [DepositTicketPrinted], 
-    [Batch].[DateLastUpdated] AS [DateLastUpdated], 
-    [Batch].[TransportID] AS [TransportID], 
-    [Batch].[TrayID] AS [TrayID], 
-    [Batch].[SubTrayID] AS [SubTrayID], 
-    [Batch].[UseCustomer] AS [UseCustomer], 
-    [Batch].[DepositDDA] AS [DepositDDA], 
-    [Batch].[EncodeComplete] AS [EncodeComplete], 
-    [Batch].[SplitsEnded] AS [SplitsEnded], 
-    [Batch].[SiteCode] AS [SiteCode], 
-    [Batch].[BitonalImageRemovalDate] AS [BitonalImageRemovalDate], 
-    [Batch].[DataRemovalDate] AS [DataRemovalDate], 
-    [Batch].[ModificationDate] AS [ModificationDate], 
-    [Batch].[TransportBatchID] AS [TransportBatchID], 
-    [Batch].[GrayScaleImageRemovalDate] AS [GrayScaleImageRemovalDate], 
-    [Batch].[ColorImageRemovalDate] AS [ColorImageRemovalDate], 
-    [Batch].[CWDBDataRemovalDate] AS [CWDBDataRemovalDate], 
-    [Batch].[CWDBBitonalImageRemovalDate] AS [CWDBBitonalImageRemovalDate], 
-    [Batch].[CWDBGrayScaleImageRemovalDate] AS [CWDBGrayScaleImageRemovalDate], 
-    [Batch].[CWDBColorImageRemovalDate] AS [CWDBColorImageRemovalDate], 
-    [Batch].[BatchName] AS [BatchName], 
-    [Batch].[BatchTypeID] AS [BatchTypeID], 
-    [Batch].[DecisionStatus] AS [DecisionStatus], 
-    [Batch].[AllowDecisioning] AS [AllowDecisioning], 
-    [Batch].[RequireDEBeforeTwoPass] AS [RequireDEBeforeTwoPass], 
-    [Batch].[OriginalGlobalBatchID] AS [OriginalGlobalBatchID], 
-    [Batch].[BatchExtractID] AS [BatchExtractID], 
-    [Batch].[IsImageExchange] AS [IsImageExchange], 
-    [Batch].[CaptureSiteCodeID] AS [CaptureSiteCodeID], 
-    [Batch].[BatchSourceKey] AS [BatchSourceKey], 
-    [Batch].[NumOLDDaysRolled] AS [NumOLDDaysRolled]
-    FROM [dbo].[Batch] AS [Batch]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="BatchTrace" EntityType="Self.BatchTrace" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [BatchTrace].[GlobalBatchID] AS [GlobalBatchID], 
-    [BatchTrace].[TypeOneCutoff] AS [TypeOneCutoff], 
-    [BatchTrace].[IBMLFEI] AS [IBMLFEI], 
-    [BatchTrace].[TransportType] AS [TransportType], 
-    [BatchTrace].[TransportName] AS [TransportName], 
-    [BatchTrace].[CheckFileID] AS [CheckFileID], 
-    [BatchTrace].[TPRBatchName] AS [TPRBatchName], 
-    [BatchTrace].[OpexImport] AS [OpexImport], 
-    [BatchTrace].[ImageExchangeExtract] AS [ImageExchangeExtract], 
-    [BatchTrace].[ArchiveExpressExtrStatus] AS [ArchiveExpressExtrStatus], 
-    [BatchTrace].[WebDDLImporter] AS [WebDDLImporter], 
-    [BatchTrace].[OpexBackendImport] AS [OpexBackendImport], 
-    [BatchTrace].[ImageRPSImporter] AS [ImageRPSImporter], 
-    [BatchTrace].[RMSExporter] AS [RMSExporter], 
-    [BatchTrace].[CWDBBatchStatus] AS [CWDBBatchStatus], 
-    [BatchTrace].[CWDBImageStatus] AS [CWDBImageStatus], 
-    [BatchTrace].[CWDBConsolidationPriority] AS [CWDBConsolidationPriority], 
-    [BatchTrace].[CWDBErrorCountAttempts] AS [CWDBErrorCountAttempts], 
-    [BatchTrace].[CeresoftExporter] AS [CeresoftExporter], 
-    [BatchTrace].[ACHImporter] AS [ACHImporter], 
-    [BatchTrace].[RTNumber] AS [RTNumber]
-    FROM [dbo].[BatchTrace] AS [BatchTrace]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="Checks" EntityType="Self.Checks" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [Checks].[GlobalCheckID] AS [GlobalCheckID], 
-    [Checks].[GlobalBatchID] AS [GlobalBatchID], 
-    [Checks].[TransactionID] AS [TransactionID], 
-    [Checks].[TransactionSequence] AS [TransactionSequence], 
-    [Checks].[BatchSequence] AS [BatchSequence], 
-    [Checks].[CheckSequence] AS [CheckSequence], 
-    [Checks].[Status] AS [Status], 
-    [Checks].[RawMICR] AS [RawMICR], 
-    [Checks].[RT] AS [RT], 
-    [Checks].[Serial] AS [Serial], 
-    [Checks].[Account] AS [Account], 
-    [Checks].[TransactionCode] AS [TransactionCode], 
-    [Checks].[Amount] AS [Amount], 
-    [Checks].[LogonAmount] AS [LogonAmount], 
-    [Checks].[KFIAmount] AS [KFIAmount], 
-    [Checks].[VerifyAmount] AS [VerifyAmount], 
-    [Checks].[EncodeAmount] AS [EncodeAmount], 
-    [Checks].[CARAmount] AS [CARAmount], 
-    [Checks].[PayeeID] AS [PayeeID], 
-    [Checks].[Tray] AS [Tray], 
-    [Checks].[LogicalPocket] AS [LogicalPocket], 
-    [Checks].[Pocket] AS [Pocket], 
-    [Checks].[KilledMethod] AS [KilledMethod], 
-    [Checks].[KFIOperator] AS [KFIOperator], 
-    [Checks].[KFIUnit] AS [KFIUnit], 
-    [Checks].[KFIStation] AS [KFIStation], 
-    [Checks].[KFIVerificationOperator] AS [KFIVerificationOperator], 
-    [Checks].[KFIVerificationUnit] AS [KFIVerificationUnit], 
-    [Checks].[KFIVerificationStation] AS [KFIVerificationStation], 
-    [Checks].[KFIMCOperator] AS [KFIMCOperator], 
-    [Checks].[KFIMCUnit] AS [KFIMCUnit], 
-    [Checks].[KFIMCStation] AS [KFIMCStation], 
-    [Checks].[FloatAssigned] AS [FloatAssigned], 
-    [Checks].[PrintPhoto] AS [PrintPhoto], 
-    [Checks].[DEOperator] AS [DEOperator], 
-    [Checks].[DEStation] AS [DEStation], 
-    [Checks].[DEUnit] AS [DEUnit], 
-    [Checks].[DEVerifyOperator] AS [DEVerifyOperator], 
-    [Checks].[DEVerifyStation] AS [DEVerifyStation], 
-    [Checks].[DEVerifyUnit] AS [DEVerifyUnit], 
-    [Checks].[DEBillingKeys] AS [DEBillingKeys], 
-    [Checks].[DEDataKeys] AS [DEDataKeys], 
-    [Checks].[ItemDataKeys] AS [ItemDataKeys], 
-    [Checks].[ItemRawKeys] AS [ItemRawKeys], 
-    [Checks].[ItemBillingKeys] AS [ItemBillingKeys], 
-    [Checks].[Recapture] AS [Recapture], 
-    [Checks].[MICRRejected] AS [MICRRejected], 
-    [Checks].[IsForeign] AS [IsForeign], 
-    [Checks].[IsDeleted] AS [IsDeleted], 
-    [Checks].[IsGhost] AS [IsGhost], 
-    [Checks].[PocketType] AS [PocketType], 
-    [Checks].[RemitterName] AS [RemitterName], 
-    [Checks].[Timestamp] AS [Timestamp], 
-    [Checks].[ICRTranKey] AS [ICRTranKey], 
-    [Checks].[LARAmount] AS [LARAmount], 
-    [Checks].[CARConfidence] AS [CARConfidence], 
-    [Checks].[TraceNumber] AS [TraceNumber], 
-    [Checks].[ImagePresentationCleaned] AS [ImagePresentationCleaned], 
-    [Checks].[ImageRecognitionCleaned] AS [ImageRecognitionCleaned], 
-    [Checks].[ImageRegistered] AS [ImageRegistered], 
-    [Checks].[ImageRequiresICR] AS [ImageRequiresICR], 
-    [Checks].[ImageRecognized] AS [ImageRecognized], 
-    [Checks].[IsIRD] AS [IsIRD], 
-    [Checks].[LockboxDecisioningReasonID] AS [LockboxDecisioningReasonID], 
-    [Checks].[CARAmount2] AS [CARAmount2], 
-    [Checks].[CARConfidence2] AS [CARConfidence2], 
-    [Checks].[CARMatch] AS [CARMatch], 
-    [Checks].[CARMatch2] AS [CARMatch2], 
-    [Checks].[IQARequired] AS [IQARequired], 
-    [Checks].[ExtractAuditID] AS [ExtractAuditID], 
-    [Checks].[MICRQuality] AS [MICRQuality], 
-    [Checks].[OCRRT] AS [OCRRT], 
-    [Checks].[OCRAccount] AS [OCRAccount], 
-    [Checks].[OCRSerial] AS [OCRSerial], 
-    [Checks].[OCRTransactionCode] AS [OCRTransactionCode], 
-    [Checks].[OCRRawMICR] AS [OCRRawMICR], 
-    [Checks].[OriginalGlobalCheckID] AS [OriginalGlobalCheckID], 
-    [Checks].[TemplateSetupID] AS [TemplateSetupID], 
-    [Checks].[ECLCashLetterID] AS [ECLCashLetterID], 
-    [Checks].[ECLBundleID] AS [ECLBundleID], 
-    [Checks].[ECLSequenceID] AS [ECLSequenceID], 
-    [Checks].[OCRConfidence] AS [OCRConfidence], 
-    [Checks].[ResolutionDPI] AS [ResolutionDPI], 
-    [Checks].[IsBusinessCheck] AS [IsBusinessCheck], 
-    [Checks].[IsDuplicate] AS [IsDuplicate], 
-    [Checks].[StubAmount] AS [StubAmount]
-    FROM [dbo].[Checks] AS [Checks]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="ChecksDataEntry" EntityType="Self.ChecksDataEntry" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [ChecksDataEntry].[GlobalCheckID] AS [GlobalCheckID], 
-    [ChecksDataEntry].[GlobalBatchID] AS [GlobalBatchID], 
-    [ChecksDataEntry].[TransactionID] AS [TransactionID], 
-    [ChecksDataEntry].[ACHDetailAccountNumber] AS [ACHDetailAccountNumber], 
-    [ChecksDataEntry].[ACHBatchCompanyID] AS [ACHBatchCompanyID], 
-    [ChecksDataEntry].[ACHBatchCompanyName] AS [ACHBatchCompanyName], 
-    [ChecksDataEntry].[ACHBatchEntryClass] AS [ACHBatchEntryClass], 
-    [ChecksDataEntry].[ACHBatchCompanyData] AS [ACHBatchCompanyData], 
-    [ChecksDataEntry].[ACHBatchEntryDesc] AS [ACHBatchEntryDesc], 
-    [ChecksDataEntry].[ACHBatchDescriptiveDate] AS [ACHBatchDescriptiveDate], 
-    [ChecksDataEntry].[ACHBatchEffectiveDate] AS [ACHBatchEffectiveDate], 
-    [ChecksDataEntry].[ACHBatchSettlementDate] AS [ACHBatchSettlementDate], 
-    [ChecksDataEntry].[ACHDetailIndividualID] AS [ACHDetailIndividualID], 
-    [ChecksDataEntry].[ACHDetailReceivingCompany] AS [ACHDetailReceivingCompany], 
-    [ChecksDataEntry].[ACHDetailTraceNumber] AS [ACHDetailTraceNumber], 
-    [ChecksDataEntry].[ACHDetailDiscretionaryData] AS [ACHDetailDiscretionaryData], 
-    [ChecksDataEntry].[ACHDetailIndividualName] AS [ACHDetailIndividualName], 
-    [ChecksDataEntry].[ACHDetailOFACIndicator1] AS [ACHDetailOFACIndicator1], 
-    [ChecksDataEntry].[ACHDetailOFACIndicator2] AS [ACHDetailOFACIndicator2], 
-    [ChecksDataEntry].[ACHDetailReceivingIndividual] AS [ACHDetailReceivingIndividual], 
-    [ChecksDataEntry].[CheckDate] AS [CheckDate], 
-    [ChecksDataEntry].[ReasonCode] AS [ReasonCode], 
-    [ChecksDataEntry].[CollectionStatus] AS [CollectionStatus], 
-    [ChecksDataEntry].[ReturnDate] AS [ReturnDate], 
-    [ChecksDataEntry].[AmountToDate] AS [AmountToDate], 
-    [ChecksDataEntry].[WriteOffDate] AS [WriteOffDate], 
-    [ChecksDataEntry].[PostedDate] AS [PostedDate], 
-    [ChecksDataEntry].[PostedAmount] AS [PostedAmount], 
-    [ChecksDataEntry].[EntityType] AS [EntityType], 
-    [ChecksDataEntry].[EntityID] AS [EntityID], 
-    [ChecksDataEntry].[Collector] AS [Collector], 
-    [ChecksDataEntry].[DisbursementNumber] AS [DisbursementNumber], 
-    [ChecksDataEntry].[Agency] AS [Agency], 
-    [ChecksDataEntry].[Is3rdParty] AS [Is3rdParty], 
-    [ChecksDataEntry].[PredepositStatus] AS [PredepositStatus], 
-    [ChecksDataEntry].[PredepositReason] AS [PredepositReason], 
-    [ChecksDataEntry].[PredepositDate] AS [PredepositDate], 
-    [ChecksDataEntry].[PredictedReleaseDate] AS [PredictedReleaseDate], 
-    [ChecksDataEntry].[ReleaseDate] AS [ReleaseDate], 
-    [ChecksDataEntry].[UnprocessedDate] AS [UnprocessedDate], 
-    [ChecksDataEntry].[ModifiedStamp] AS [ModifiedStamp], 
-    [ChecksDataEntry].[ModifiedBy] AS [ModifiedBy]
-    FROM [dbo].[ChecksDataEntry] AS [ChecksDataEntry]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="KCPerson" EntityType="Self.KCPerson" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [KCPerson].[KCPersonID] AS [KCPersonID], 
-    [KCPerson].[SSN] AS [SSN], 
-    [KCPerson].[LastName] AS [LastName], 
-    [KCPerson].[FirstName] AS [FirstName], 
-    [KCPerson].[MiddleName] AS [MiddleName], 
-    [KCPerson].[Suffix] AS [Suffix], 
-    [KCPerson].[Address] AS [Address], 
-    [KCPerson].[City] AS [City], 
-    [KCPerson].[State] AS [State], 
-    [KCPerson].[Zip] AS [Zip], 
-    [KCPerson].[HomePhone] AS [HomePhone], 
-    [KCPerson].[CellPhone] AS [CellPhone], 
-    [KCPerson].[WorkPhone] AS [WorkPhone], 
-    [KCPerson].[WorkExtension] AS [WorkExtension], 
-    [KCPerson].[eMail] AS [eMail], 
-    [KCPerson].[Country] AS [Country], 
-    [KCPerson].[DateOfBirth] AS [DateOfBirth], 
-    [KCPerson].[DateOfDeath] AS [DateOfDeath], 
-    [KCPerson].[Notes] AS [Notes], 
-    [KCPerson].[ModifiedStamp] AS [ModifiedStamp], 
-    [KCPerson].[ModifiedBy] AS [ModifiedBy], 
-    [KCPerson].[PINNumber] AS [PINNumber], 
-    [KCPerson].[PersonID] AS [PersonID], 
-    [KCPerson].[Pager] AS [Pager], 
-    [KCPerson].[AlternateEmail] AS [AlternateEmail], 
-    [KCPerson].[BillingEmail] AS [BillingEmail], 
-    [KCPerson].[KCDeliveryMethodID] AS [KCDeliveryMethodID], 
-    [KCPerson].[FVI] AS [FVI], 
-    [KCPerson].[IsActive] AS [IsActive], 
-    [KCPerson].[InactiveDate] AS [InactiveDate], 
-    [KCPerson].[InvalidAddress] AS [InvalidAddress], 
-    [KCPerson].[DenyWebAccess] AS [DenyWebAccess], 
-    [KCPerson].[ChangeReasonCode] AS [ChangeReasonCode], 
-    [KCPerson].[PaymentNotification] AS [PaymentNotification], 
-    [KCPerson].[CreationStamp] AS [CreationStamp], 
-    [KCPerson].[KCPaymentMethodID] AS [KCPaymentMethodID], 
-    [KCPerson].[AddressStamp] AS [AddressStamp], 
-    [KCPerson].[PhoneStamp] AS [PhoneStamp], 
-    [KCPerson].[EmailStamp] AS [EmailStamp], 
-    [KCPerson].[BillingEmailStamp] AS [BillingEmailStamp], 
-    [KCPerson].[DeliveryMethodStamp] AS [DeliveryMethodStamp], 
-    [KCPerson].[DODStamp] AS [DODStamp], 
-    [KCPerson].[PaymentMethodStamp] AS [PaymentMethodStamp], 
-    [KCPerson].[SignMeUpForEbs] AS [SignMeUpForEbs], 
-    [KCPerson].[IVDStatus] AS [IVDStatus]
-    FROM [dbo].[KCPerson] AS [KCPerson]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="Stubs" EntityType="Self.Stubs" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [Stubs].[GlobalBatchID] AS [GlobalBatchID], 
-    [Stubs].[TransactionID] AS [TransactionID], 
-    [Stubs].[GlobalStubID] AS [GlobalStubID], 
-    [Stubs].[TransactionSequence] AS [TransactionSequence], 
-    [Stubs].[BatchSequence] AS [BatchSequence], 
-    [Stubs].[StubSequence] AS [StubSequence], 
-    [Stubs].[SplitNumber] AS [SplitNumber], 
-    [Stubs].[Status] AS [Status], 
-    [Stubs].[AccountNumber] AS [AccountNumber], 
-    [Stubs].[Amount] AS [Amount], 
-    [Stubs].[OCRAmount] AS [OCRAmount], 
-    [Stubs].[RawOCR1] AS [RawOCR1], 
-    [Stubs].[RawOCR2] AS [RawOCR2], 
-    [Stubs].[RawOCR3] AS [RawOCR3], 
-    [Stubs].[DEBillingKeys] AS [DEBillingKeys], 
-    [Stubs].[DEDataKeys] AS [DEDataKeys], 
-    [Stubs].[ItemDataKeys] AS [ItemDataKeys], 
-    [Stubs].[ItemRawKeys] AS [ItemRawKeys], 
-    [Stubs].[ItemBillingKeys] AS [ItemBillingKeys], 
-    [Stubs].[IsGhost] AS [IsGhost], 
-    [Stubs].[IsOMRDetected] AS [IsOMRDetected], 
-    [Stubs].[Tray] AS [Tray], 
-    [Stubs].[ICRTranKey] AS [ICRTranKey], 
-    [Stubs].[IsOMRZone1Detected] AS [IsOMRZone1Detected], 
-    [Stubs].[IsOMRZone2Detected] AS [IsOMRZone2Detected], 
-    [Stubs].[IsOMRZone3Detected] AS [IsOMRZone3Detected], 
-    [Stubs].[IsOMRZone4Detected] AS [IsOMRZone4Detected], 
-    [Stubs].[PageNo] AS [PageNo], 
-    [Stubs].[IsSingleOccurrence] AS [IsSingleOccurrence], 
-    [Stubs].[OriginalGlobalStubID] AS [OriginalGlobalStubID]
-    FROM [dbo].[Stubs] AS [Stubs]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="StubsDataEntry" EntityType="Self.StubsDataEntry" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [StubsDataEntry].[GlobalBatchID] AS [GlobalBatchID], 
-    [StubsDataEntry].[TransactionID] AS [TransactionID], 
-    [StubsDataEntry].[GlobalStubID] AS [GlobalStubID], 
-    [StubsDataEntry].[InvoiceNumber] AS [InvoiceNumber], 
-    [StubsDataEntry].[ACHAddendaBPRMonetaryAmount] AS [ACHAddendaBPRMonetaryAmount], 
-    [StubsDataEntry].[ACHAddendaBPRAccountNumber] AS [ACHAddendaBPRAccountNumber], 
-    [StubsDataEntry].[ACHAddendaRMRReferenceNumber] AS [ACHAddendaRMRReferenceNumber], 
-    [StubsDataEntry].[ACHAddendaRMRMonetaryAmount] AS [ACHAddendaRMRMonetaryAmount], 
-    [StubsDataEntry].[ACHAddendaRMRTotalInvAmount] AS [ACHAddendaRMRTotalInvAmount], 
-    [StubsDataEntry].[ACHAddendaRMRDiscountAmount] AS [ACHAddendaRMRDiscountAmount], 
-    [StubsDataEntry].[ARP] AS [ARP], 
-    [StubsDataEntry].[PaymentMode] AS [PaymentMode], 
-    [StubsDataEntry].[PaymentSource] AS [PaymentSource], 
-    [StubsDataEntry].[EffectiveDate] AS [EffectiveDate], 
-    [StubsDataEntry].[PaidBy] AS [PaidBy], 
-    [StubsDataEntry].[OFCAmount] AS [OFCAmount], 
-    [StubsDataEntry].[FIPS] AS [FIPS], 
-    [StubsDataEntry].[TargetedPayment] AS [TargetedPayment], 
-    [StubsDataEntry].[CaseNumber] AS [CaseNumber], 
-    [StubsDataEntry].[CourtJudgment] AS [CourtJudgment], 
-    [StubsDataEntry].[CourtGuideline] AS [CourtGuideline], 
-    [StubsDataEntry].[ReasonCode] AS [ReasonCode], 
-    [StubsDataEntry].[ExportedToCHARTS] AS [ExportedToCHARTS], 
-    [StubsDataEntry].[ExportedToCHARTSDate] AS [ExportedToCHARTSDate], 
-    [StubsDataEntry].[ExportedAsUnidentified] AS [ExportedAsUnidentified], 
-    [StubsDataEntry].[ResolvedDate] AS [ResolvedDate], 
-    [StubsDataEntry].[CHARTSStubPrefix] AS [CHARTSStubPrefix], 
-    [StubsDataEntry].[Archived] AS [Archived], 
-    [StubsDataEntry].[ArchivedStamp] AS [ArchivedStamp], 
-    [StubsDataEntry].[ArchivedBy] AS [ArchivedBy], 
-    [StubsDataEntry].[TotalAmountDue] AS [TotalAmountDue], 
-    [StubsDataEntry].[Adjusted] AS [Adjusted], 
-    [StubsDataEntry].[AdjustedDate] AS [AdjustedDate], 
-    [StubsDataEntry].[AdjustedBy] AS [AdjustedBy], 
-    [StubsDataEntry].[AdjustmentReason] AS [AdjustmentReason], 
-    [StubsDataEntry].[CHARTSAdjustedDate] AS [CHARTSAdjustedDate], 
-    [StubsDataEntry].[SSN] AS [SSN], 
-    [StubsDataEntry].[ErrorCode] AS [ErrorCode], 
-    [StubsDataEntry].[ErrorDate] AS [ErrorDate], 
-    [StubsDataEntry].[RAHoldStatus] AS [RAHoldStatus], 
-    [StubsDataEntry].[RAHoldReason] AS [RAHoldReason], 
-    [StubsDataEntry].[RAHoldDate] AS [RAHoldDate], 
-    [StubsDataEntry].[RAHoldReleaseDate] AS [RAHoldReleaseDate], 
-    [StubsDataEntry].[RAHoldBy] AS [RAHoldBy], 
-    [StubsDataEntry].[RAReleaseBy] AS [RAReleaseBy], 
-    [StubsDataEntry].[ScanLine] AS [ScanLine], 
-    [StubsDataEntry].[SDUTranID] AS [SDUTranID], 
-    [StubsDataEntry].[AddendaData] AS [AddendaData]
-    FROM [dbo].[StubsDataEntry] AS [StubsDataEntry]</DefiningQuery>
-          </EntitySet>
+          <EntitySet Name="Batch" EntityType="Self.Batch" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BatchTrace" EntityType="Self.BatchTrace" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Checks" EntityType="Self.Checks" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ChecksDataEntry" EntityType="Self.ChecksDataEntry" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="KCPerson" EntityType="Self.KCPerson" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Stubs" EntityType="Self.Stubs" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StubsDataEntry" EntityType="Self.StubsDataEntry" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ReceiptModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="ReceiptDBContext" annotation:LazyLoadingEnabled="true">
+          <FunctionImport Name="ReceiptExport" />
+          <FunctionImport Name="proc_Custom_ReceiptExport" />
+          <FunctionImport Name="proc_Custom_ReceiptExport_UpdateStubDE">
+          <Parameter Name="GlobalStubID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <EntitySet Name="Batches" EntityType="ReceiptModel.Batch" />
+          <EntitySet Name="BatchTraces" EntityType="ReceiptModel.BatchTrace" />
+          <EntitySet Name="Checks" EntityType="ReceiptModel.Check" />
+          <EntitySet Name="ChecksDataEntries" EntityType="ReceiptModel.ChecksDataEntry" />
+          <EntitySet Name="KCPersons" EntityType="ReceiptModel.KCPerson" />
+          <EntitySet Name="Stubs" EntityType="ReceiptModel.Stub" />
+          <EntitySet Name="StubsDataEntries" EntityType="ReceiptModel.StubsDataEntry" />
+        </EntityContainer>
         <EntityType Name="Batch">
           <Key>
             <PropertyRef Name="GlobalBatchID" />
-            <PropertyRef Name="BankID" />
-            <PropertyRef Name="LockboxID" />
-            <PropertyRef Name="ProcessingDate" />
-            <PropertyRef Name="BatchID" />
-            <PropertyRef Name="UseCustomer" />
-            <PropertyRef Name="SplitsEnded" />
-            <PropertyRef Name="ModificationDate" />
-            <PropertyRef Name="DecisionStatus" />
-            <PropertyRef Name="AllowDecisioning" />
-            <PropertyRef Name="RequireDEBeforeTwoPass" />
-            <PropertyRef Name="IsImageExchange" />
-            <PropertyRef Name="BatchSourceKey" />
-            <PropertyRef Name="NumOLDDaysRolled" />
           </Key>
           <Property Name="GlobalBatchID" Type="Int32" Nullable="false" />
           <Property Name="BankID" Type="Int32" Nullable="false" />
@@ -947,23 +526,6 @@ warning 6002: The table/view 'item.dbo.StubsDataEntry' does not have a primary k
         <EntityType Name="Check">
           <Key>
             <PropertyRef Name="GlobalCheckID" />
-            <PropertyRef Name="GlobalBatchID" />
-            <PropertyRef Name="TransactionID" />
-            <PropertyRef Name="Timestamp" />
-            <PropertyRef Name="LARAmount" />
-            <PropertyRef Name="ImagePresentationCleaned" />
-            <PropertyRef Name="ImageRecognitionCleaned" />
-            <PropertyRef Name="ImageRegistered" />
-            <PropertyRef Name="ImageRequiresICR" />
-            <PropertyRef Name="ImageRecognized" />
-            <PropertyRef Name="IsIRD" />
-            <PropertyRef Name="CARMatch" />
-            <PropertyRef Name="CARMatch2" />
-            <PropertyRef Name="IQARequired" />
-            <PropertyRef Name="MICRQuality" />
-            <PropertyRef Name="ResolutionDPI" />
-            <PropertyRef Name="IsBusinessCheck" />
-            <PropertyRef Name="IsDuplicate" />
           </Key>
           <Property Name="GlobalCheckID" Type="Int32" Nullable="false" />
           <Property Name="GlobalBatchID" Type="Int32" Nullable="false" />
@@ -1017,9 +579,9 @@ warning 6002: The table/view 'item.dbo.StubsDataEntry' does not have a primary k
           <Property Name="IsGhost" Type="Boolean" />
           <Property Name="PocketType" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
           <Property Name="RemitterName" Type="String" MaxLength="60" FixedLength="true" Unicode="false" />
-          <Property Name="Timestamp" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" />
+          <Property Name="Timestamp" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" />
           <Property Name="ICRTranKey" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="LARAmount" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="LARAmount" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
           <Property Name="CARConfidence" Type="Int32" />
           <Property Name="TraceNumber" Type="String" MaxLength="128" FixedLength="false" Unicode="false" />
           <Property Name="ImagePresentationCleaned" Type="Boolean" Nullable="false" />
@@ -1055,8 +617,6 @@ warning 6002: The table/view 'item.dbo.StubsDataEntry' does not have a primary k
         <EntityType Name="ChecksDataEntry">
           <Key>
             <PropertyRef Name="GlobalCheckID" />
-            <PropertyRef Name="GlobalBatchID" />
-            <PropertyRef Name="TransactionID" />
           </Key>
           <Property Name="GlobalCheckID" Type="Int32" Nullable="false" />
           <Property Name="GlobalBatchID" Type="Int32" Nullable="false" />
@@ -1104,11 +664,6 @@ warning 6002: The table/view 'item.dbo.StubsDataEntry' does not have a primary k
         <EntityType Name="KCPerson">
           <Key>
             <PropertyRef Name="KCPersonID" />
-            <PropertyRef Name="KCDeliveryMethodID" />
-            <PropertyRef Name="FVI" />
-            <PropertyRef Name="InvalidAddress" />
-            <PropertyRef Name="DenyWebAccess" />
-            <PropertyRef Name="PaymentNotification" />
           </Key>
           <Property Name="KCPersonID" Type="Guid" Nullable="false" />
           <Property Name="SSN" Type="String" MaxLength="9" FixedLength="true" Unicode="false" />
@@ -1158,11 +713,7 @@ warning 6002: The table/view 'item.dbo.StubsDataEntry' does not have a primary k
         </EntityType>
         <EntityType Name="Stub">
           <Key>
-            <PropertyRef Name="GlobalBatchID" />
-            <PropertyRef Name="TransactionID" />
             <PropertyRef Name="GlobalStubID" />
-            <PropertyRef Name="PageNo" />
-            <PropertyRef Name="IsSingleOccurrence" />
           </Key>
           <Property Name="GlobalBatchID" Type="Int32" Nullable="false" />
           <Property Name="TransactionID" Type="Int32" Nullable="false" />
@@ -1197,10 +748,7 @@ warning 6002: The table/view 'item.dbo.StubsDataEntry' does not have a primary k
         </EntityType>
         <EntityType Name="StubsDataEntry">
           <Key>
-            <PropertyRef Name="GlobalBatchID" />
-            <PropertyRef Name="TransactionID" />
             <PropertyRef Name="GlobalStubID" />
-            <PropertyRef Name="ExportedToCHARTS" />
           </Key>
           <Property Name="GlobalBatchID" Type="Int32" Nullable="false" />
           <Property Name="TransactionID" Type="Int32" Nullable="false" />
@@ -1250,412 +798,405 @@ warning 6002: The table/view 'item.dbo.StubsDataEntry' does not have a primary k
           <Property Name="ScanLine" Type="String" MaxLength="43" FixedLength="true" Unicode="false" />
           <Property Name="SDUTranID" Type="String" MaxLength="20" FixedLength="true" Unicode="false" />
           <Property Name="AddendaData" Type="String" MaxLength="94" FixedLength="false" Unicode="false" />
+          <Property Name="ComplianceExemptReason" Type="Byte" />
         </EntityType>
-        <EntityContainer Name="ReceiptDBContext" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Batches" EntityType="Self.Batch" />
-          <EntitySet Name="BatchTraces" EntityType="Self.BatchTrace" />
-          <EntitySet Name="Checks" EntityType="Self.Check" />
-          <EntitySet Name="ChecksDataEntries" EntityType="Self.ChecksDataEntry" />
-          <EntitySet Name="KCPersons" EntityType="Self.KCPerson" />
-          <EntitySet Name="Stubs" EntityType="Self.Stub" />
-          <EntitySet Name="StubsDataEntries" EntityType="Self.StubsDataEntry" />
-          <FunctionImport Name="ReceiptExport" />
-        </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="ReceiptModelStoreContainer" CdmEntityContainer="ReceiptDBContext">
+          <FunctionImportMapping FunctionImportName="proc_Custom_ReceiptExport" FunctionName="ReceiptModel.Store.proc_Custom_ReceiptExport" />
+          <FunctionImportMapping FunctionImportName="proc_Custom_ReceiptExport_UpdateStubDE" FunctionName="ReceiptModel.Store.proc_Custom_ReceiptExport_UpdateStubDE" />
           <EntitySetMapping Name="Batches">
             <EntityTypeMapping TypeName="ReceiptModel.Batch">
               <MappingFragment StoreEntitySet="Batch">
-                <ScalarProperty Name="GlobalBatchID" ColumnName="GlobalBatchID" />
-                <ScalarProperty Name="BankID" ColumnName="BankID" />
-                <ScalarProperty Name="LockboxID" ColumnName="LockboxID" />
-                <ScalarProperty Name="DESetupID" ColumnName="DESetupID" />
-                <ScalarProperty Name="ProcessingDate" ColumnName="ProcessingDate" />
-                <ScalarProperty Name="BatchID" ColumnName="BatchID" />
-                <ScalarProperty Name="DepositStatus" ColumnName="DepositStatus" />
-                <ScalarProperty Name="BatchCueID" ColumnName="BatchCueID" />
-                <ScalarProperty Name="CutOffStatus" ColumnName="CutOffStatus" />
-                <ScalarProperty Name="BatchMode" ColumnName="BatchMode" />
-                <ScalarProperty Name="SystemType" ColumnName="SystemType" />
-                <ScalarProperty Name="Priority" ColumnName="Priority" />
-                <ScalarProperty Name="PrintLabels" ColumnName="PrintLabels" />
-                <ScalarProperty Name="BatchTypeCode" ColumnName="BatchTypeCode" />
-                <ScalarProperty Name="BatchTypeSubCode" ColumnName="BatchTypeSubCode" />
-                <ScalarProperty Name="BatchTypeText" ColumnName="BatchTypeText" />
-                <ScalarProperty Name="ConsolidationStatus" ColumnName="ConsolidationStatus" />
-                <ScalarProperty Name="CARStatus" ColumnName="CARStatus" />
-                <ScalarProperty Name="KFIStatus" ColumnName="KFIStatus" />
-                <ScalarProperty Name="FAXStatus" ColumnName="FAXStatus" />
-                <ScalarProperty Name="FloatAssignmentStatus" ColumnName="FloatAssignmentStatus" />
-                <ScalarProperty Name="ScanStatus" ColumnName="ScanStatus" />
-                <ScalarProperty Name="DEStatus" ColumnName="DEStatus" />
-                <ScalarProperty Name="ExtractSequenceNumber" ColumnName="ExtractSequenceNumber" />
-                <ScalarProperty Name="ImageExtractSequenceNumber" ColumnName="ImageExtractSequenceNumber" />
-                <ScalarProperty Name="DepositDate" ColumnName="DepositDate" />
-                <ScalarProperty Name="CheckCount" ColumnName="CheckCount" />
-                <ScalarProperty Name="CheckAmount" ColumnName="CheckAmount" />
-                <ScalarProperty Name="StubCount" ColumnName="StubCount" />
-                <ScalarProperty Name="StubAmount" ColumnName="StubAmount" />
-                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
-                <ScalarProperty Name="BillingTC" ColumnName="BillingTC" />
-                <ScalarProperty Name="BillingRT" ColumnName="BillingRT" />
-                <ScalarProperty Name="BillingAccount" ColumnName="BillingAccount" />
-                <ScalarProperty Name="BillingSerial" ColumnName="BillingSerial" />
-                <ScalarProperty Name="WorkgroupID" ColumnName="WorkgroupID" />
-                <ScalarProperty Name="CurrencyCode" ColumnName="CurrencyCode" />
-                <ScalarProperty Name="MICRVerifyStatus" ColumnName="MICRVerifyStatus" />
-                <ScalarProperty Name="DEPrinted" ColumnName="DEPrinted" />
-                <ScalarProperty Name="Is2Pass" ColumnName="Is2Pass" />
-                <ScalarProperty Name="UseCar" ColumnName="UseCar" />
-                <ScalarProperty Name="NoChecksEnclosed" ColumnName="NoChecksEnclosed" />
-                <ScalarProperty Name="Rejects" ColumnName="Rejects" />
-                <ScalarProperty Name="DepositTicketPrinted" ColumnName="DepositTicketPrinted" />
-                <ScalarProperty Name="DateLastUpdated" ColumnName="DateLastUpdated" />
-                <ScalarProperty Name="TransportID" ColumnName="TransportID" />
-                <ScalarProperty Name="TrayID" ColumnName="TrayID" />
-                <ScalarProperty Name="SubTrayID" ColumnName="SubTrayID" />
-                <ScalarProperty Name="UseCustomer" ColumnName="UseCustomer" />
-                <ScalarProperty Name="DepositDDA" ColumnName="DepositDDA" />
-                <ScalarProperty Name="EncodeComplete" ColumnName="EncodeComplete" />
-                <ScalarProperty Name="SplitsEnded" ColumnName="SplitsEnded" />
-                <ScalarProperty Name="SiteCode" ColumnName="SiteCode" />
-                <ScalarProperty Name="BitonalImageRemovalDate" ColumnName="BitonalImageRemovalDate" />
-                <ScalarProperty Name="DataRemovalDate" ColumnName="DataRemovalDate" />
-                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
-                <ScalarProperty Name="TransportBatchID" ColumnName="TransportBatchID" />
-                <ScalarProperty Name="GrayScaleImageRemovalDate" ColumnName="GrayScaleImageRemovalDate" />
-                <ScalarProperty Name="ColorImageRemovalDate" ColumnName="ColorImageRemovalDate" />
-                <ScalarProperty Name="CWDBDataRemovalDate" ColumnName="CWDBDataRemovalDate" />
-                <ScalarProperty Name="CWDBBitonalImageRemovalDate" ColumnName="CWDBBitonalImageRemovalDate" />
-                <ScalarProperty Name="CWDBGrayScaleImageRemovalDate" ColumnName="CWDBGrayScaleImageRemovalDate" />
-                <ScalarProperty Name="CWDBColorImageRemovalDate" ColumnName="CWDBColorImageRemovalDate" />
-                <ScalarProperty Name="BatchName" ColumnName="BatchName" />
-                <ScalarProperty Name="BatchTypeID" ColumnName="BatchTypeID" />
-                <ScalarProperty Name="DecisionStatus" ColumnName="DecisionStatus" />
-                <ScalarProperty Name="AllowDecisioning" ColumnName="AllowDecisioning" />
-                <ScalarProperty Name="RequireDEBeforeTwoPass" ColumnName="RequireDEBeforeTwoPass" />
-                <ScalarProperty Name="OriginalGlobalBatchID" ColumnName="OriginalGlobalBatchID" />
-                <ScalarProperty Name="BatchExtractID" ColumnName="BatchExtractID" />
-                <ScalarProperty Name="IsImageExchange" ColumnName="IsImageExchange" />
-                <ScalarProperty Name="CaptureSiteCodeID" ColumnName="CaptureSiteCodeID" />
-                <ScalarProperty Name="BatchSourceKey" ColumnName="BatchSourceKey" />
                 <ScalarProperty Name="NumOLDDaysRolled" ColumnName="NumOLDDaysRolled" />
+                <ScalarProperty Name="BatchSourceKey" ColumnName="BatchSourceKey" />
+                <ScalarProperty Name="CaptureSiteCodeID" ColumnName="CaptureSiteCodeID" />
+                <ScalarProperty Name="IsImageExchange" ColumnName="IsImageExchange" />
+                <ScalarProperty Name="BatchExtractID" ColumnName="BatchExtractID" />
+                <ScalarProperty Name="OriginalGlobalBatchID" ColumnName="OriginalGlobalBatchID" />
+                <ScalarProperty Name="RequireDEBeforeTwoPass" ColumnName="RequireDEBeforeTwoPass" />
+                <ScalarProperty Name="AllowDecisioning" ColumnName="AllowDecisioning" />
+                <ScalarProperty Name="DecisionStatus" ColumnName="DecisionStatus" />
+                <ScalarProperty Name="BatchTypeID" ColumnName="BatchTypeID" />
+                <ScalarProperty Name="BatchName" ColumnName="BatchName" />
+                <ScalarProperty Name="CWDBColorImageRemovalDate" ColumnName="CWDBColorImageRemovalDate" />
+                <ScalarProperty Name="CWDBGrayScaleImageRemovalDate" ColumnName="CWDBGrayScaleImageRemovalDate" />
+                <ScalarProperty Name="CWDBBitonalImageRemovalDate" ColumnName="CWDBBitonalImageRemovalDate" />
+                <ScalarProperty Name="CWDBDataRemovalDate" ColumnName="CWDBDataRemovalDate" />
+                <ScalarProperty Name="ColorImageRemovalDate" ColumnName="ColorImageRemovalDate" />
+                <ScalarProperty Name="GrayScaleImageRemovalDate" ColumnName="GrayScaleImageRemovalDate" />
+                <ScalarProperty Name="TransportBatchID" ColumnName="TransportBatchID" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="DataRemovalDate" ColumnName="DataRemovalDate" />
+                <ScalarProperty Name="BitonalImageRemovalDate" ColumnName="BitonalImageRemovalDate" />
+                <ScalarProperty Name="SiteCode" ColumnName="SiteCode" />
+                <ScalarProperty Name="SplitsEnded" ColumnName="SplitsEnded" />
+                <ScalarProperty Name="EncodeComplete" ColumnName="EncodeComplete" />
+                <ScalarProperty Name="DepositDDA" ColumnName="DepositDDA" />
+                <ScalarProperty Name="UseCustomer" ColumnName="UseCustomer" />
+                <ScalarProperty Name="SubTrayID" ColumnName="SubTrayID" />
+                <ScalarProperty Name="TrayID" ColumnName="TrayID" />
+                <ScalarProperty Name="TransportID" ColumnName="TransportID" />
+                <ScalarProperty Name="DateLastUpdated" ColumnName="DateLastUpdated" />
+                <ScalarProperty Name="DepositTicketPrinted" ColumnName="DepositTicketPrinted" />
+                <ScalarProperty Name="Rejects" ColumnName="Rejects" />
+                <ScalarProperty Name="NoChecksEnclosed" ColumnName="NoChecksEnclosed" />
+                <ScalarProperty Name="UseCar" ColumnName="UseCar" />
+                <ScalarProperty Name="Is2Pass" ColumnName="Is2Pass" />
+                <ScalarProperty Name="DEPrinted" ColumnName="DEPrinted" />
+                <ScalarProperty Name="MICRVerifyStatus" ColumnName="MICRVerifyStatus" />
+                <ScalarProperty Name="CurrencyCode" ColumnName="CurrencyCode" />
+                <ScalarProperty Name="WorkgroupID" ColumnName="WorkgroupID" />
+                <ScalarProperty Name="BillingSerial" ColumnName="BillingSerial" />
+                <ScalarProperty Name="BillingAccount" ColumnName="BillingAccount" />
+                <ScalarProperty Name="BillingRT" ColumnName="BillingRT" />
+                <ScalarProperty Name="BillingTC" ColumnName="BillingTC" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="StubAmount" ColumnName="StubAmount" />
+                <ScalarProperty Name="StubCount" ColumnName="StubCount" />
+                <ScalarProperty Name="CheckAmount" ColumnName="CheckAmount" />
+                <ScalarProperty Name="CheckCount" ColumnName="CheckCount" />
+                <ScalarProperty Name="DepositDate" ColumnName="DepositDate" />
+                <ScalarProperty Name="ImageExtractSequenceNumber" ColumnName="ImageExtractSequenceNumber" />
+                <ScalarProperty Name="ExtractSequenceNumber" ColumnName="ExtractSequenceNumber" />
+                <ScalarProperty Name="DEStatus" ColumnName="DEStatus" />
+                <ScalarProperty Name="ScanStatus" ColumnName="ScanStatus" />
+                <ScalarProperty Name="FloatAssignmentStatus" ColumnName="FloatAssignmentStatus" />
+                <ScalarProperty Name="FAXStatus" ColumnName="FAXStatus" />
+                <ScalarProperty Name="KFIStatus" ColumnName="KFIStatus" />
+                <ScalarProperty Name="CARStatus" ColumnName="CARStatus" />
+                <ScalarProperty Name="ConsolidationStatus" ColumnName="ConsolidationStatus" />
+                <ScalarProperty Name="BatchTypeText" ColumnName="BatchTypeText" />
+                <ScalarProperty Name="BatchTypeSubCode" ColumnName="BatchTypeSubCode" />
+                <ScalarProperty Name="BatchTypeCode" ColumnName="BatchTypeCode" />
+                <ScalarProperty Name="PrintLabels" ColumnName="PrintLabels" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+                <ScalarProperty Name="SystemType" ColumnName="SystemType" />
+                <ScalarProperty Name="BatchMode" ColumnName="BatchMode" />
+                <ScalarProperty Name="CutOffStatus" ColumnName="CutOffStatus" />
+                <ScalarProperty Name="BatchCueID" ColumnName="BatchCueID" />
+                <ScalarProperty Name="DepositStatus" ColumnName="DepositStatus" />
+                <ScalarProperty Name="BatchID" ColumnName="BatchID" />
+                <ScalarProperty Name="ProcessingDate" ColumnName="ProcessingDate" />
+                <ScalarProperty Name="DESetupID" ColumnName="DESetupID" />
+                <ScalarProperty Name="LockboxID" ColumnName="LockboxID" />
+                <ScalarProperty Name="BankID" ColumnName="BankID" />
+                <ScalarProperty Name="GlobalBatchID" ColumnName="GlobalBatchID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="BatchTraces">
             <EntityTypeMapping TypeName="ReceiptModel.BatchTrace">
               <MappingFragment StoreEntitySet="BatchTrace">
-                <ScalarProperty Name="GlobalBatchID" ColumnName="GlobalBatchID" />
-                <ScalarProperty Name="TypeOneCutoff" ColumnName="TypeOneCutoff" />
-                <ScalarProperty Name="IBMLFEI" ColumnName="IBMLFEI" />
-                <ScalarProperty Name="TransportType" ColumnName="TransportType" />
-                <ScalarProperty Name="TransportName" ColumnName="TransportName" />
-                <ScalarProperty Name="CheckFileID" ColumnName="CheckFileID" />
-                <ScalarProperty Name="TPRBatchName" ColumnName="TPRBatchName" />
-                <ScalarProperty Name="OpexImport" ColumnName="OpexImport" />
-                <ScalarProperty Name="ImageExchangeExtract" ColumnName="ImageExchangeExtract" />
-                <ScalarProperty Name="ArchiveExpressExtrStatus" ColumnName="ArchiveExpressExtrStatus" />
-                <ScalarProperty Name="WebDDLImporter" ColumnName="WebDDLImporter" />
-                <ScalarProperty Name="OpexBackendImport" ColumnName="OpexBackendImport" />
-                <ScalarProperty Name="ImageRPSImporter" ColumnName="ImageRPSImporter" />
-                <ScalarProperty Name="RMSExporter" ColumnName="RMSExporter" />
-                <ScalarProperty Name="CWDBBatchStatus" ColumnName="CWDBBatchStatus" />
-                <ScalarProperty Name="CWDBImageStatus" ColumnName="CWDBImageStatus" />
-                <ScalarProperty Name="CWDBConsolidationPriority" ColumnName="CWDBConsolidationPriority" />
-                <ScalarProperty Name="CWDBErrorCountAttempts" ColumnName="CWDBErrorCountAttempts" />
-                <ScalarProperty Name="CeresoftExporter" ColumnName="CeresoftExporter" />
-                <ScalarProperty Name="ACHImporter" ColumnName="ACHImporter" />
                 <ScalarProperty Name="RTNumber" ColumnName="RTNumber" />
+                <ScalarProperty Name="ACHImporter" ColumnName="ACHImporter" />
+                <ScalarProperty Name="CeresoftExporter" ColumnName="CeresoftExporter" />
+                <ScalarProperty Name="CWDBErrorCountAttempts" ColumnName="CWDBErrorCountAttempts" />
+                <ScalarProperty Name="CWDBConsolidationPriority" ColumnName="CWDBConsolidationPriority" />
+                <ScalarProperty Name="CWDBImageStatus" ColumnName="CWDBImageStatus" />
+                <ScalarProperty Name="CWDBBatchStatus" ColumnName="CWDBBatchStatus" />
+                <ScalarProperty Name="RMSExporter" ColumnName="RMSExporter" />
+                <ScalarProperty Name="ImageRPSImporter" ColumnName="ImageRPSImporter" />
+                <ScalarProperty Name="OpexBackendImport" ColumnName="OpexBackendImport" />
+                <ScalarProperty Name="WebDDLImporter" ColumnName="WebDDLImporter" />
+                <ScalarProperty Name="ArchiveExpressExtrStatus" ColumnName="ArchiveExpressExtrStatus" />
+                <ScalarProperty Name="ImageExchangeExtract" ColumnName="ImageExchangeExtract" />
+                <ScalarProperty Name="OpexImport" ColumnName="OpexImport" />
+                <ScalarProperty Name="TPRBatchName" ColumnName="TPRBatchName" />
+                <ScalarProperty Name="CheckFileID" ColumnName="CheckFileID" />
+                <ScalarProperty Name="TransportName" ColumnName="TransportName" />
+                <ScalarProperty Name="TransportType" ColumnName="TransportType" />
+                <ScalarProperty Name="IBMLFEI" ColumnName="IBMLFEI" />
+                <ScalarProperty Name="TypeOneCutoff" ColumnName="TypeOneCutoff" />
+                <ScalarProperty Name="GlobalBatchID" ColumnName="GlobalBatchID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Checks">
             <EntityTypeMapping TypeName="ReceiptModel.Check">
               <MappingFragment StoreEntitySet="Checks">
-                <ScalarProperty Name="GlobalCheckID" ColumnName="GlobalCheckID" />
-                <ScalarProperty Name="GlobalBatchID" ColumnName="GlobalBatchID" />
-                <ScalarProperty Name="TransactionID" ColumnName="TransactionID" />
-                <ScalarProperty Name="TransactionSequence" ColumnName="TransactionSequence" />
-                <ScalarProperty Name="BatchSequence" ColumnName="BatchSequence" />
-                <ScalarProperty Name="CheckSequence" ColumnName="CheckSequence" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="RawMICR" ColumnName="RawMICR" />
-                <ScalarProperty Name="RT" ColumnName="RT" />
-                <ScalarProperty Name="Serial" ColumnName="Serial" />
-                <ScalarProperty Name="Account" ColumnName="Account" />
-                <ScalarProperty Name="TransactionCode" ColumnName="TransactionCode" />
-                <ScalarProperty Name="Amount" ColumnName="Amount" />
-                <ScalarProperty Name="LogonAmount" ColumnName="LogonAmount" />
-                <ScalarProperty Name="KFIAmount" ColumnName="KFIAmount" />
-                <ScalarProperty Name="VerifyAmount" ColumnName="VerifyAmount" />
-                <ScalarProperty Name="EncodeAmount" ColumnName="EncodeAmount" />
-                <ScalarProperty Name="CARAmount" ColumnName="CARAmount" />
-                <ScalarProperty Name="PayeeID" ColumnName="PayeeID" />
-                <ScalarProperty Name="Tray" ColumnName="Tray" />
-                <ScalarProperty Name="LogicalPocket" ColumnName="LogicalPocket" />
-                <ScalarProperty Name="Pocket" ColumnName="Pocket" />
-                <ScalarProperty Name="KilledMethod" ColumnName="KilledMethod" />
-                <ScalarProperty Name="KFIOperator" ColumnName="KFIOperator" />
-                <ScalarProperty Name="KFIUnit" ColumnName="KFIUnit" />
-                <ScalarProperty Name="KFIStation" ColumnName="KFIStation" />
-                <ScalarProperty Name="KFIVerificationOperator" ColumnName="KFIVerificationOperator" />
-                <ScalarProperty Name="KFIVerificationUnit" ColumnName="KFIVerificationUnit" />
-                <ScalarProperty Name="KFIVerificationStation" ColumnName="KFIVerificationStation" />
-                <ScalarProperty Name="KFIMCOperator" ColumnName="KFIMCOperator" />
-                <ScalarProperty Name="KFIMCUnit" ColumnName="KFIMCUnit" />
-                <ScalarProperty Name="KFIMCStation" ColumnName="KFIMCStation" />
-                <ScalarProperty Name="FloatAssigned" ColumnName="FloatAssigned" />
-                <ScalarProperty Name="PrintPhoto" ColumnName="PrintPhoto" />
-                <ScalarProperty Name="DEOperator" ColumnName="DEOperator" />
-                <ScalarProperty Name="DEStation" ColumnName="DEStation" />
-                <ScalarProperty Name="DEUnit" ColumnName="DEUnit" />
-                <ScalarProperty Name="DEVerifyOperator" ColumnName="DEVerifyOperator" />
-                <ScalarProperty Name="DEVerifyStation" ColumnName="DEVerifyStation" />
-                <ScalarProperty Name="DEVerifyUnit" ColumnName="DEVerifyUnit" />
-                <ScalarProperty Name="DEBillingKeys" ColumnName="DEBillingKeys" />
-                <ScalarProperty Name="DEDataKeys" ColumnName="DEDataKeys" />
-                <ScalarProperty Name="ItemDataKeys" ColumnName="ItemDataKeys" />
-                <ScalarProperty Name="ItemRawKeys" ColumnName="ItemRawKeys" />
-                <ScalarProperty Name="ItemBillingKeys" ColumnName="ItemBillingKeys" />
-                <ScalarProperty Name="Recapture" ColumnName="Recapture" />
-                <ScalarProperty Name="MICRRejected" ColumnName="MICRRejected" />
-                <ScalarProperty Name="IsForeign" ColumnName="IsForeign" />
-                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
-                <ScalarProperty Name="IsGhost" ColumnName="IsGhost" />
-                <ScalarProperty Name="PocketType" ColumnName="PocketType" />
-                <ScalarProperty Name="RemitterName" ColumnName="RemitterName" />
-                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
-                <ScalarProperty Name="ICRTranKey" ColumnName="ICRTranKey" />
-                <ScalarProperty Name="LARAmount" ColumnName="LARAmount" />
-                <ScalarProperty Name="CARConfidence" ColumnName="CARConfidence" />
-                <ScalarProperty Name="TraceNumber" ColumnName="TraceNumber" />
-                <ScalarProperty Name="ImagePresentationCleaned" ColumnName="ImagePresentationCleaned" />
-                <ScalarProperty Name="ImageRecognitionCleaned" ColumnName="ImageRecognitionCleaned" />
-                <ScalarProperty Name="ImageRegistered" ColumnName="ImageRegistered" />
-                <ScalarProperty Name="ImageRequiresICR" ColumnName="ImageRequiresICR" />
-                <ScalarProperty Name="ImageRecognized" ColumnName="ImageRecognized" />
-                <ScalarProperty Name="IsIRD" ColumnName="IsIRD" />
-                <ScalarProperty Name="LockboxDecisioningReasonID" ColumnName="LockboxDecisioningReasonID" />
-                <ScalarProperty Name="CARAmount2" ColumnName="CARAmount2" />
-                <ScalarProperty Name="CARConfidence2" ColumnName="CARConfidence2" />
-                <ScalarProperty Name="CARMatch" ColumnName="CARMatch" />
-                <ScalarProperty Name="CARMatch2" ColumnName="CARMatch2" />
-                <ScalarProperty Name="IQARequired" ColumnName="IQARequired" />
-                <ScalarProperty Name="ExtractAuditID" ColumnName="ExtractAuditID" />
-                <ScalarProperty Name="MICRQuality" ColumnName="MICRQuality" />
-                <ScalarProperty Name="OCRRT" ColumnName="OCRRT" />
-                <ScalarProperty Name="OCRAccount" ColumnName="OCRAccount" />
-                <ScalarProperty Name="OCRSerial" ColumnName="OCRSerial" />
-                <ScalarProperty Name="OCRTransactionCode" ColumnName="OCRTransactionCode" />
-                <ScalarProperty Name="OCRRawMICR" ColumnName="OCRRawMICR" />
-                <ScalarProperty Name="OriginalGlobalCheckID" ColumnName="OriginalGlobalCheckID" />
-                <ScalarProperty Name="TemplateSetupID" ColumnName="TemplateSetupID" />
-                <ScalarProperty Name="ECLCashLetterID" ColumnName="ECLCashLetterID" />
-                <ScalarProperty Name="ECLBundleID" ColumnName="ECLBundleID" />
-                <ScalarProperty Name="ECLSequenceID" ColumnName="ECLSequenceID" />
-                <ScalarProperty Name="OCRConfidence" ColumnName="OCRConfidence" />
-                <ScalarProperty Name="ResolutionDPI" ColumnName="ResolutionDPI" />
-                <ScalarProperty Name="IsBusinessCheck" ColumnName="IsBusinessCheck" />
-                <ScalarProperty Name="IsDuplicate" ColumnName="IsDuplicate" />
                 <ScalarProperty Name="StubAmount" ColumnName="StubAmount" />
+                <ScalarProperty Name="IsDuplicate" ColumnName="IsDuplicate" />
+                <ScalarProperty Name="IsBusinessCheck" ColumnName="IsBusinessCheck" />
+                <ScalarProperty Name="ResolutionDPI" ColumnName="ResolutionDPI" />
+                <ScalarProperty Name="OCRConfidence" ColumnName="OCRConfidence" />
+                <ScalarProperty Name="ECLSequenceID" ColumnName="ECLSequenceID" />
+                <ScalarProperty Name="ECLBundleID" ColumnName="ECLBundleID" />
+                <ScalarProperty Name="ECLCashLetterID" ColumnName="ECLCashLetterID" />
+                <ScalarProperty Name="TemplateSetupID" ColumnName="TemplateSetupID" />
+                <ScalarProperty Name="OriginalGlobalCheckID" ColumnName="OriginalGlobalCheckID" />
+                <ScalarProperty Name="OCRRawMICR" ColumnName="OCRRawMICR" />
+                <ScalarProperty Name="OCRTransactionCode" ColumnName="OCRTransactionCode" />
+                <ScalarProperty Name="OCRSerial" ColumnName="OCRSerial" />
+                <ScalarProperty Name="OCRAccount" ColumnName="OCRAccount" />
+                <ScalarProperty Name="OCRRT" ColumnName="OCRRT" />
+                <ScalarProperty Name="MICRQuality" ColumnName="MICRQuality" />
+                <ScalarProperty Name="ExtractAuditID" ColumnName="ExtractAuditID" />
+                <ScalarProperty Name="IQARequired" ColumnName="IQARequired" />
+                <ScalarProperty Name="CARMatch2" ColumnName="CARMatch2" />
+                <ScalarProperty Name="CARMatch" ColumnName="CARMatch" />
+                <ScalarProperty Name="CARConfidence2" ColumnName="CARConfidence2" />
+                <ScalarProperty Name="CARAmount2" ColumnName="CARAmount2" />
+                <ScalarProperty Name="LockboxDecisioningReasonID" ColumnName="LockboxDecisioningReasonID" />
+                <ScalarProperty Name="IsIRD" ColumnName="IsIRD" />
+                <ScalarProperty Name="ImageRecognized" ColumnName="ImageRecognized" />
+                <ScalarProperty Name="ImageRequiresICR" ColumnName="ImageRequiresICR" />
+                <ScalarProperty Name="ImageRegistered" ColumnName="ImageRegistered" />
+                <ScalarProperty Name="ImageRecognitionCleaned" ColumnName="ImageRecognitionCleaned" />
+                <ScalarProperty Name="ImagePresentationCleaned" ColumnName="ImagePresentationCleaned" />
+                <ScalarProperty Name="TraceNumber" ColumnName="TraceNumber" />
+                <ScalarProperty Name="CARConfidence" ColumnName="CARConfidence" />
+                <ScalarProperty Name="LARAmount" ColumnName="LARAmount" />
+                <ScalarProperty Name="ICRTranKey" ColumnName="ICRTranKey" />
+                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+                <ScalarProperty Name="RemitterName" ColumnName="RemitterName" />
+                <ScalarProperty Name="PocketType" ColumnName="PocketType" />
+                <ScalarProperty Name="IsGhost" ColumnName="IsGhost" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="IsForeign" ColumnName="IsForeign" />
+                <ScalarProperty Name="MICRRejected" ColumnName="MICRRejected" />
+                <ScalarProperty Name="Recapture" ColumnName="Recapture" />
+                <ScalarProperty Name="ItemBillingKeys" ColumnName="ItemBillingKeys" />
+                <ScalarProperty Name="ItemRawKeys" ColumnName="ItemRawKeys" />
+                <ScalarProperty Name="ItemDataKeys" ColumnName="ItemDataKeys" />
+                <ScalarProperty Name="DEDataKeys" ColumnName="DEDataKeys" />
+                <ScalarProperty Name="DEBillingKeys" ColumnName="DEBillingKeys" />
+                <ScalarProperty Name="DEVerifyUnit" ColumnName="DEVerifyUnit" />
+                <ScalarProperty Name="DEVerifyStation" ColumnName="DEVerifyStation" />
+                <ScalarProperty Name="DEVerifyOperator" ColumnName="DEVerifyOperator" />
+                <ScalarProperty Name="DEUnit" ColumnName="DEUnit" />
+                <ScalarProperty Name="DEStation" ColumnName="DEStation" />
+                <ScalarProperty Name="DEOperator" ColumnName="DEOperator" />
+                <ScalarProperty Name="PrintPhoto" ColumnName="PrintPhoto" />
+                <ScalarProperty Name="FloatAssigned" ColumnName="FloatAssigned" />
+                <ScalarProperty Name="KFIMCStation" ColumnName="KFIMCStation" />
+                <ScalarProperty Name="KFIMCUnit" ColumnName="KFIMCUnit" />
+                <ScalarProperty Name="KFIMCOperator" ColumnName="KFIMCOperator" />
+                <ScalarProperty Name="KFIVerificationStation" ColumnName="KFIVerificationStation" />
+                <ScalarProperty Name="KFIVerificationUnit" ColumnName="KFIVerificationUnit" />
+                <ScalarProperty Name="KFIVerificationOperator" ColumnName="KFIVerificationOperator" />
+                <ScalarProperty Name="KFIStation" ColumnName="KFIStation" />
+                <ScalarProperty Name="KFIUnit" ColumnName="KFIUnit" />
+                <ScalarProperty Name="KFIOperator" ColumnName="KFIOperator" />
+                <ScalarProperty Name="KilledMethod" ColumnName="KilledMethod" />
+                <ScalarProperty Name="Pocket" ColumnName="Pocket" />
+                <ScalarProperty Name="LogicalPocket" ColumnName="LogicalPocket" />
+                <ScalarProperty Name="Tray" ColumnName="Tray" />
+                <ScalarProperty Name="PayeeID" ColumnName="PayeeID" />
+                <ScalarProperty Name="CARAmount" ColumnName="CARAmount" />
+                <ScalarProperty Name="EncodeAmount" ColumnName="EncodeAmount" />
+                <ScalarProperty Name="VerifyAmount" ColumnName="VerifyAmount" />
+                <ScalarProperty Name="KFIAmount" ColumnName="KFIAmount" />
+                <ScalarProperty Name="LogonAmount" ColumnName="LogonAmount" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="TransactionCode" ColumnName="TransactionCode" />
+                <ScalarProperty Name="Account" ColumnName="Account" />
+                <ScalarProperty Name="Serial" ColumnName="Serial" />
+                <ScalarProperty Name="RT" ColumnName="RT" />
+                <ScalarProperty Name="RawMICR" ColumnName="RawMICR" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CheckSequence" ColumnName="CheckSequence" />
+                <ScalarProperty Name="BatchSequence" ColumnName="BatchSequence" />
+                <ScalarProperty Name="TransactionSequence" ColumnName="TransactionSequence" />
+                <ScalarProperty Name="TransactionID" ColumnName="TransactionID" />
+                <ScalarProperty Name="GlobalBatchID" ColumnName="GlobalBatchID" />
+                <ScalarProperty Name="GlobalCheckID" ColumnName="GlobalCheckID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ChecksDataEntries">
             <EntityTypeMapping TypeName="ReceiptModel.ChecksDataEntry">
               <MappingFragment StoreEntitySet="ChecksDataEntry">
-                <ScalarProperty Name="GlobalCheckID" ColumnName="GlobalCheckID" />
-                <ScalarProperty Name="GlobalBatchID" ColumnName="GlobalBatchID" />
-                <ScalarProperty Name="TransactionID" ColumnName="TransactionID" />
-                <ScalarProperty Name="ACHDetailAccountNumber" ColumnName="ACHDetailAccountNumber" />
-                <ScalarProperty Name="ACHBatchCompanyID" ColumnName="ACHBatchCompanyID" />
-                <ScalarProperty Name="ACHBatchCompanyName" ColumnName="ACHBatchCompanyName" />
-                <ScalarProperty Name="ACHBatchEntryClass" ColumnName="ACHBatchEntryClass" />
-                <ScalarProperty Name="ACHBatchCompanyData" ColumnName="ACHBatchCompanyData" />
-                <ScalarProperty Name="ACHBatchEntryDesc" ColumnName="ACHBatchEntryDesc" />
-                <ScalarProperty Name="ACHBatchDescriptiveDate" ColumnName="ACHBatchDescriptiveDate" />
-                <ScalarProperty Name="ACHBatchEffectiveDate" ColumnName="ACHBatchEffectiveDate" />
-                <ScalarProperty Name="ACHBatchSettlementDate" ColumnName="ACHBatchSettlementDate" />
-                <ScalarProperty Name="ACHDetailIndividualID" ColumnName="ACHDetailIndividualID" />
-                <ScalarProperty Name="ACHDetailReceivingCompany" ColumnName="ACHDetailReceivingCompany" />
-                <ScalarProperty Name="ACHDetailTraceNumber" ColumnName="ACHDetailTraceNumber" />
-                <ScalarProperty Name="ACHDetailDiscretionaryData" ColumnName="ACHDetailDiscretionaryData" />
-                <ScalarProperty Name="ACHDetailIndividualName" ColumnName="ACHDetailIndividualName" />
-                <ScalarProperty Name="ACHDetailOFACIndicator1" ColumnName="ACHDetailOFACIndicator1" />
-                <ScalarProperty Name="ACHDetailOFACIndicator2" ColumnName="ACHDetailOFACIndicator2" />
-                <ScalarProperty Name="ACHDetailReceivingIndividual" ColumnName="ACHDetailReceivingIndividual" />
-                <ScalarProperty Name="CheckDate" ColumnName="CheckDate" />
-                <ScalarProperty Name="ReasonCode" ColumnName="ReasonCode" />
-                <ScalarProperty Name="CollectionStatus" ColumnName="CollectionStatus" />
-                <ScalarProperty Name="ReturnDate" ColumnName="ReturnDate" />
-                <ScalarProperty Name="AmountToDate" ColumnName="AmountToDate" />
-                <ScalarProperty Name="WriteOffDate" ColumnName="WriteOffDate" />
-                <ScalarProperty Name="PostedDate" ColumnName="PostedDate" />
-                <ScalarProperty Name="PostedAmount" ColumnName="PostedAmount" />
-                <ScalarProperty Name="EntityType" ColumnName="EntityType" />
-                <ScalarProperty Name="EntityID" ColumnName="EntityID" />
-                <ScalarProperty Name="Collector" ColumnName="Collector" />
-                <ScalarProperty Name="DisbursementNumber" ColumnName="DisbursementNumber" />
-                <ScalarProperty Name="Agency" ColumnName="Agency" />
-                <ScalarProperty Name="Is3rdParty" ColumnName="Is3rdParty" />
-                <ScalarProperty Name="PredepositStatus" ColumnName="PredepositStatus" />
-                <ScalarProperty Name="PredepositReason" ColumnName="PredepositReason" />
-                <ScalarProperty Name="PredepositDate" ColumnName="PredepositDate" />
-                <ScalarProperty Name="PredictedReleaseDate" ColumnName="PredictedReleaseDate" />
-                <ScalarProperty Name="ReleaseDate" ColumnName="ReleaseDate" />
-                <ScalarProperty Name="UnprocessedDate" ColumnName="UnprocessedDate" />
-                <ScalarProperty Name="ModifiedStamp" ColumnName="ModifiedStamp" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedStamp" ColumnName="ModifiedStamp" />
+                <ScalarProperty Name="UnprocessedDate" ColumnName="UnprocessedDate" />
+                <ScalarProperty Name="ReleaseDate" ColumnName="ReleaseDate" />
+                <ScalarProperty Name="PredictedReleaseDate" ColumnName="PredictedReleaseDate" />
+                <ScalarProperty Name="PredepositDate" ColumnName="PredepositDate" />
+                <ScalarProperty Name="PredepositReason" ColumnName="PredepositReason" />
+                <ScalarProperty Name="PredepositStatus" ColumnName="PredepositStatus" />
+                <ScalarProperty Name="Is3rdParty" ColumnName="Is3rdParty" />
+                <ScalarProperty Name="Agency" ColumnName="Agency" />
+                <ScalarProperty Name="DisbursementNumber" ColumnName="DisbursementNumber" />
+                <ScalarProperty Name="Collector" ColumnName="Collector" />
+                <ScalarProperty Name="EntityID" ColumnName="EntityID" />
+                <ScalarProperty Name="EntityType" ColumnName="EntityType" />
+                <ScalarProperty Name="PostedAmount" ColumnName="PostedAmount" />
+                <ScalarProperty Name="PostedDate" ColumnName="PostedDate" />
+                <ScalarProperty Name="WriteOffDate" ColumnName="WriteOffDate" />
+                <ScalarProperty Name="AmountToDate" ColumnName="AmountToDate" />
+                <ScalarProperty Name="ReturnDate" ColumnName="ReturnDate" />
+                <ScalarProperty Name="CollectionStatus" ColumnName="CollectionStatus" />
+                <ScalarProperty Name="ReasonCode" ColumnName="ReasonCode" />
+                <ScalarProperty Name="CheckDate" ColumnName="CheckDate" />
+                <ScalarProperty Name="ACHDetailReceivingIndividual" ColumnName="ACHDetailReceivingIndividual" />
+                <ScalarProperty Name="ACHDetailOFACIndicator2" ColumnName="ACHDetailOFACIndicator2" />
+                <ScalarProperty Name="ACHDetailOFACIndicator1" ColumnName="ACHDetailOFACIndicator1" />
+                <ScalarProperty Name="ACHDetailIndividualName" ColumnName="ACHDetailIndividualName" />
+                <ScalarProperty Name="ACHDetailDiscretionaryData" ColumnName="ACHDetailDiscretionaryData" />
+                <ScalarProperty Name="ACHDetailTraceNumber" ColumnName="ACHDetailTraceNumber" />
+                <ScalarProperty Name="ACHDetailReceivingCompany" ColumnName="ACHDetailReceivingCompany" />
+                <ScalarProperty Name="ACHDetailIndividualID" ColumnName="ACHDetailIndividualID" />
+                <ScalarProperty Name="ACHBatchSettlementDate" ColumnName="ACHBatchSettlementDate" />
+                <ScalarProperty Name="ACHBatchEffectiveDate" ColumnName="ACHBatchEffectiveDate" />
+                <ScalarProperty Name="ACHBatchDescriptiveDate" ColumnName="ACHBatchDescriptiveDate" />
+                <ScalarProperty Name="ACHBatchEntryDesc" ColumnName="ACHBatchEntryDesc" />
+                <ScalarProperty Name="ACHBatchCompanyData" ColumnName="ACHBatchCompanyData" />
+                <ScalarProperty Name="ACHBatchEntryClass" ColumnName="ACHBatchEntryClass" />
+                <ScalarProperty Name="ACHBatchCompanyName" ColumnName="ACHBatchCompanyName" />
+                <ScalarProperty Name="ACHBatchCompanyID" ColumnName="ACHBatchCompanyID" />
+                <ScalarProperty Name="ACHDetailAccountNumber" ColumnName="ACHDetailAccountNumber" />
+                <ScalarProperty Name="TransactionID" ColumnName="TransactionID" />
+                <ScalarProperty Name="GlobalBatchID" ColumnName="GlobalBatchID" />
+                <ScalarProperty Name="GlobalCheckID" ColumnName="GlobalCheckID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="KCPersons">
             <EntityTypeMapping TypeName="ReceiptModel.KCPerson">
               <MappingFragment StoreEntitySet="KCPerson">
-                <ScalarProperty Name="KCPersonID" ColumnName="KCPersonID" />
-                <ScalarProperty Name="SSN" ColumnName="SSN" />
-                <ScalarProperty Name="LastName" ColumnName="LastName" />
-                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
-                <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
-                <ScalarProperty Name="Suffix" ColumnName="Suffix" />
-                <ScalarProperty Name="Address" ColumnName="Address" />
-                <ScalarProperty Name="City" ColumnName="City" />
-                <ScalarProperty Name="State" ColumnName="State" />
-                <ScalarProperty Name="Zip" ColumnName="Zip" />
-                <ScalarProperty Name="HomePhone" ColumnName="HomePhone" />
-                <ScalarProperty Name="CellPhone" ColumnName="CellPhone" />
-                <ScalarProperty Name="WorkPhone" ColumnName="WorkPhone" />
-                <ScalarProperty Name="WorkExtension" ColumnName="WorkExtension" />
-                <ScalarProperty Name="eMail" ColumnName="eMail" />
-                <ScalarProperty Name="Country" ColumnName="Country" />
-                <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
-                <ScalarProperty Name="DateOfDeath" ColumnName="DateOfDeath" />
-                <ScalarProperty Name="Notes" ColumnName="Notes" />
-                <ScalarProperty Name="ModifiedStamp" ColumnName="ModifiedStamp" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="PINNumber" ColumnName="PINNumber" />
-                <ScalarProperty Name="PersonID" ColumnName="PersonID" />
-                <ScalarProperty Name="Pager" ColumnName="Pager" />
-                <ScalarProperty Name="AlternateEmail" ColumnName="AlternateEmail" />
-                <ScalarProperty Name="BillingEmail" ColumnName="BillingEmail" />
-                <ScalarProperty Name="KCDeliveryMethodID" ColumnName="KCDeliveryMethodID" />
-                <ScalarProperty Name="FVI" ColumnName="FVI" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="InactiveDate" ColumnName="InactiveDate" />
-                <ScalarProperty Name="InvalidAddress" ColumnName="InvalidAddress" />
-                <ScalarProperty Name="DenyWebAccess" ColumnName="DenyWebAccess" />
-                <ScalarProperty Name="ChangeReasonCode" ColumnName="ChangeReasonCode" />
-                <ScalarProperty Name="PaymentNotification" ColumnName="PaymentNotification" />
-                <ScalarProperty Name="CreationStamp" ColumnName="CreationStamp" />
-                <ScalarProperty Name="KCPaymentMethodID" ColumnName="KCPaymentMethodID" />
-                <ScalarProperty Name="AddressStamp" ColumnName="AddressStamp" />
-                <ScalarProperty Name="PhoneStamp" ColumnName="PhoneStamp" />
-                <ScalarProperty Name="EmailStamp" ColumnName="EmailStamp" />
-                <ScalarProperty Name="BillingEmailStamp" ColumnName="BillingEmailStamp" />
-                <ScalarProperty Name="DeliveryMethodStamp" ColumnName="DeliveryMethodStamp" />
-                <ScalarProperty Name="DODStamp" ColumnName="DODStamp" />
-                <ScalarProperty Name="PaymentMethodStamp" ColumnName="PaymentMethodStamp" />
-                <ScalarProperty Name="SignMeUpForEbs" ColumnName="SignMeUpForEbs" />
                 <ScalarProperty Name="IVDStatus" ColumnName="IVDStatus" />
+                <ScalarProperty Name="SignMeUpForEbs" ColumnName="SignMeUpForEbs" />
+                <ScalarProperty Name="PaymentMethodStamp" ColumnName="PaymentMethodStamp" />
+                <ScalarProperty Name="DODStamp" ColumnName="DODStamp" />
+                <ScalarProperty Name="DeliveryMethodStamp" ColumnName="DeliveryMethodStamp" />
+                <ScalarProperty Name="BillingEmailStamp" ColumnName="BillingEmailStamp" />
+                <ScalarProperty Name="EmailStamp" ColumnName="EmailStamp" />
+                <ScalarProperty Name="PhoneStamp" ColumnName="PhoneStamp" />
+                <ScalarProperty Name="AddressStamp" ColumnName="AddressStamp" />
+                <ScalarProperty Name="KCPaymentMethodID" ColumnName="KCPaymentMethodID" />
+                <ScalarProperty Name="CreationStamp" ColumnName="CreationStamp" />
+                <ScalarProperty Name="PaymentNotification" ColumnName="PaymentNotification" />
+                <ScalarProperty Name="ChangeReasonCode" ColumnName="ChangeReasonCode" />
+                <ScalarProperty Name="DenyWebAccess" ColumnName="DenyWebAccess" />
+                <ScalarProperty Name="InvalidAddress" ColumnName="InvalidAddress" />
+                <ScalarProperty Name="InactiveDate" ColumnName="InactiveDate" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="FVI" ColumnName="FVI" />
+                <ScalarProperty Name="KCDeliveryMethodID" ColumnName="KCDeliveryMethodID" />
+                <ScalarProperty Name="BillingEmail" ColumnName="BillingEmail" />
+                <ScalarProperty Name="AlternateEmail" ColumnName="AlternateEmail" />
+                <ScalarProperty Name="Pager" ColumnName="Pager" />
+                <ScalarProperty Name="PersonID" ColumnName="PersonID" />
+                <ScalarProperty Name="PINNumber" ColumnName="PINNumber" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedStamp" ColumnName="ModifiedStamp" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="DateOfDeath" ColumnName="DateOfDeath" />
+                <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="eMail" ColumnName="eMail" />
+                <ScalarProperty Name="WorkExtension" ColumnName="WorkExtension" />
+                <ScalarProperty Name="WorkPhone" ColumnName="WorkPhone" />
+                <ScalarProperty Name="CellPhone" ColumnName="CellPhone" />
+                <ScalarProperty Name="HomePhone" ColumnName="HomePhone" />
+                <ScalarProperty Name="Zip" ColumnName="Zip" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Suffix" ColumnName="Suffix" />
+                <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="SSN" ColumnName="SSN" />
+                <ScalarProperty Name="KCPersonID" ColumnName="KCPersonID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Stubs">
             <EntityTypeMapping TypeName="ReceiptModel.Stub">
               <MappingFragment StoreEntitySet="Stubs">
-                <ScalarProperty Name="GlobalBatchID" ColumnName="GlobalBatchID" />
-                <ScalarProperty Name="TransactionID" ColumnName="TransactionID" />
-                <ScalarProperty Name="GlobalStubID" ColumnName="GlobalStubID" />
-                <ScalarProperty Name="TransactionSequence" ColumnName="TransactionSequence" />
-                <ScalarProperty Name="BatchSequence" ColumnName="BatchSequence" />
-                <ScalarProperty Name="StubSequence" ColumnName="StubSequence" />
-                <ScalarProperty Name="SplitNumber" ColumnName="SplitNumber" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="AccountNumber" ColumnName="AccountNumber" />
-                <ScalarProperty Name="Amount" ColumnName="Amount" />
-                <ScalarProperty Name="OCRAmount" ColumnName="OCRAmount" />
-                <ScalarProperty Name="RawOCR1" ColumnName="RawOCR1" />
-                <ScalarProperty Name="RawOCR2" ColumnName="RawOCR2" />
-                <ScalarProperty Name="RawOCR3" ColumnName="RawOCR3" />
-                <ScalarProperty Name="DEBillingKeys" ColumnName="DEBillingKeys" />
-                <ScalarProperty Name="DEDataKeys" ColumnName="DEDataKeys" />
-                <ScalarProperty Name="ItemDataKeys" ColumnName="ItemDataKeys" />
-                <ScalarProperty Name="ItemRawKeys" ColumnName="ItemRawKeys" />
-                <ScalarProperty Name="ItemBillingKeys" ColumnName="ItemBillingKeys" />
-                <ScalarProperty Name="IsGhost" ColumnName="IsGhost" />
-                <ScalarProperty Name="IsOMRDetected" ColumnName="IsOMRDetected" />
-                <ScalarProperty Name="Tray" ColumnName="Tray" />
-                <ScalarProperty Name="ICRTranKey" ColumnName="ICRTranKey" />
-                <ScalarProperty Name="IsOMRZone1Detected" ColumnName="IsOMRZone1Detected" />
-                <ScalarProperty Name="IsOMRZone2Detected" ColumnName="IsOMRZone2Detected" />
-                <ScalarProperty Name="IsOMRZone3Detected" ColumnName="IsOMRZone3Detected" />
-                <ScalarProperty Name="IsOMRZone4Detected" ColumnName="IsOMRZone4Detected" />
-                <ScalarProperty Name="PageNo" ColumnName="PageNo" />
-                <ScalarProperty Name="IsSingleOccurrence" ColumnName="IsSingleOccurrence" />
                 <ScalarProperty Name="OriginalGlobalStubID" ColumnName="OriginalGlobalStubID" />
+                <ScalarProperty Name="IsSingleOccurrence" ColumnName="IsSingleOccurrence" />
+                <ScalarProperty Name="PageNo" ColumnName="PageNo" />
+                <ScalarProperty Name="IsOMRZone4Detected" ColumnName="IsOMRZone4Detected" />
+                <ScalarProperty Name="IsOMRZone3Detected" ColumnName="IsOMRZone3Detected" />
+                <ScalarProperty Name="IsOMRZone2Detected" ColumnName="IsOMRZone2Detected" />
+                <ScalarProperty Name="IsOMRZone1Detected" ColumnName="IsOMRZone1Detected" />
+                <ScalarProperty Name="ICRTranKey" ColumnName="ICRTranKey" />
+                <ScalarProperty Name="Tray" ColumnName="Tray" />
+                <ScalarProperty Name="IsOMRDetected" ColumnName="IsOMRDetected" />
+                <ScalarProperty Name="IsGhost" ColumnName="IsGhost" />
+                <ScalarProperty Name="ItemBillingKeys" ColumnName="ItemBillingKeys" />
+                <ScalarProperty Name="ItemRawKeys" ColumnName="ItemRawKeys" />
+                <ScalarProperty Name="ItemDataKeys" ColumnName="ItemDataKeys" />
+                <ScalarProperty Name="DEDataKeys" ColumnName="DEDataKeys" />
+                <ScalarProperty Name="DEBillingKeys" ColumnName="DEBillingKeys" />
+                <ScalarProperty Name="RawOCR3" ColumnName="RawOCR3" />
+                <ScalarProperty Name="RawOCR2" ColumnName="RawOCR2" />
+                <ScalarProperty Name="RawOCR1" ColumnName="RawOCR1" />
+                <ScalarProperty Name="OCRAmount" ColumnName="OCRAmount" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="AccountNumber" ColumnName="AccountNumber" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="SplitNumber" ColumnName="SplitNumber" />
+                <ScalarProperty Name="StubSequence" ColumnName="StubSequence" />
+                <ScalarProperty Name="BatchSequence" ColumnName="BatchSequence" />
+                <ScalarProperty Name="TransactionSequence" ColumnName="TransactionSequence" />
+                <ScalarProperty Name="GlobalStubID" ColumnName="GlobalStubID" />
+                <ScalarProperty Name="TransactionID" ColumnName="TransactionID" />
+                <ScalarProperty Name="GlobalBatchID" ColumnName="GlobalBatchID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="StubsDataEntries">
             <EntityTypeMapping TypeName="ReceiptModel.StubsDataEntry">
               <MappingFragment StoreEntitySet="StubsDataEntry">
-                <ScalarProperty Name="GlobalBatchID" ColumnName="GlobalBatchID" />
-                <ScalarProperty Name="TransactionID" ColumnName="TransactionID" />
-                <ScalarProperty Name="GlobalStubID" ColumnName="GlobalStubID" />
-                <ScalarProperty Name="InvoiceNumber" ColumnName="InvoiceNumber" />
-                <ScalarProperty Name="ACHAddendaBPRMonetaryAmount" ColumnName="ACHAddendaBPRMonetaryAmount" />
-                <ScalarProperty Name="ACHAddendaBPRAccountNumber" ColumnName="ACHAddendaBPRAccountNumber" />
-                <ScalarProperty Name="ACHAddendaRMRReferenceNumber" ColumnName="ACHAddendaRMRReferenceNumber" />
-                <ScalarProperty Name="ACHAddendaRMRMonetaryAmount" ColumnName="ACHAddendaRMRMonetaryAmount" />
-                <ScalarProperty Name="ACHAddendaRMRTotalInvAmount" ColumnName="ACHAddendaRMRTotalInvAmount" />
-                <ScalarProperty Name="ACHAddendaRMRDiscountAmount" ColumnName="ACHAddendaRMRDiscountAmount" />
-                <ScalarProperty Name="ARP" ColumnName="ARP" />
-                <ScalarProperty Name="PaymentMode" ColumnName="PaymentMode" />
-                <ScalarProperty Name="PaymentSource" ColumnName="PaymentSource" />
-                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
-                <ScalarProperty Name="PaidBy" ColumnName="PaidBy" />
-                <ScalarProperty Name="OFCAmount" ColumnName="OFCAmount" />
-                <ScalarProperty Name="FIPS" ColumnName="FIPS" />
-                <ScalarProperty Name="TargetedPayment" ColumnName="TargetedPayment" />
-                <ScalarProperty Name="CaseNumber" ColumnName="CaseNumber" />
-                <ScalarProperty Name="CourtJudgment" ColumnName="CourtJudgment" />
-                <ScalarProperty Name="CourtGuideline" ColumnName="CourtGuideline" />
-                <ScalarProperty Name="ReasonCode" ColumnName="ReasonCode" />
-                <ScalarProperty Name="ExportedToCHARTS" ColumnName="ExportedToCHARTS" />
-                <ScalarProperty Name="ExportedToCHARTSDate" ColumnName="ExportedToCHARTSDate" />
-                <ScalarProperty Name="ExportedAsUnidentified" ColumnName="ExportedAsUnidentified" />
-                <ScalarProperty Name="ResolvedDate" ColumnName="ResolvedDate" />
-                <ScalarProperty Name="CHARTSStubPrefix" ColumnName="CHARTSStubPrefix" />
-                <ScalarProperty Name="Archived" ColumnName="Archived" />
-                <ScalarProperty Name="ArchivedStamp" ColumnName="ArchivedStamp" />
-                <ScalarProperty Name="ArchivedBy" ColumnName="ArchivedBy" />
-                <ScalarProperty Name="TotalAmountDue" ColumnName="TotalAmountDue" />
-                <ScalarProperty Name="Adjusted" ColumnName="Adjusted" />
-                <ScalarProperty Name="AdjustedDate" ColumnName="AdjustedDate" />
-                <ScalarProperty Name="AdjustedBy" ColumnName="AdjustedBy" />
-                <ScalarProperty Name="AdjustmentReason" ColumnName="AdjustmentReason" />
-                <ScalarProperty Name="CHARTSAdjustedDate" ColumnName="CHARTSAdjustedDate" />
-                <ScalarProperty Name="SSN" ColumnName="SSN" />
-                <ScalarProperty Name="ErrorCode" ColumnName="ErrorCode" />
-                <ScalarProperty Name="ErrorDate" ColumnName="ErrorDate" />
-                <ScalarProperty Name="RAHoldStatus" ColumnName="RAHoldStatus" />
-                <ScalarProperty Name="RAHoldReason" ColumnName="RAHoldReason" />
-                <ScalarProperty Name="RAHoldDate" ColumnName="RAHoldDate" />
-                <ScalarProperty Name="RAHoldReleaseDate" ColumnName="RAHoldReleaseDate" />
-                <ScalarProperty Name="RAHoldBy" ColumnName="RAHoldBy" />
-                <ScalarProperty Name="RAReleaseBy" ColumnName="RAReleaseBy" />
-                <ScalarProperty Name="ScanLine" ColumnName="ScanLine" />
-                <ScalarProperty Name="SDUTranID" ColumnName="SDUTranID" />
+                <ScalarProperty Name="ComplianceExemptReason" ColumnName="ComplianceExemptReason" />
                 <ScalarProperty Name="AddendaData" ColumnName="AddendaData" />
+                <ScalarProperty Name="SDUTranID" ColumnName="SDUTranID" />
+                <ScalarProperty Name="ScanLine" ColumnName="ScanLine" />
+                <ScalarProperty Name="RAReleaseBy" ColumnName="RAReleaseBy" />
+                <ScalarProperty Name="RAHoldBy" ColumnName="RAHoldBy" />
+                <ScalarProperty Name="RAHoldReleaseDate" ColumnName="RAHoldReleaseDate" />
+                <ScalarProperty Name="RAHoldDate" ColumnName="RAHoldDate" />
+                <ScalarProperty Name="RAHoldReason" ColumnName="RAHoldReason" />
+                <ScalarProperty Name="RAHoldStatus" ColumnName="RAHoldStatus" />
+                <ScalarProperty Name="ErrorDate" ColumnName="ErrorDate" />
+                <ScalarProperty Name="ErrorCode" ColumnName="ErrorCode" />
+                <ScalarProperty Name="SSN" ColumnName="SSN" />
+                <ScalarProperty Name="CHARTSAdjustedDate" ColumnName="CHARTSAdjustedDate" />
+                <ScalarProperty Name="AdjustmentReason" ColumnName="AdjustmentReason" />
+                <ScalarProperty Name="AdjustedBy" ColumnName="AdjustedBy" />
+                <ScalarProperty Name="AdjustedDate" ColumnName="AdjustedDate" />
+                <ScalarProperty Name="Adjusted" ColumnName="Adjusted" />
+                <ScalarProperty Name="TotalAmountDue" ColumnName="TotalAmountDue" />
+                <ScalarProperty Name="ArchivedBy" ColumnName="ArchivedBy" />
+                <ScalarProperty Name="ArchivedStamp" ColumnName="ArchivedStamp" />
+                <ScalarProperty Name="Archived" ColumnName="Archived" />
+                <ScalarProperty Name="CHARTSStubPrefix" ColumnName="CHARTSStubPrefix" />
+                <ScalarProperty Name="ResolvedDate" ColumnName="ResolvedDate" />
+                <ScalarProperty Name="ExportedAsUnidentified" ColumnName="ExportedAsUnidentified" />
+                <ScalarProperty Name="ExportedToCHARTSDate" ColumnName="ExportedToCHARTSDate" />
+                <ScalarProperty Name="ExportedToCHARTS" ColumnName="ExportedToCHARTS" />
+                <ScalarProperty Name="ReasonCode" ColumnName="ReasonCode" />
+                <ScalarProperty Name="CourtGuideline" ColumnName="CourtGuideline" />
+                <ScalarProperty Name="CourtJudgment" ColumnName="CourtJudgment" />
+                <ScalarProperty Name="CaseNumber" ColumnName="CaseNumber" />
+                <ScalarProperty Name="TargetedPayment" ColumnName="TargetedPayment" />
+                <ScalarProperty Name="FIPS" ColumnName="FIPS" />
+                <ScalarProperty Name="OFCAmount" ColumnName="OFCAmount" />
+                <ScalarProperty Name="PaidBy" ColumnName="PaidBy" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="PaymentSource" ColumnName="PaymentSource" />
+                <ScalarProperty Name="PaymentMode" ColumnName="PaymentMode" />
+                <ScalarProperty Name="ARP" ColumnName="ARP" />
+                <ScalarProperty Name="ACHAddendaRMRDiscountAmount" ColumnName="ACHAddendaRMRDiscountAmount" />
+                <ScalarProperty Name="ACHAddendaRMRTotalInvAmount" ColumnName="ACHAddendaRMRTotalInvAmount" />
+                <ScalarProperty Name="ACHAddendaRMRMonetaryAmount" ColumnName="ACHAddendaRMRMonetaryAmount" />
+                <ScalarProperty Name="ACHAddendaRMRReferenceNumber" ColumnName="ACHAddendaRMRReferenceNumber" />
+                <ScalarProperty Name="ACHAddendaBPRAccountNumber" ColumnName="ACHAddendaBPRAccountNumber" />
+                <ScalarProperty Name="ACHAddendaBPRMonetaryAmount" ColumnName="ACHAddendaBPRMonetaryAmount" />
+                <ScalarProperty Name="InvoiceNumber" ColumnName="InvoiceNumber" />
+                <ScalarProperty Name="GlobalStubID" ColumnName="GlobalStubID" />
+                <ScalarProperty Name="TransactionID" ColumnName="TransactionID" />
+                <ScalarProperty Name="GlobalBatchID" ColumnName="GlobalBatchID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="ReceiptExport" FunctionName="ReceiptModel.Store.ReceiptExport" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

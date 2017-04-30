@@ -39,5 +39,19 @@ namespace ReceiptExport
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("ReceiptExport");
         }
+    
+        public virtual int proc_Custom_ReceiptExport()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("proc_Custom_ReceiptExport");
+        }
+    
+        public virtual int proc_Custom_ReceiptExport_UpdateStubDE(Nullable<int> globalStubID)
+        {
+            var globalStubIDParameter = globalStubID.HasValue ?
+                new ObjectParameter("GlobalStubID", globalStubID) :
+                new ObjectParameter("GlobalStubID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("proc_Custom_ReceiptExport_UpdateStubDE", globalStubIDParameter);
+        }
     }
 }
