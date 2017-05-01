@@ -49,6 +49,40 @@ namespace ReceiptExport
         static DateTime CurrentDate = DateTime.Now;
         static string itemprocCS = ConfigurationManager.ConnectionStrings["itemCS"].ToString();
 
+        enum PredepositStatus : byte { None, PreDeposit, Released, Unprocessed };
+
+        static bool NonPredeposited(byte? status)
+        {
+            if (status == null)
+                return true;
+            else if (status == (byte?)PredepositStatus.None)
+                return true;
+            else if (status == (byte?)PredepositStatus.Released)
+                return true;
+            else
+                return false;
+        }
+
+        static bool Predeposited(byte? status)
+        {
+            if (status == (byte?)PredepositStatus.PreDeposit)
+                return true;
+            else if (status == (byte?)PredepositStatus.Unprocessed)
+                return true;
+            else
+                return false;
+        }
+
+        delegate bool MyDelegate(byte? num); 
+
+        static IEnumerable<Receipt> FilterReceipts(IEnumerable<Receipt> receipts, MyDelegate FilterBy)
+        {
+            foreach(var receipt in receipts)
+            {
+                if (FilterBy(receipt.PredepositStatus))
+                    yield return receipt;
+            }
+        }
 
         static void Main(string[] args)
         {
@@ -75,12 +109,18 @@ namespace ReceiptExport
 
         private static void ProcessRecords()
         {            
+            List<Receipt> allReceipts = GetReceiptList().OrderBy(x => x.GlobalStubID).ToList<Receipt>();
 
+            Log.WriteLine(String.Format("GetReceipts() returned {0} records ", allReceipts.Count));
 
-            List<Receipt> receipts = GetReceiptList().OrderBy(x => x.GlobalStubID).ToList<Receipt>();
+            IEnumerable<Receipt> skippedReceipts = FilterReceipts(allReceipts, Predeposited);            
 
-            Log.WriteLine(String.Format("GetReceipts() returned {0} records ", receipts.Count));
+            foreach(var skippedReceipt in skippedReceipts)
+            {
+                Log.WriteLine("Skipped receipt: " + skippedReceipt.GlobalStubID + " PredepositStatus: " + skippedReceipt.PredepositStatus);
+            }
 
+            List<Receipt> receipts = FilterReceipts(allReceipts, NonPredeposited).ToList();
 
             if (receipts.Count > 0)
             {
@@ -103,6 +143,8 @@ namespace ReceiptExport
                     }
 
                     rec05[i] = new RecordType05();
+
+                    if(receipt.PredepositStatus == 0 )
 
                     rec05[i].SduBatchId = receipt.GlobalBatchID.ToString();
                     rec05[i].SduTranId = CreateSduTranID(receipt.GlobalStubID);
@@ -200,35 +242,6 @@ namespace ReceiptExport
             }
         }
 
-        private static byte? GetComplianceExemptionReason(Receipt receipt)
-        {
-            if (receipt.ExportedToCHARTSDate == null && receipt.PersonID != "0")
-                return null;// normal
-            else if (receipt.PersonID == "0")
-                return 0;// unidentified
-            else if (receipt.PredepositStatus == 1 || receipt.PredepositStatus == 3)
-                return 1;// predeposited
-            else
-                return 2;// other
-        }
-
-        private static void WriteToReceiptFile(RecordType01 rec01, RecordType05[] rec05)
-        {
-            using (StreamWriter receiptWriter = CreateReceiptFile())
-            {
-                receiptWriter.WriteLine(rec01.RecordLine());
-
-                for (int i = 0; i < rec05.Length; i++)
-                {
-                    string currentRecord = rec05[i].RecordLine();
-
-                    if (currentRecord.Length == record05Length)
-                        receiptWriter.WriteLine(currentRecord);
-                    else
-                        LogErrorColumns(rec05[i]);
-                }
-            }
-        }
 
         public static StreamWriter CreateReceiptFile()
         {
@@ -253,6 +266,36 @@ namespace ReceiptExport
                 Log.Exit(errMsg, ExitCode.CreateReceiptFileError);
                 return sw;
             }
+        }
+
+        private static void WriteToReceiptFile(RecordType01 rec01, RecordType05[] rec05)
+        {
+            using (StreamWriter receiptWriter = CreateReceiptFile())
+            {
+                receiptWriter.WriteLine(rec01.RecordLine());
+
+                for (int i = 0; i < rec05.Length; i++)
+                {
+                    string currentRecord = rec05[i].RecordLine();
+                    
+                    if (currentRecord.Length == record05Length) // and predepositstatus is null or released*******************************
+                        receiptWriter.WriteLine(currentRecord);
+                    else
+                        LogErrorColumns(rec05[i]);
+                }
+            }
+        }
+
+        private static byte? GetComplianceExemptionReason(Receipt receipt)
+        {
+            if (receipt.ExportedToCHARTSDate == null && receipt.PersonID != "0")
+                return null;    // normal
+            else if (receipt.PersonID == "0")
+                return 0;       // unidentified
+            else if (receipt.PredepositStatus == (byte?)PredepositStatus.Released)
+                return 1;       // released from predeposit
+            else
+                return 2;       // other
         }
 
         private static bool IsRetransmittal(Receipt receipt)
