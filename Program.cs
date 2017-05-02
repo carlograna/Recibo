@@ -325,9 +325,9 @@ namespace ReceiptExport
         {
             try
             {
-                string chartsStubPrefix = CurrentDate.Year.ToString().PadLeft(2)
-                                                + CurrentDate.Month.ToString().PadLeft(2)
-                                                + CurrentDate.Day.ToString();
+                string chartsStubPrefix = CurrentDate.Year.ToString().PadLeft(2, '0')
+                                                + CurrentDate.Month.ToString().PadLeft(2, '0')
+                                                + CurrentDate.Day.ToString().PadLeft(2, '0');
 
                 return chartsStubPrefix + globalStubID.ToString().PadLeft(12); //EX: 20100101000012345678
             }
@@ -460,55 +460,55 @@ namespace ReceiptExport
         {
             errMsg = String.Format("Record: {0}.  Invalid length: {1}", rec05.SduTranId, rec05.RecordLine().Length);
 
-            if (rec05.SduBatchId.Length > (int)FieldLength.SduBatchId)
+            if (rec05.SduBatchId.Length != (int)FieldLength.SduBatchId)
                 errMsg += String.Format("{0}SduBatchId length: {1}. Max is: {2}", Environment.NewLine, rec05.SduBatchId.Length, FieldLength.SduBatchId);
-            if (rec05.SduTranId.Length > (int)FieldLength.SduTranId)
+            if (rec05.SduTranId.Length != (int)FieldLength.SduTranId)
                 errMsg += String.Format("{0}SduTranId length: {1}. Max is: {2}", Environment.NewLine, rec05.SduTranId.Length, FieldLength.SduTranId);
-            if (rec05.ReceiptNumber.Length > (int)FieldLength.ReceiptNumber)
+            if (rec05.ReceiptNumber.Length != (int)FieldLength.ReceiptNumber)
                 errMsg += String.Format("{0}ReceiptNumber length: {1}. Max is: {2}", Environment.NewLine, rec05.ReceiptNumber.Length, FieldLength.ReceiptNumber);
-            if (rec05.StrRetransmittalIndicator.Length > (int)FieldLength.RetransmittalIndicator)
+            if (rec05.StrRetransmittalIndicator.Length != (int)FieldLength.RetransmittalIndicator)
                 errMsg += String.Format("{0}RetransmittalIndicator length: {1}. Max is: {2}", Environment.NewLine, rec05.StrRetransmittalIndicator.Length, FieldLength.RetransmittalIndicator);
-            if (rec05.PayorID.Length > (int)FieldLength.PayorID)
+            if (rec05.PayorID.Length != (int)FieldLength.PayorID)
                 errMsg += String.Format("{0}PayorID length: {1}. Max is: {2}", Environment.NewLine, rec05.PayorID.Length, FieldLength.PayorID);
-            if (rec05.PayorSSN.Length > (int)FieldLength.PayorSSN)
+            if (rec05.PayorSSN.Length != (int)FieldLength.PayorSSN)
                 errMsg += String.Format("{0}PayorSSN length: {1}. Max is: {2}", Environment.NewLine, rec05.PayorSSN.Length, FieldLength.PayorSSN);
-            if (rec05.PaidBy.Length > (int)FieldLength.PaidBy)
+            if (rec05.PaidBy.Length != (int)FieldLength.PaidBy)
                 errMsg += String.Format("{0}PaidBy length: {1}. Max is: {2}", Environment.NewLine, rec05.PaidBy.Length, FieldLength.PaidBy);
-            if (rec05.PayorLastName.Length > (int)FieldLength.PayorLastName)
+            if (rec05.PayorLastName.Length != (int)FieldLength.PayorLastName)
                 errMsg += String.Format("{0}PayorLastName length: {1}. Max is: {2}", Environment.NewLine, rec05.PayorLastName.Length, FieldLength.PayorLastName);
-            if (rec05.PayorFirstName.Length > (int)FieldLength.PayorFirstName)
+            if (rec05.PayorFirstName.Length != (int)FieldLength.PayorFirstName)
                 errMsg += String.Format("{0}PayorFirstName length: {1}. Max is: {2}", Environment.NewLine, rec05.PayorFirstName.Length, FieldLength.PayorFirstName);
-            if (rec05.PayorMiddleName.Length > (int)FieldLength.PayorMiddleName)
+            if (rec05.PayorMiddleName.Length != (int)FieldLength.PayorMiddleName)
                 errMsg += String.Format("{0}PayorMiddleName length: {1}. Max is: {2}", Environment.NewLine, rec05.PayorMiddleName.Length, FieldLength.PayorMiddleName);
-            if (rec05.PayorSuffix.Length > (int)FieldLength.PayorSuffix)
+            if (rec05.PayorSuffix.Length != (int)FieldLength.PayorSuffix)
                 errMsg += String.Format("{0}PayorSuffix length: {1}. Max is: {2}", Environment.NewLine, rec05.PayorSuffix.Length, FieldLength.PayorSuffix);
-            if (rec05.StrAmount.Length > (int)FieldLength.Amount)
+            if (rec05.StrAmount.Length != (int)FieldLength.Amount)
                 errMsg += String.Format("{0}Amount length: {1}. Max is: {2}", Environment.NewLine, rec05.StrAmount.Length, FieldLength.Amount);
-            if (rec05.StrOfcAmount.Length > (int)FieldLength.OfcAmount)
+            if (rec05.StrOfcAmount.Length != (int)FieldLength.OfcAmount)
                 errMsg += String.Format("{0}OfcAmount length: {1}. Max is: {2}", Environment.NewLine, rec05.StrOfcAmount.Length, FieldLength.OfcAmount);
-            if (rec05.PaymentMode.Length > (int)FieldLength.PaymentMode)
+            if (rec05.PaymentMode.Length != (int)FieldLength.PaymentMode)
                 errMsg += String.Format("{0}PaymentMode length: {1}. Max is: {2}", Environment.NewLine, rec05.PaymentMode.Length, FieldLength.PaymentMode);
-            if (rec05.PaymentSource.Length > (int)FieldLength.PaymentSource)
+            if (rec05.PaymentSource.Length != (int)FieldLength.PaymentSource)
                 errMsg += String.Format("{0}PaymentSource length: {1}. Max is: {2}", Environment.NewLine, rec05.PaymentSource.Length, FieldLength.PaymentSource);
-            if (rec05.ReceiptReceivedDate.Length > (int)FieldLength.ReceiptReceivedDate)
+            if (rec05.ReceiptReceivedDate.Length != (int)FieldLength.ReceiptReceivedDate)
                 errMsg += String.Format("{0}ReceiptReceivedDate length: {1}. Max is: {2}", Environment.NewLine, rec05.ReceiptReceivedDate.Length, FieldLength.ReceiptReceivedDate);
-            if (rec05.ReceiptEffectiveDate.Length > (int)FieldLength.ReceiptEffectiveDate)
+            if (rec05.ReceiptEffectiveDate.Length != (int)FieldLength.ReceiptEffectiveDate)
                 errMsg += String.Format("{0}ReceiptEffectiveDate length: {1}. Max is: {2}", Environment.NewLine, rec05.ReceiptEffectiveDate.Length, FieldLength.ReceiptEffectiveDate);
-            if (rec05.CheckNumber.Length > (int)FieldLength.CheckNumber)
+            if (rec05.CheckNumber.Length != (int)FieldLength.CheckNumber)
                 errMsg += String.Format("{0}CheckNumber length: {1}. Max is: {2}", Environment.NewLine, rec05.CheckNumber.Length, FieldLength.CheckNumber);
-            if (rec05.ComplianceExemptionReason.Length > (int)FieldLength.ComplianceExemptionReason)
+            if (rec05.ComplianceExemptionReason.Length != (int)FieldLength.ComplianceExemptionReason)
                 errMsg += String.Format("{0}ComplianceExemptionReason length: {1}. Max is: {2}", Environment.NewLine, rec05.ComplianceExemptionReason.Length, FieldLength.ComplianceExemptionReason);
-            if (rec05.TargetedPaymentIndicator.Length > (int)FieldLength.TargetedPaymentIndicator)
+            if (rec05.TargetedPaymentIndicator.Length != (int)FieldLength.TargetedPaymentIndicator)
                 errMsg += String.Format("{0}TargetedPaymentIndicator length: {1}. Max is: {2}", Environment.NewLine, rec05.TargetedPaymentIndicator.Length, FieldLength.TargetedPaymentIndicator);
-            if (rec05.Fips.Length > (int)FieldLength.Fips)
+            if (rec05.Fips.Length != (int)FieldLength.Fips)
                 errMsg += String.Format("{0}Fips length: {1}. Max is: {2}", Environment.NewLine, rec05.Fips.Length, FieldLength.Fips);
-            if (rec05.CourtCaseNumber.Length > (int)FieldLength.CourtCaseNumber)
+            if (rec05.CourtCaseNumber.Length != (int)FieldLength.CourtCaseNumber)
                 errMsg += String.Format("{0}CourtCaseNumber length: {1}. Max is: {2}", Environment.NewLine, rec05.CourtCaseNumber.Length, FieldLength.CourtCaseNumber);
-            if (rec05.CourtJudgementNumber.ToString().Length > (int)FieldLength.CourtJudgementNumber)
+            if (rec05.CourtJudgementNumber.ToString().Length != (int)FieldLength.CourtJudgementNumber)
                 errMsg += String.Format("{0}CourtJudgementNumber length: {1}. Max is: {2}", Environment.NewLine, rec05.CourtJudgementNumber.Length, FieldLength.CourtJudgementNumber);
-            if (rec05.CourtGuidelineNumber.ToString().Length > (int)FieldLength.CourtGuidelineNumber)
+            if (rec05.CourtGuidelineNumber.ToString().Length != (int)FieldLength.CourtGuidelineNumber)
                 errMsg += String.Format("{0}CourtGuidelineNumber length: {1}. Max is: {2}", Environment.NewLine, rec05.CourtGuidelineNumber.Length, FieldLength.CourtGuidelineNumber);
-            if (rec05.ReasonCode.Length > (int)FieldLength.ReasonCode)
+            if (rec05.ReasonCode.Length != (int)FieldLength.ReasonCode)
                 errMsg += String.Format("{0}ReasonCode length: {1}. Max is: {2}", Environment.NewLine, rec05.ReasonCode.Length, FieldLength.ReasonCode);
 
             Log.WriteLine(errMsg);
