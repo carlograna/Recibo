@@ -51,7 +51,7 @@ namespace ReceiptExport
 
         enum PredepositStatus : byte { None, PreDeposit, Released, Unprocessed };
 
-        static bool NonPredeposited(byte? status)
+        static bool NotPredeposited(byte? status)
         {
             if (status == null)
                 return true;
@@ -86,17 +86,23 @@ namespace ReceiptExport
 
         static void Main(string[] args)
         {
-            //GetParameters(args);
-            fileDir = ConfigurationManager.AppSettings["fileDir"].ToString();
-            Log.CreateLogFile(FileDir);
-            ProcessRecords();
-            CreateFlagFile();
-            Log.Close();            
-
-            System.Environment.Exit((int)ExitCode.Success); //exit
+            try
+            {
+                //GetParameters(args);
+                CreateLogFile();            
+                ProcessRecords();
+                CreateFlagFile();
+                CloseLogFile();            
+                System.Environment.Exit((int)ExitCode.Success); //exit
+            }
+            catch(Exception ex)
+            {
+                Log.Exit(ex.ToString(), ExitCode.UnknownError);
+            }                
         }
+ 
 
-        public static List<Receipt> GetReceiptList()
+        private static List<Receipt> GetReceiptList()
         {
             using(var db = new ReceiptDBContext())
             {
@@ -120,7 +126,7 @@ namespace ReceiptExport
                 Log.WriteLine("Skipped receipt: " + skippedReceipt.GlobalStubID + " PredepositStatus: " + skippedReceipt.PredepositStatus);
             }
 
-            List<Receipt> receipts = FilterReceipts(allReceipts, NonPredeposited).ToList();
+            List<Receipt> receipts = FilterReceipts(allReceipts, NotPredeposited).ToList();
 
             if (receipts.Count > 0)
             {
@@ -210,7 +216,6 @@ namespace ReceiptExport
 
                         prevGlobalBatchId = receipt.GlobalBatchID;
                     }
-                    //-----------------------------------------------------------------------------------------
 
                     rec01.TotalAmount += rec05[i].Amount;
 
@@ -237,8 +242,8 @@ namespace ReceiptExport
             }
             else
             {
-            //no records found 
-                Log.Exit("Receipt Export found " + receipts.Count + " to process", ExitCode.InvalidParameter);
+                //no records found
+                throw new CustomException("Receipt Export found " + receipts.Count + " to process", ExitCode.NoRecordsFound);
             }
         }
 
@@ -255,34 +260,38 @@ namespace ReceiptExport
                     sw = new StreamWriter(receiptFilePath);
                 }
                 else
-                    Log.Exit("File already exists: " + receiptFilePath, ExitCode.CreateReceiptFileError);
+                    throw new CustomException("File already exists: " + receiptFilePath, ExitCode.CreateReceiptFileError);
 
                 return sw;
             }
             catch
             {
-                errMsg = "CreateReceiptFile()\n";
-                errMsg += "Unable to Create Receipt Data File";
-                Log.Exit(errMsg, ExitCode.CreateReceiptFileError);
-                return sw;
+                throw;
             }
         }
 
         private static void WriteToReceiptFile(RecordType01 rec01, RecordType05[] rec05)
         {
-            using (StreamWriter receiptWriter = CreateReceiptFile())
+            try
             {
-                receiptWriter.WriteLine(rec01.RecordLine());
-
-                for (int i = 0; i < rec05.Length; i++)
+                using (StreamWriter receiptWriter = CreateReceiptFile())
                 {
-                    string currentRecord = rec05[i].RecordLine();
-                    
-                    if (currentRecord.Length == record05Length) // and predepositstatus is null or released*******************************
-                        receiptWriter.WriteLine(currentRecord);
-                    else
-                        LogErrorColumns(rec05[i]);
+                    receiptWriter.WriteLine(rec01.RecordLine());
+
+                    for (int i = 0; i < rec05.Length; i++)
+                    {
+                        string currentRecord = rec05[i].RecordLine();
+
+                        if (currentRecord.Length == record05Length) // and predepositstatus is null or released*******************************
+                            receiptWriter.WriteLine(currentRecord);
+                        else
+                            LogErrorColumns(rec05[i]);
+                    }
                 }
+            }
+            catch
+            {
+                throw;
             }
         }
 
@@ -315,10 +324,7 @@ namespace ReceiptExport
 
                 return isRetransmittal;
             }
-            catch
-            {
-                throw;
-            }
+            catch { throw; }
         }
 
         private static string CreateSduTranID(int globalStubID)
@@ -339,77 +345,80 @@ namespace ReceiptExport
 
         private static void UpdateBatch(int prevGlobalBatchId)
         {
-            using (var db = new ReceiptDBContext())
-            {
-                Batch b = db.Batches.FirstOrDefault(x => x.GlobalBatchID == prevGlobalBatchId);
-                b.DEStatus = 3;
-                //db.SaveChanges();
-            }
-            //    string sqlString = String.Format(
-            //            "UPDATE Batch SET DEStatus = 3 WHERE GlobalBatchID = {0}", prevGlobalBatchId);
-        }
-
-        private static void GetParameters(string[] args)
-        {
-            int requiredNumberOfArguments = Int32.Parse(ConfigurationManager.AppSettings["CommandLineArguments"].ToString());
-            if (args.Count() != requiredNumberOfArguments)
-            {
-                errMsg = String.Format("Number of arguments required: {0}", requiredNumberOfArguments.ToString());
-                Log.Exit(errMsg, ExitCode.InvalidParameter);
-            }
-            else
-            {
-                for (int i = 0; i < args.Count(); i++)
-                {
-                    string param = args[i];
-                    int pos = param.IndexOf('=') + 1;
-                    int charCount = param.Length - pos;
-                    string paramName = param.Substring(0, pos).ToUpper();
-                    string paramValue = param.Substring(pos, charCount).ToUpper();
-
-                    if (paramName == "SERVER=")
-                    { paramServer = paramValue; }
-
-                }
-
-                ValidateServerParam(paramServer);
-            }
-        }
-
-        private static void ValidateServerParam(string _serverName)
-        {
             try
             {
-                //Match command line server parameter with app.config value
-                if (_serverName.Trim() == ConfigurationManager.AppSettings["server"].ToString())
+                using (var db = new ReceiptDBContext())
                 {
-                    ////paramServer = _serverName.ToUpper();
-                    //fileDir = ConfigurationManager.AppSettings["fileDir"].ToString();
-                    //itemprocessingConnString = ConfigurationManager.ConnectionStrings["itemCS"].ConnectionString;
-                }
-
-                else
-                {
-                    EmailNotification((int)ExitCode.InvalidParameter);
+                    Batch b = db.Batches.FirstOrDefault(x => x.GlobalBatchID == prevGlobalBatchId);
+                    b.DEStatus = 3;
+                    //db.SaveChanges();
                 }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                errMsg = "ValidateServerparam(): \n";
-                errMsg += ex.Message;
-                EmailNotification((int)ExitCode.UnknownError);
-                // don't do this log doesn't exit yet.  Need parameter to create log.
-                //Log.Exit(errMsg, ExitCode.UnknownError);
+                throw new CustomException("UpdateBatch() error.", ex);
             }
         }
+
+        //private static void GetParameters(string[] args)
+        //{
+        //    int requiredNumberOfArguments = Int32.Parse(ConfigurationManager.AppSettings["CommandLineArguments"].ToString());
+        //    if (args.Count() != requiredNumberOfArguments)
+        //    {
+        //        errMsg = String.Format("Number of arguments required: {0}", requiredNumberOfArguments.ToString());
+        //        Log.Exit(errMsg, ExitCode.InvalidParameter);
+        //    }
+        //    else
+        //    {
+        //        for (int i = 0; i < args.Count(); i++)
+        //        {
+        //            string param = args[i];
+        //            int pos = param.IndexOf('=') + 1;
+        //            int charCount = param.Length - pos;
+        //            string paramName = param.Substring(0, pos).ToUpper();
+        //            string paramValue = param.Substring(pos, charCount).ToUpper();
+
+        //            if (paramName == "SERVER=")
+        //            { paramServer = paramValue; }
+
+        //        }
+
+        //        ValidateServerParam(paramServer);
+        //    }
+        //}
+
+        //private static void ValidateServerParam(string _serverName)
+        //{
+        //    try
+        //    {
+        //        //Match command line server parameter with app.config value
+        //        if (_serverName.Trim() == ConfigurationManager.AppSettings["server"].ToString())
+        //        {
+        //            ////paramServer = _serverName.ToUpper();
+        //            //fileDir = ConfigurationManager.AppSettings["fileDir"].ToString();
+        //            //itemprocessingConnString = ConfigurationManager.ConnectionStrings["itemCS"].ConnectionString;
+        //        }
+
+        //        else
+        //        {
+        //            EmailNotification((int)ExitCode.InvalidParameter);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        errMsg = "ValidateServerparam(): \n";
+        //        errMsg += ex.Message;
+        //        EmailNotification((int)ExitCode.UnknownError);
+        //        // don't do this log doesn't exit yet.  Need parameter to create log.
+        //        //Log.Exit(errMsg, ExitCode.UnknownError);
+        //    }
+        //}
 
         public static void EmailNotification(int _exitCode)
         {
             //MailMessage mail = new MailMessage();
 
             //mail.From = new MailAddress(ConfigurationManager.AppSettings["FromEmail"].ToString());
-
-
 
             //if (_exitCode == (int)ExitCode.Success)
             //{
@@ -440,7 +449,29 @@ namespace ReceiptExport
 
         }
 
-        public static void CreateFlagFile()
+        private static void CreateLogFile()
+        {
+            try
+            {
+                fileDir = ConfigurationManager.AppSettings["fileDir"].ToString();
+                Log.CreateLogFile(FileDir);
+            }
+            catch(Exception ex)
+            {
+                throw new CustomException("CreateLogFile() error, exit_code: " + ExitCode.CreateLogFileError, ex);
+            }
+        }
+
+        private static void CloseLogFile()
+        {
+            try
+            {
+                Log.Close();
+            }
+            catch { throw; }
+        }
+
+        private static void CreateFlagFile()
         {
             try
             {
@@ -449,10 +480,9 @@ namespace ReceiptExport
 
                 File.CreateText(flagFilePath);
             }
-            catch
+            catch(Exception ex)
             {
-                errMsg = "Unable to Create Flag File";
-                Log.Exit(errMsg, ExitCode.CreateFlagFileError);
+                throw new CustomException("CreateFlagFile() exit_code: " + ExitCode.CreateFlagFileError, ex);
             }
         }
 
