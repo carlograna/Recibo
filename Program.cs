@@ -7,7 +7,6 @@ using System.Configuration;
 using System.Data;
 using System.Net.Mail;
 using System.Data.SqlClient;
-using ReceiptExport.classes;
 using System.Data.Common;
 
 
@@ -201,9 +200,9 @@ namespace ReceiptExport
                         
                         //update vertical and horizontal tables
                         SqlParameter pGlobalStubID = new SqlParameter("globalStubID", receipt.GlobalStubID);
-                        //db.Database.ExecuteSqlCommand("proc_Custom_ReceiptExport_UpdateStubDE @GlobalStubID", pGlobalStubID);
+                        db.Database.ExecuteSqlCommand("proc_Custom_ReceiptExport_UpdateStubDE @GlobalStubID", pGlobalStubID);
 
-                        //db.SaveChanges();
+                        db.SaveChanges();
                     }
 
                     // IF THEREIS ITEM UNIDENTIFIED SET THE BATCH TO INCOMPLETE ************************
@@ -335,7 +334,7 @@ namespace ReceiptExport
                                                 + CurrentDate.Month.ToString().PadLeft(2, '0')
                                                 + CurrentDate.Day.ToString().PadLeft(2, '0');
 
-                return chartsStubPrefix + globalStubID.ToString().PadLeft(12); //EX: 20100101000012345678
+                return chartsStubPrefix + globalStubID.ToString().PadLeft(12, '0'); //EX: 20100101000012345678
             }
             catch
             {
@@ -351,7 +350,7 @@ namespace ReceiptExport
                 {
                     Batch b = db.Batches.FirstOrDefault(x => x.GlobalBatchID == prevGlobalBatchId);
                     b.DEStatus = 3;
-                    //db.SaveChanges();
+                    db.SaveChanges();
                 }
             }
             catch(Exception ex)
@@ -414,38 +413,39 @@ namespace ReceiptExport
         //    }
         //}
 
-        public static void EmailNotification(int _exitCode)
+        public static void EmailNotification(int _exitCode, string msg)
         {
-            //MailMessage mail = new MailMessage();
+            MailMessage mail = new MailMessage();
 
-            //mail.From = new MailAddress(ConfigurationManager.AppSettings["FromEmail"].ToString());
+            mail.From = new MailAddress(ConfigurationManager.AppSettings["FromEmail"].ToString());
 
-            //if (_exitCode == (int)ExitCode.Success)
-            //{
-            //    mail.Subject = "ReceiptExport: Successful Process";
-            //    mail.To.Add(ConfigurationManager.AppSettings["NotifyEmail"].ToString());
-            //    mail.Body = "ReceiptExport job processed <b>successfully</b>. <br /><br />";
-            //    mail.Body += "Data file: " + fileDir + " <br />";
-            //    mail.Body += "See attached log file for additional details.";
-            //}
-            //else
-            //{
-            //    mail.Subject = "ReceiptExport Failed";
-            //    mail.To.Add(ConfigurationManager.AppSettings["ItStaffEmail"].ToString());
-            //    mail.Body = "ReceiptExport job <b>failed</b> with exit code " + _exitCode + ".<br /><br />";
-            //    mail.Body += "See attached log file for additional details.";
-            //}
+            if (_exitCode == (int)ExitCode.Success)
+            {
+                mail.Subject = "ReceiptExport: Successful Process";
+                mail.To.Add(ConfigurationManager.AppSettings["NotifyEmail"].ToString());
+                mail.Body = "ReceiptExport job processed <b>successfully</b>. <br /><br />";
+                mail.Body += "Data file: " + fileDir + " <br />";
+                mail.Body += "See attached log file for additional details.";
+            }
+            else
+            {
+                mail.Subject = "ReceiptExport Failed";
+                mail.To.Add(ConfigurationManager.AppSettings["ItStaffEmail"].ToString());
+                mail.Body = "ReceiptExport job <b>failed</b> with exit code " + _exitCode + ".<br /><br />";
+                mail.Body += "See attached log file for additional details.<br/><br/>";
+                mail.Body += msg;
+            }
 
-            //mail.IsBodyHtml = true;
+            mail.IsBodyHtml = true;
 
-            //bool fileExists = File.Exists(Log.FilePath);
-            //if (fileExists)
-            //{
-            //    mail.Attachments.Add(new Attachment(Log.FilePath));
-            //}
+            bool fileExists = File.Exists(Log.FilePath);
+            if (fileExists)
+            {
+                mail.Attachments.Add(new Attachment(Log.FilePath));
+            }
 
-            //SmtpClient smtp = new SmtpClient(ConfigurationManager.AppSettings["MailHost"].ToString());
-            //smtp.Send(mail);
+            SmtpClient smtp = new SmtpClient(ConfigurationManager.AppSettings["MailHost"].ToString());
+            smtp.Send(mail);
 
         }
 

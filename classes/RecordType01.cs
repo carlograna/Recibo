@@ -82,17 +82,37 @@ namespace ReceiptExport
             set { filler = value; }
         }
 
+
+        public int ParseAmtToChartsFormat<T>(T amount)
+        {
+            decimal decAmount;
+            int intAmount;
+
+            try
+            {
+                if (decimal.TryParse(amount.ToString(), out decAmount))
+                {
+                    intAmount = (int)(decAmount * 100);
+                }
+                else
+                    throw new CustomException("Unable to parse Amount");
+
+                return intAmount;
+            }
+            catch { throw; }
+        }
+
         public string RecordLine()
         {
             StringBuilder sb = new StringBuilder();
 
             sb.Append(recordType.PadRight(2));
             sb.Append(recordCount.ToString().PadLeft(7, '0'));
-            sb.Append(totalAmount.ToString().PadRight(15));
-            sb.Append(firstTimeRecordCount.ToString().PadRight(7));
-            sb.Append(firstTimeAmount.ToString().PadRight(15));
-            sb.Append(retransmittalRecordCount.ToString().PadRight(7));
-            sb.Append(retransmittalAmount.ToString().PadRight(15));
+            sb.Append((ParseAmtToChartsFormat(totalAmount) * 100).ToString().PadLeft(15, '0'));
+            sb.Append(firstTimeRecordCount.ToString().PadLeft(7, '0'));
+            sb.Append(ParseAmtToChartsFormat(firstTimeAmount).ToString().PadLeft(15, '0'));
+            sb.Append(retransmittalRecordCount.ToString().PadLeft(7, '0'));
+            sb.Append(ParseAmtToChartsFormat(retransmittalAmount).ToString().PadLeft(15, '0'));
             sb.Append(creationStamp.ToString("yyyy-MM-dd.hh:mm:ss.ffffff").PadRight(26));
             sb.Append(filler.PadRight(206));
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace ReceiptExport.classes
+namespace ReceiptExport
 {
     [Serializable]
     public class CustomException : Exception

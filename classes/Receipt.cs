@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ReceiptExport.classes
+namespace ReceiptExport
 {
     class Receipt
     {

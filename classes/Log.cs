@@ -43,7 +43,7 @@ namespace ReceiptExport
             }
             finally
             {
-                Program.EmailNotification((int)exitCode);
+                Program.EmailNotification((int)exitCode, _errMsg);
                 System.Environment.Exit((int)exitCode);
             }
         }
@@ -67,9 +67,7 @@ namespace ReceiptExport
             }
             catch
             {
-                errMsg = "CreateLogFile()\n";
-                //Exit(errMsg, ExitCode.CreateLogFileError);
-                Program.EmailNotification((int)(ExitCode.CreateLogFileError));
+                throw;                
             }
         }
 

@@ -127,7 +127,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="bin\Debug\ReceiptExport.vshost.exe.manifest" />
     <None Include="obj\x86\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
     <EntityDeploy Include="ReceiptModel.edmx">
