@@ -98,8 +98,7 @@ namespace ReceiptExport
             {
                 Log.Exit(ex.ToString(), ExitCode.UnknownError);
             }                
-        }
- 
+        } 
 
         private static List<Receipt> GetReceiptList()
         {
@@ -149,8 +148,6 @@ namespace ReceiptExport
 
                     rec05[i] = new RecordType05();
 
-                    if(receipt.PredepositStatus == 0 )
-
                     rec05[i].SduBatchId = receipt.GlobalBatchID.ToString();
                     rec05[i].SduTranId = CreateSduTranID(receipt.GlobalStubID);
                     rec05[i].ReceiptNumber = receipt.RTNumber;
@@ -197,13 +194,15 @@ namespace ReceiptExport
                         {
                             Log.WriteLine("Stub not found. GlobalStubID: " + receipt.GlobalStubID);
                         }
-                        
+
                         //update vertical and horizontal tables
                         SqlParameter pGlobalStubID = new SqlParameter("globalStubID", receipt.GlobalStubID);
                         db.Database.ExecuteSqlCommand("proc_Custom_ReceiptExport_UpdateStubDE @GlobalStubID", pGlobalStubID);
 
-                        db.SaveChanges();
+                        //db.SaveChanges();
                     }
+
+                    
 
                     // IF THEREIS ITEM UNIDENTIFIED SET THE BATCH TO INCOMPLETE ************************
                     if (receipt.GlobalBatchID != prevGlobalBatchId)

@@ -269,7 +269,7 @@ namespace ReceiptExport
             sb.Append(ReceiptEffectiveDate.PadRight(8));
             sb.Append(CheckNumber.PadRight(18));
             sb.Append(ComplianceExemptionReason.PadRight(1));
-            sb.Append(TargetedPaymentIndicator.PadRight(1));
+            sb.Append(TargetedPaymentIndicator.PadRight(1, '0'));
             sb.Append(Fips.PadRight(7));
             sb.Append(CourtCaseNumber.PadRight(25));
             sb.Append(CourtJudgementNumber.PadLeft(3, '0'));
