@@ -200,9 +200,7 @@ namespace ReceiptExport
                         db.Database.ExecuteSqlCommand("proc_Custom_ReceiptExport_UpdateStubDE @GlobalStubID", pGlobalStubID);
 
                         //db.SaveChanges();
-                    }
-
-                    
+                    }                    
 
                     // IF THEREIS ITEM UNIDENTIFIED SET THE BATCH TO INCOMPLETE ************************
                     if (receipt.GlobalBatchID != prevGlobalBatchId)
