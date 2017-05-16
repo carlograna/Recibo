@@ -115,13 +115,14 @@ namespace ReceiptExport
         {            
             List<Receipt> allReceipts = GetReceiptList().OrderBy(x => x.GlobalStubID).ToList<Receipt>();
 
-            Log.WriteLine(String.Format("GetReceipts() returned {0} records ", allReceipts.Count));
+            Log.WriteLine(String.Format("GetReceipts() returned {0} records.{1}", allReceipts.Count, Environment.NewLine));
 
-            IEnumerable<Receipt> skippedReceipts = FilterReceipts(allReceipts, Predeposited);            
+            IEnumerable<Receipt> skippedReceipts = FilterReceipts(allReceipts, Predeposited);
+
 
             foreach(var skippedReceipt in skippedReceipts)
             {
-                Log.WriteLine("Skipped receipt: " + skippedReceipt.GlobalStubID + " PredepositStatus: " + skippedReceipt.PredepositStatus);
+                Log.WriteLine("Skipped Stub:" + skippedReceipt.GlobalStubID + "- PredepositStatus: " + skippedReceipt.PredepositStatus);
             }
 
             List<Receipt> receipts = FilterReceipts(allReceipts, NotPredeposited).ToList();
@@ -139,8 +140,6 @@ namespace ReceiptExport
 
                 foreach (Receipt receipt in receipts)
                 {
-                    //if (receipt.ExportedAsUnidentified == 1)//this tells me that it has previously been exported and it was so as an unidentified ARP.
-                    //    batchHasUnidentified = true;
                     if (batchHasUnidentified == false)//compare only if it has been set 
                     {
                         if (receipt.PersonID == "0") batchHasUnidentified = true; // this tells me that it is currently an unidentified stub.
@@ -199,10 +198,8 @@ namespace ReceiptExport
                         SqlParameter pGlobalStubID = new SqlParameter("globalStubID", receipt.GlobalStubID);
                         db.Database.ExecuteSqlCommand("proc_Custom_ReceiptExport_UpdateStubDE @GlobalStubID", pGlobalStubID);
 
-                        //db.SaveChanges();
-                    }
-
-                    
+                        db.SaveChanges();
+                    }                    
 
                     // IF THEREIS ITEM UNIDENTIFIED SET THE BATCH TO INCOMPLETE ************************
                     if (receipt.GlobalBatchID != prevGlobalBatchId)
@@ -232,10 +229,8 @@ namespace ReceiptExport
                 }
 
                 rec01.RecordCount = i;
-                Log.WriteLine("Total Records read: " + i.ToString());
-                Log.WriteLine("Retransmitted records: " + rec01.RetransmittalRecordCount.ToString());
-                Log.WriteLine("First time records: " + rec01.FirstTimeRecordCount.ToString());
 
+                ProcessedRecordsCounts(rec01);
                 WriteToReceiptFile(rec01, rec05);
             }
             else
@@ -243,6 +238,14 @@ namespace ReceiptExport
                 //no records found
                 throw new CustomException("Receipt Export found " + receipts.Count + " to process", ExitCode.NoRecordsFound);
             }
+        }
+
+        private static void ProcessedRecordsCounts(RecordType01 rec01)
+        {
+            Log.WriteLine(Environment.NewLine);
+            Log.WriteLine("Total First time: " + rec01.FirstTimeRecordCount.ToString());
+            Log.WriteLine("Total Retransmitted: " + rec01.RetransmittalRecordCount.ToString());
+            Log.WriteLine("Total Read: " + rec01.RecordCount.ToString());
         }
 
 
@@ -285,6 +288,8 @@ namespace ReceiptExport
                         else
                             LogErrorColumns(rec05[i]);
                     }
+
+                    receiptWriter.Close();
                 }
             }
             catch
