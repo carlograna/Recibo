@@ -152,7 +152,7 @@ namespace ReceiptExport
                 {
                     yyyyMMdd = date.ToString("yyyyMMdd");
                 }
-                else Log.WriteLine("Invalid ReceiptReceivedDate " + receiptReceivedDate);
+                else Log.WriteLine("Invalid ReceiptReceivedDate " + receiptReceivedDate.ToSafeString() + ", Stub: " + sduTranId);
 
                 return yyyyMMdd;
             }
@@ -163,13 +163,13 @@ namespace ReceiptExport
             get {
                 DateTime date;
                 string yyyyMMdd="";
-                if (DateTime.TryParse(receiptEffectiveDate.ToSafeString(), out date))
+                if (DateTime.TryParse(receiptEffectiveDate, out date))
                 {
                     yyyyMMdd = date.ToString("yyyyMMdd");
                 }
                 else
                 {
-                    Log.WriteLine("Invalid receiptEffectiveDate" + receiptEffectiveDate);
+                    Log.WriteLine("Invalid receiptEffectiveDate:" + receiptEffectiveDate.ToSafeString() + ", Stub: " + sduTranId);
                 }
 
                 return yyyyMMdd;

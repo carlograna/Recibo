@@ -126,7 +126,7 @@ namespace ReceiptExport
                     Batch b = db.Batches.FirstOrDefault(x => x.GlobalBatchID == receipt.GlobalBatchID);
                     b.DEStatus = 3;
                 }
-                db.SaveChanges();
+                //db.SaveChanges();
             }
 
             /// SKIPPED RECEIPTS
@@ -202,7 +202,7 @@ namespace ReceiptExport
 
                         //update vertical and horizontal tables
                         SqlParameter pGlobalStubID = new SqlParameter("globalStubID", receipt.GlobalStubID);
-                        db.Database.ExecuteSqlCommand("proc_Custom_ReceiptExport_UpdateStubDE @GlobalStubID", pGlobalStubID);
+                        //db.Database.ExecuteSqlCommand("proc_Custom_ReceiptExport_UpdateStubDE @GlobalStubID", pGlobalStubID);
 
                         rec01.TotalAmount += rec05[i].Amount;
 
@@ -220,7 +220,7 @@ namespace ReceiptExport
                         i++;
                     }
 
-                    db.SaveChanges();
+                    //db.SaveChanges();
 
                     rec01.RecordCount = i;
                     ProcessedRecordsCounts(rec01);
@@ -308,18 +308,11 @@ namespace ReceiptExport
         {
             try
             {
-                bool isRetransmittal = false;
+                if (receipt.ExportedToCHARTSDate == null)
+                    return false;
+                else
+                    return true;
 
-                if (receipt.ProcessingDate != null && receipt.ExportedToCHARTSDate != null)
-                {
-                    //If ProcessingDate is later than exportedToChartsDate
-                    if (DateTime.Compare((DateTime)receipt.ProcessingDate, (DateTime)receipt.ExportedToCHARTSDate) > 0)
-                        isRetransmittal = true;
-                    else
-                        isRetransmittal = false;
-                }
-
-                return isRetransmittal;
             }
             catch { throw; }
         }
