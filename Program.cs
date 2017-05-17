@@ -112,8 +112,19 @@ namespace ReceiptExport
         }
 
         private static void ProcessRecords()
-        {            
+        {
+            ///Get a list of batches with unidentifieds
+            ///
+
+            
             List<Receipt> allReceipts = GetReceiptList().OrderBy(x => x.GlobalStubID).ToList<Receipt>();
+
+            IEnumerable<Receipt> unidentifiedBatches = allReceipts.Where(x => x.PersonID == "0").ToList();
+
+            foreach(var receipt in unidentifiedBatches)
+            {
+                UpdateBatch(receipt.GlobalBatchID);
+            }
 
             Log.WriteLine(String.Format("GetReceipts() returned {0} records.{1}", allReceipts.Count, Environment.NewLine));
 
@@ -125,7 +136,7 @@ namespace ReceiptExport
                 Log.WriteLine("Skipped Stub:" + skippedReceipt.GlobalStubID + "- PredepositStatus: " + skippedReceipt.PredepositStatus);
             }
 
-            List<Receipt> receipts = FilterReceipts(allReceipts, NotPredeposited).ToList();
+            List<Receipt> receipts = FilterReceipts(allReceipts, NotPredeposited).OrderBy(x => x.GlobalBatchID).ToList();
 
             if (receipts.Count > 0)
             {
