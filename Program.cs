@@ -126,7 +126,7 @@ namespace ReceiptExport
                     Batch b = db.Batches.FirstOrDefault(x => x.GlobalBatchID == receipt.GlobalBatchID);
                     b.DEStatus = 3;
                 }
-                //db.SaveChanges();
+                db.SaveChanges();
             }
 
             /// SKIPPED RECEIPTS
@@ -136,7 +136,7 @@ namespace ReceiptExport
 
             foreach(var skippedReceipt in skippedReceipts)
             {
-                Log.WriteLine("Skipped Stub:" + skippedReceipt.GlobalStubID + "- PredepositStatus: " + skippedReceipt.PredepositStatus);
+                Log.WriteLine("Skipped Stub:" + skippedReceipt.GlobalStubID + " - PredepositStatus: " + skippedReceipt.PredepositStatus);
             }
 
             /// NORMAL RECEIPTS
@@ -202,7 +202,7 @@ namespace ReceiptExport
 
                         //update vertical and horizontal tables
                         SqlParameter pGlobalStubID = new SqlParameter("globalStubID", receipt.GlobalStubID);
-                        //db.Database.ExecuteSqlCommand("proc_Custom_ReceiptExport_UpdateStubDE @GlobalStubID", pGlobalStubID);
+                        db.Database.ExecuteSqlCommand("proc_Custom_ReceiptExport_UpdateStubDE @GlobalStubID", pGlobalStubID);
 
                         rec01.TotalAmount += rec05[i].Amount;
 
@@ -220,7 +220,7 @@ namespace ReceiptExport
                         i++;
                     }
 
-                    //db.SaveChanges();
+                    db.SaveChanges();
 
                     rec01.RecordCount = i;
                     ProcessedRecordsCounts(rec01);
@@ -312,9 +312,11 @@ namespace ReceiptExport
                     return false;
                 else
                     return true;
-
             }
-            catch { throw; }
+            catch
+            {
+                throw;
+            }
         }
 
         private static string CreateSduTranID(int globalStubID)
