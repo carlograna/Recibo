@@ -113,29 +113,33 @@ namespace ReceiptExport
 
         private static void ProcessRecords()
         {
-            ///Get a list of batches with unidentifieds
-            ///
-
-            
+            /// ALL RECEIPTS    
             List<Receipt> allReceipts = GetReceiptList().OrderBy(x => x.GlobalStubID).ToList<Receipt>();
 
-            IEnumerable<Receipt> unidentifiedBatches = allReceipts.Where(x => x.PersonID == "0").ToList();
 
-            foreach(var receipt in unidentifiedBatches)
+            /// UNIDENTIFIED RECEIPTS
+            IEnumerable<Receipt> unidentifiedReceipts = allReceipts.Where(x => x.PersonID == "0").ToList();
+            using (var db = new ReceiptDBContext())
             {
-                UpdateBatch(receipt.GlobalBatchID);
+                foreach (var receipt in unidentifiedReceipts)
+                {
+                    Batch b = db.Batches.FirstOrDefault(x => x.GlobalBatchID == receipt.GlobalBatchID);
+                    b.DEStatus = 3;
+                }
+                db.SaveChanges();
             }
 
+            /// SKIPPED RECEIPTS
             Log.WriteLine(String.Format("GetReceipts() returned {0} records.{1}", allReceipts.Count, Environment.NewLine));
 
             IEnumerable<Receipt> skippedReceipts = FilterReceipts(allReceipts, Predeposited);
-
 
             foreach(var skippedReceipt in skippedReceipts)
             {
                 Log.WriteLine("Skipped Stub:" + skippedReceipt.GlobalStubID + "- PredepositStatus: " + skippedReceipt.PredepositStatus);
             }
 
+            /// NORMAL RECEIPTS
             List<Receipt> receipts = FilterReceipts(allReceipts, NotPredeposited).OrderBy(x => x.GlobalBatchID).ToList();
 
             if (receipts.Count > 0)
@@ -145,49 +149,40 @@ namespace ReceiptExport
 
                 RecordType05[] rec05 = new RecordType05[receipts.Count];//detail
 
-                int i = 0;
-                int prevGlobalBatchId = 0;
-                bool batchHasUnidentified = false;
-
-                foreach (Receipt receipt in receipts)
+                using (var db = new ReceiptDBContext())
                 {
-                    if (batchHasUnidentified == false)//compare only if it has been set 
+                    int i = 0;
+
+                    foreach (Receipt receipt in receipts)
                     {
-                        if (receipt.PersonID == "0") batchHasUnidentified = true; // this tells me that it is currently an unidentified stub.
-                    }
+                        rec05[i] = new RecordType05();
 
-                    rec05[i] = new RecordType05();
+                        rec05[i].SduBatchId = receipt.GlobalBatchID.ToString();
+                        rec05[i].SduTranId = CreateSduTranID(receipt.GlobalStubID);
+                        rec05[i].ReceiptNumber = receipt.RTNumber;
+                        rec05[i].RetransmittalIndicator = IsRetransmittal(receipt); // processingDate is required
+                        rec05[i].PayorID = receipt.PersonID == "0" ? "AR00000000000" : receipt.PersonID;
+                        rec05[i].PayorSSN = receipt.SSN;
+                        rec05[i].PaidBy = receipt.PaidBy;
+                        rec05[i].PayorLastName = receipt.LastName;
+                        rec05[i].PayorFirstName = receipt.FirstName;
+                        rec05[i].PayorMiddleName = receipt.MiddleName;
+                        rec05[i].PayorSuffix = receipt.Suffix;
+                        rec05[i].Amount = String.IsNullOrEmpty(receipt.Amount.ToString()) ? 0 : Double.Parse(receipt.Amount.ToString());
+                        rec05[i].OfcAmount = String.IsNullOrEmpty(receipt.OFCAmount.ToString()) ? 0 : Double.Parse(receipt.OFCAmount.ToString());
+                        rec05[i].PaymentMode = receipt.PaymentMode;
+                        rec05[i].PaymentSource = receipt.PaymentSource;
+                        rec05[i].ReceiptReceivedDate = receipt.ProcessingDate.ToString();
+                        rec05[i].ReceiptEffectiveDate = receipt.EffectiveDate.ToString();
+                        rec05[i].CheckNumber = receipt.Serial;
+                        rec05[i].ComplianceExemptionReason = GetComplianceExemptionReason(receipt).ToString();
+                        rec05[i].TargetedPaymentIndicator = receipt.TargetedPayment;
+                        rec05[i].Fips = receipt.FIPS;
+                        rec05[i].CourtCaseNumber = receipt.CaseNumber;
+                        rec05[i].CourtJudgementNumber = receipt.CourtJudgment;
+                        rec05[i].CourtGuidelineNumber = receipt.CourtGuideline;
+                        rec05[i].ReasonCode = receipt.ReasonCode;
 
-                    rec05[i].SduBatchId = receipt.GlobalBatchID.ToString();
-                    rec05[i].SduTranId = CreateSduTranID(receipt.GlobalStubID);
-                    rec05[i].ReceiptNumber = receipt.RTNumber;
-                    rec05[i].RetransmittalIndicator = IsRetransmittal(receipt); // processingDate is required
-                    rec05[i].PayorID = receipt.PersonID == "0" ? "AR00000000000" : receipt.PersonID;
-                    rec05[i].PayorSSN = receipt.SSN;
-                    rec05[i].PaidBy = receipt.PaidBy;
-                    rec05[i].PayorLastName = receipt.LastName;
-                    rec05[i].PayorFirstName = receipt.FirstName;
-                    rec05[i].PayorMiddleName = receipt.MiddleName;
-                    rec05[i].PayorSuffix = receipt.Suffix;
-                    rec05[i].Amount = String.IsNullOrEmpty(receipt.Amount.ToString()) ?
-                                            0 : Double.Parse(receipt.Amount.ToString());
-                    rec05[i].OfcAmount = String.IsNullOrEmpty(receipt.OFCAmount.ToString()) ?
-                                            0 : Double.Parse(receipt.OFCAmount.ToString());
-                    rec05[i].PaymentMode = receipt.PaymentMode;
-                    rec05[i].PaymentSource = receipt.PaymentSource;
-                    rec05[i].ReceiptReceivedDate = receipt.ProcessingDate.ToString();
-                    rec05[i].ReceiptEffectiveDate = receipt.EffectiveDate.ToString();
-                    rec05[i].CheckNumber = receipt.Serial;
-                    rec05[i].ComplianceExemptionReason = GetComplianceExemptionReason(receipt).ToString();
-                    rec05[i].TargetedPaymentIndicator = receipt.TargetedPayment;
-                    rec05[i].Fips = receipt.FIPS;
-                    rec05[i].CourtCaseNumber = receipt.CaseNumber;
-                    rec05[i].CourtJudgementNumber = receipt.CourtJudgment;
-                    rec05[i].CourtGuidelineNumber = receipt.CourtGuideline;
-                    rec05[i].ReasonCode = receipt.ReasonCode;
-
-                    using (var db = new ReceiptDBContext())
-                    {
                         StubsDataEntry sde = db.StubsDataEntries.FirstOrDefault(x => x.GlobalStubID == receipt.GlobalStubID);
                         if (sde != null)
                         {
@@ -202,47 +197,35 @@ namespace ReceiptExport
                         }
                         else
                         {
-                            Log.WriteLine("Stub not found. GlobalStubID: " + receipt.GlobalStubID);
+                            Log.WriteLine("Stub not found, not updated. GlobalStubID: " + receipt.GlobalStubID);
                         }
 
                         //update vertical and horizontal tables
                         SqlParameter pGlobalStubID = new SqlParameter("globalStubID", receipt.GlobalStubID);
                         db.Database.ExecuteSqlCommand("proc_Custom_ReceiptExport_UpdateStubDE @GlobalStubID", pGlobalStubID);
-                        db.SaveChanges();
 
-                    }                    
+                        rec01.TotalAmount += rec05[i].Amount;
 
-                    // IF THEREIS ITEM UNIDENTIFIED SET THE BATCH TO INCOMPLETE ************************
-                    if (receipt.GlobalBatchID != prevGlobalBatchId)
-                    {
-                        if (batchHasUnidentified)
+                        if (rec05[i].RetransmittalIndicator)
                         {
-                            batchHasUnidentified = false;
+                            rec01.RetransmittalRecordCount++;
+                            rec01.RetransmittalAmount += rec05[i].Amount;
+                        }
+                        else
+                        {
+                            rec01.FirstTimeRecordCount++;
+                            rec01.FirstTimeAmount += rec05[i].Amount;
                         }
 
-                        prevGlobalBatchId = receipt.GlobalBatchID;
+                        i++;
                     }
 
-                    rec01.TotalAmount += rec05[i].Amount;
+                    db.SaveChanges();
 
-                    if (rec05[i].RetransmittalIndicator)
-                    {
-                        rec01.RetransmittalRecordCount++;
-                        rec01.RetransmittalAmount += rec05[i].Amount;
-                    }
-                    else
-                    {
-                        rec01.FirstTimeRecordCount++;
-                        rec01.FirstTimeAmount += rec05[i].Amount;
-                    }
-
-                    i++;
+                    rec01.RecordCount = i;
+                    ProcessedRecordsCounts(rec01);
+                    WriteToReceiptFile(rec01, rec05);
                 }
-
-                rec01.RecordCount = i;
-
-                ProcessedRecordsCounts(rec01);
-                WriteToReceiptFile(rec01, rec05);
             }
             else
             {
@@ -356,77 +339,6 @@ namespace ReceiptExport
                 throw;
             }
         }
-
-        private static void UpdateBatch(int prevGlobalBatchId)
-        {
-            try
-            {
-                using (var db = new ReceiptDBContext())
-                {
-                    Batch b = db.Batches.FirstOrDefault(x => x.GlobalBatchID == prevGlobalBatchId);
-                    b.DEStatus = 3;
-                    db.SaveChanges();
-                }
-            }
-            catch(Exception ex)
-            {
-                throw new CustomException("UpdateBatch() error.", ex);
-            }
-        }
-
-        //private static void GetParameters(string[] args)
-        //{
-        //    int requiredNumberOfArguments = Int32.Parse(ConfigurationManager.AppSettings["CommandLineArguments"].ToString());
-        //    if (args.Count() != requiredNumberOfArguments)
-        //    {
-        //        errMsg = String.Format("Number of arguments required: {0}", requiredNumberOfArguments.ToString());
-        //        Log.Exit(errMsg, ExitCode.InvalidParameter);
-        //    }
-        //    else
-        //    {
-        //        for (int i = 0; i < args.Count(); i++)
-        //        {
-        //            string param = args[i];
-        //            int pos = param.IndexOf('=') + 1;
-        //            int charCount = param.Length - pos;
-        //            string paramName = param.Substring(0, pos).ToUpper();
-        //            string paramValue = param.Substring(pos, charCount).ToUpper();
-
-        //            if (paramName == "SERVER=")
-        //            { paramServer = paramValue; }
-
-        //        }
-
-        //        ValidateServerParam(paramServer);
-        //    }
-        //}
-
-        //private static void ValidateServerParam(string _serverName)
-        //{
-        //    try
-        //    {
-        //        //Match command line server parameter with app.config value
-        //        if (_serverName.Trim() == ConfigurationManager.AppSettings["server"].ToString())
-        //        {
-        //            ////paramServer = _serverName.ToUpper();
-        //            //fileDir = ConfigurationManager.AppSettings["fileDir"].ToString();
-        //            //itemprocessingConnString = ConfigurationManager.ConnectionStrings["itemCS"].ConnectionString;
-        //        }
-
-        //        else
-        //        {
-        //            EmailNotification((int)ExitCode.InvalidParameter);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        errMsg = "ValidateServerparam(): \n";
-        //        errMsg += ex.Message;
-        //        EmailNotification((int)ExitCode.UnknownError);
-        //        // don't do this log doesn't exit yet.  Need parameter to create log.
-        //        //Log.Exit(errMsg, ExitCode.UnknownError);
-        //    }
-        //}
 
         public static void EmailNotification(int _exitCode, string msg)
         {
