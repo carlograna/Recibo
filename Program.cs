@@ -222,7 +222,7 @@ namespace ReceiptExport
 
                     db.SaveChanges();
 
-                    rec01.RecordCount = i;
+                    rec01.RecordCount = i+1; // +1 for header record
                     ProcessedRecordsCounts(rec01);
                     WriteToReceiptFile(rec01, rec05);
                 }
