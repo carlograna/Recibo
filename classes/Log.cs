@@ -10,7 +10,6 @@ namespace ReceiptExport
     {
         private static string filePath;
         private static StreamWriter logWriter;
-        static string errMsg;
 
         private static DateTime currentDateTime;
        
