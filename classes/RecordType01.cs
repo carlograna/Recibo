@@ -107,7 +107,7 @@ namespace ReceiptExport
             StringBuilder sb = new StringBuilder();
 
             sb.Append(recordType.PadRight(2));
-            sb.Append(recordCount.ToString().PadLeft(7, '0'));
+            sb.Append((recordCount+1).ToString().PadLeft(7, '0')); // +1 for header record
             sb.Append(ParseAmtToChartsFormat(totalAmount).ToString().PadLeft(15, '0'));
             sb.Append(firstTimeRecordCount.ToString().PadLeft(7, '0'));
             sb.Append(ParseAmtToChartsFormat(firstTimeAmount).ToString().PadLeft(15, '0'));

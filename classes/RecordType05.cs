@@ -53,7 +53,7 @@ namespace ReceiptExport
         private string payorMiddleName;
         private string payorSuffix;
         private decimal amount;
-        private double ofcAmount;
+        private decimal ofcAmount;
         private string paymentMode;
         private string paymentSource;
         private string receiptReceivedDate;
@@ -128,7 +128,7 @@ namespace ReceiptExport
             get { return amount; }
             set { amount = value; }
         }
-        public double OfcAmount
+        public decimal OfcAmount
         {
             get { return ofcAmount; }
             set { ofcAmount = value; }

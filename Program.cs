@@ -115,8 +115,8 @@ namespace ReceiptExport
         {
             /// ALL RECEIPTS    
             List<Receipt> allReceipts = GetReceiptList().OrderBy(x => x.GlobalStubID).ToList<Receipt>();
-
-
+            Log.WriteLine(String.Format("GetReceipts() returned {0} records.{1}", allReceipts.Count, Environment.NewLine));
+            
             /// UNIDENTIFIED RECEIPTS
             IEnumerable<Receipt> unidentifiedReceipts = allReceipts.Where(x => x.PersonID == "0").ToList();
             using (var db = new ReceiptDBContext())
@@ -130,8 +130,6 @@ namespace ReceiptExport
             }
 
             /// SKIPPED RECEIPTS
-            Log.WriteLine(String.Format("GetReceipts() returned {0} records.{1}", allReceipts.Count, Environment.NewLine));
-
             IEnumerable<Receipt> skippedReceipts = FilterReceipts(allReceipts, Predeposited);
 
             foreach(var skippedReceipt in skippedReceipts)
@@ -161,15 +159,15 @@ namespace ReceiptExport
                         rec05[i].SduTranId = String.IsNullOrEmpty(receipt.SDUTranID)? CreateSduTranID(receipt.GlobalStubID): receipt.SDUTranID;
                         rec05[i].ReceiptNumber = receipt.RTNumber;
                         rec05[i].RetransmittalIndicator = IsRetransmittal(receipt); // processingDate is required
-                        rec05[i].PayorID = receipt.PersonID == "0" ? "AR00000000000" : receipt.PersonID;
+                        rec05[i].PayorID = receipt.PersonID.Trim() == "0" ? "AR00000000000" : receipt.PersonID;
                         rec05[i].PayorSSN = receipt.SSN;
                         rec05[i].PaidBy = receipt.PaidBy;
                         rec05[i].PayorLastName = receipt.LastName;
                         rec05[i].PayorFirstName = receipt.FirstName;
                         rec05[i].PayorMiddleName = receipt.MiddleName;
                         rec05[i].PayorSuffix = receipt.Suffix;
-                        rec05[i].Amount = String.IsNullOrEmpty(receipt.Amount.ToString()) ? 0 : decimal.Parse(receipt.Amount.ToString());
-                        rec05[i].OfcAmount = String.IsNullOrEmpty(receipt.OFCAmount.ToString()) ? 0 : Double.Parse(receipt.OFCAmount.ToString());
+                        rec05[i].Amount = receipt.Amount ?? 0;
+                        rec05[i].OfcAmount = receipt.OFCAmount ?? 0;
                         rec05[i].PaymentMode = receipt.PaymentMode;
                         rec05[i].PaymentSource = receipt.PaymentSource;
                         rec05[i].ReceiptReceivedDate = receipt.ProcessingDate.ToString();
@@ -221,9 +219,9 @@ namespace ReceiptExport
                     }
 
                     db.SaveChanges();
-                    
 
-                    rec01.RecordCount = i+1; // +1 for header record
+
+                    rec01.RecordCount = i;
                     RecordTotals(rec01);
                     WriteToReceiptFile(rec01, rec05);
                 }
@@ -297,9 +295,9 @@ namespace ReceiptExport
 
         private static byte? GetComplianceExemptionReason(Receipt receipt)
         {
-            if (receipt.ExportedToCHARTSDate == null && receipt.PersonID != "0")
+            if (receipt.ExportedToCHARTSDate == null)
                 return null;    // normal
-            else if (receipt.PersonID == "0")
+            else if (receipt.ExportedAsUnidentified == 1)
                 return 0;       // unidentified
             else if (receipt.PredepositStatus == (byte?)PredepositStatus.Released)
                 return 1;       // released from predeposit
