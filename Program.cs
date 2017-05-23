@@ -158,7 +158,7 @@ namespace ReceiptExport
                         rec05[i] = new RecordType05();
 
                         rec05[i].SduBatchId = receipt.GlobalBatchID.ToString();
-                        rec05[i].SduTranId = CreateSduTranID(receipt.GlobalStubID);
+                        rec05[i].SduTranId = String.IsNullOrEmpty(receipt.SDUTranID)? CreateSduTranID(receipt.GlobalStubID): receipt.SDUTranID;
                         rec05[i].ReceiptNumber = receipt.RTNumber;
                         rec05[i].RetransmittalIndicator = IsRetransmittal(receipt); // processingDate is required
                         rec05[i].PayorID = receipt.PersonID == "0" ? "AR00000000000" : receipt.PersonID;
@@ -168,7 +168,7 @@ namespace ReceiptExport
                         rec05[i].PayorFirstName = receipt.FirstName;
                         rec05[i].PayorMiddleName = receipt.MiddleName;
                         rec05[i].PayorSuffix = receipt.Suffix;
-                        rec05[i].Amount = String.IsNullOrEmpty(receipt.Amount.ToString()) ? 0 : Double.Parse(receipt.Amount.ToString());
+                        rec05[i].Amount = String.IsNullOrEmpty(receipt.Amount.ToString()) ? 0 : decimal.Parse(receipt.Amount.ToString());
                         rec05[i].OfcAmount = String.IsNullOrEmpty(receipt.OFCAmount.ToString()) ? 0 : Double.Parse(receipt.OFCAmount.ToString());
                         rec05[i].PaymentMode = receipt.PaymentMode;
                         rec05[i].PaymentSource = receipt.PaymentSource;
@@ -189,7 +189,7 @@ namespace ReceiptExport
                             sde.ExportedToCHARTSDate = CurrentDate;
                             sde.SDUTranID = rec05[i].SduTranId;
                             sde.CHARTSStubPrefix = rec05[i].SduTranId.Substring(0, 8);
-                            sde.ExportedAsUnidentified = receipt.PersonID == "0" ? (byte)1 : (byte)0;
+                            sde.ExportedAsUnidentified = receipt.ExportedAsUnidentified == 1 ? receipt.ExportedAsUnidentified : (receipt.PersonID == "0" ? (byte)1 : (byte)0);
                             sde.ExportedToCHARTS = 1;
                             sde.ComplianceExemptionReason = GetComplianceExemptionReason(receipt);
                             if (rec05[i].RetransmittalIndicator && rec05[i].PayorID != "AR00000000000")
@@ -221,9 +221,10 @@ namespace ReceiptExport
                     }
 
                     db.SaveChanges();
+                    
 
                     rec01.RecordCount = i+1; // +1 for header record
-                    ProcessedRecordsCounts(rec01);
+                    RecordTotals(rec01);
                     WriteToReceiptFile(rec01, rec05);
                 }
             }
@@ -234,14 +235,16 @@ namespace ReceiptExport
             }
         }
 
-        private static void ProcessedRecordsCounts(RecordType01 rec01)
+        private static void RecordTotals(RecordType01 rec01)
         {
             Log.WriteLine(Environment.NewLine);
-            Log.WriteLine("Total First time: " + rec01.FirstTimeRecordCount.ToString());
-            Log.WriteLine("Total Retransmitted: " + rec01.RetransmittalRecordCount.ToString());
-            Log.WriteLine("Total Read: " + rec01.RecordCount.ToString());
+            Log.WriteLine("First Time Amount: " + rec01.FirstTimeAmount);
+            Log.WriteLine("Retransmitted Amount: "+ rec01.RetransmittalAmount);
+            Log.WriteLine("Total Amount: " + rec01.TotalAmount);
+            Log.WriteLine("First Time Records: " + rec01.FirstTimeRecordCount.ToString());
+            Log.WriteLine("Retransmitted Records: " + rec01.RetransmittalRecordCount.ToString());
+            Log.WriteLine("Total Records: " + rec01.RecordCount.ToString());
         }
-
 
         public static StreamWriter CreateReceiptFile()
         {

@@ -25,11 +25,11 @@ namespace ReceiptExport
 
         private string recordType = "01";
         private int recordCount;
-        private double totalAmount;
+        private decimal totalAmount;
         private int firstTimeRecordCount;
-        private double firstTimeAmount;
+        private decimal firstTimeAmount;
         private int retransmittalRecordCount;
-        private double retransmittalAmount;
+        private decimal retransmittalAmount;
         private DateTime creationStamp;
         private string filler = "";
 
@@ -39,7 +39,7 @@ namespace ReceiptExport
             set { recordCount = value; }
         }
 
-        public double TotalAmount
+        public decimal TotalAmount
         {
             get { return totalAmount; }
             set { totalAmount = value; }
@@ -51,7 +51,7 @@ namespace ReceiptExport
             set { firstTimeRecordCount = value; }
         }
 
-        public double FirstTimeAmount
+        public decimal FirstTimeAmount
         {
             get { return firstTimeAmount; }
             set { firstTimeAmount = value; }
@@ -63,7 +63,7 @@ namespace ReceiptExport
             set { retransmittalRecordCount = value; }
         }
 
-        public double RetransmittalAmount
+        public decimal RetransmittalAmount
         {
             get { return retransmittalAmount; }
             set { retransmittalAmount = value; }

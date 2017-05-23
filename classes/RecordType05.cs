@@ -52,7 +52,7 @@ namespace ReceiptExport
         private string payorFirstName;
         private string payorMiddleName;
         private string payorSuffix;
-        private double amount;
+        private decimal amount;
         private double ofcAmount;
         private string paymentMode;
         private string paymentSource;
@@ -123,7 +123,7 @@ namespace ReceiptExport
             get { return payorSuffix.ToSafeString(); }
             set { payorSuffix = value; }
         }
-        public double Amount
+        public decimal Amount
         {
             get { return amount; }
             set { amount = value; }
