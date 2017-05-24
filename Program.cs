@@ -216,10 +216,13 @@ namespace ReceiptExport
                         }
 
                         i++;
+                        if((i%100)==0)
+                        {
+                            Log.WriteLine(i + " records processed");
+                            db.SaveChanges();
+                        }
                     }
-
                     db.SaveChanges();
-
 
                     rec01.RecordCount = i;
                     RecordTotals(rec01);
