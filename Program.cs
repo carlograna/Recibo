@@ -87,12 +87,11 @@ namespace ReceiptExport
         {
             try
             {
-                //GetParameters(args);
                 CreateLogFile();            
                 ProcessRecords();
                 CreateFlagFile();
                 CloseLogFile();            
-                System.Environment.Exit((int)ExitCode.Success); //exit
+                System.Environment.Exit((int)ExitCode.Success);
             }
             catch(Exception ex)
             {
@@ -113,29 +112,12 @@ namespace ReceiptExport
 
         private static void ProcessRecords()
         {
-            /// ALL RECEIPTS    
             List<Receipt> allReceipts = GetReceiptList().OrderBy(x => x.GlobalStubID).ToList<Receipt>();
             Log.WriteLine(String.Format("GetReceipts() returned {0} records.{1}", allReceipts.Count, Environment.NewLine));
             
-            /// UNIDENTIFIED RECEIPTS
-            IEnumerable<Receipt> unidentifiedReceipts = allReceipts.Where(x => x.PersonID == "0").ToList();
-            using (var db = new ReceiptDBContext())
-            {
-                foreach (var receipt in unidentifiedReceipts)
-                {
-                    Batch b = db.Batches.FirstOrDefault(x => x.GlobalBatchID == receipt.GlobalBatchID);
-                    b.DEStatus = 3;
-                }
-                db.SaveChanges();
-            }
+            UnidentifiedReceipts(allReceipts);
 
-            /// SKIPPED RECEIPTS
-            IEnumerable<Receipt> skippedReceipts = FilterReceipts(allReceipts, Predeposited);
-
-            foreach(var skippedReceipt in skippedReceipts)
-            {
-                Log.WriteLine("Skipped Stub:" + skippedReceipt.GlobalStubID + " - PredepositStatus: " + skippedReceipt.PredepositStatus);
-            }
+            SkippedReceipts(allReceipts);
 
             /// NORMAL RECEIPTS
             List<Receipt> receipts = FilterReceipts(allReceipts, NotPredeposited).OrderBy(x => x.GlobalBatchID).ToList();
@@ -187,7 +169,7 @@ namespace ReceiptExport
                             sde.ExportedToCHARTSDate = CurrentDate;
                             sde.SDUTranID = rec05[i].SduTranId;
                             sde.CHARTSStubPrefix = rec05[i].SduTranId.Substring(0, 8);
-                            sde.ExportedAsUnidentified = receipt.ExportedAsUnidentified == 1 ? receipt.ExportedAsUnidentified : (receipt.PersonID == "0" ? (byte)1 : (byte)0);
+                            sde.ExportedAsUnidentified = receipt.ExportedAsUnidentified == 1 ? receipt.ExportedAsUnidentified : (receipt.PersonID.Trim() == "0" ? (byte)1 : (byte)0);
                             sde.ExportedToCHARTS = 1;
                             sde.ComplianceExemptionReason = GetComplianceExemptionReason(receipt);
                             if (rec05[i].RetransmittalIndicator && rec05[i].PayorID != "AR00000000000")
@@ -216,12 +198,13 @@ namespace ReceiptExport
                         }
 
                         i++;
-                        if((i%100)==0)
+
+                        if((i%200)==0)
                         {
-                            Log.WriteLine(i + " records processed");
                             db.SaveChanges();
                         }
                     }
+
                     db.SaveChanges();
 
                     rec01.RecordCount = i;
@@ -236,15 +219,46 @@ namespace ReceiptExport
             }
         }
 
+        private static void UnidentifiedReceipts(List<Receipt> allReceipts)
+        {
+            IEnumerable<Receipt> unidentifiedReceipts = allReceipts.Where(x => x.PersonID == "0").ToList();
+            using (var db = new ReceiptDBContext())
+            {
+                foreach (var receipt in unidentifiedReceipts)
+                {
+                    Batch b = db.Batches.FirstOrDefault(x => x.GlobalBatchID == receipt.GlobalBatchID);
+                    b.DEStatus = 3;
+                }
+                db.SaveChanges();
+            }
+        }
+
+        private static void SkippedReceipts(List<Receipt> allReceipts)
+        {
+            IEnumerable<Receipt> skippedReceipts = FilterReceipts(allReceipts, Predeposited);
+
+            bool first_time = true;
+            foreach (var skippedReceipt in skippedReceipts)
+            {
+                if (first_time)
+                {
+                    Log.WriteLine("=== SKIPPED PREDEPOSITED RECEIPTS ===");
+                    Log.WriteLine("STUB         STATUS");
+                    first_time = false;
+                }
+                Log.WriteLine(skippedReceipt.GlobalStubID.ToString().PadRight(10) + " - " + skippedReceipt.PredepositStatus);
+            }
+        }
+
         private static void RecordTotals(RecordType01 rec01)
         {
             Log.WriteLine(Environment.NewLine);
             Log.WriteLine("First Time Amount: " + rec01.FirstTimeAmount);
             Log.WriteLine("Retransmitted Amount: "+ rec01.RetransmittalAmount);
             Log.WriteLine("Total Amount: " + rec01.TotalAmount);
-            Log.WriteLine("First Time Records: " + rec01.FirstTimeRecordCount.ToString());
-            Log.WriteLine("Retransmitted Records: " + rec01.RetransmittalRecordCount.ToString());
-            Log.WriteLine("Total Records: " + rec01.RecordCount.ToString());
+            Log.WriteLine("First Time Receipts: " + rec01.FirstTimeRecordCount.ToString());
+            Log.WriteLine("Retransmitted Receipts: " + rec01.RetransmittalRecordCount.ToString());
+            Log.WriteLine("Total Receipts: " + rec01.RecordCount.ToString());
         }
 
         public static StreamWriter CreateReceiptFile()
