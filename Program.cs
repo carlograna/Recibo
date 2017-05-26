@@ -312,7 +312,7 @@ namespace ReceiptExport
 
         private static byte? GetComplianceExemptionReason(Receipt receipt)
         {
-            if (receipt.ExportedToCHARTSDate == null && receipt.PredepositStatus == (byte?)PredepositStatus.None)
+            if (receipt.ExportedToCHARTSDate == null && receipt.PredepositStatus == null)
                 return null;    // normal
             else if (receipt.ExportedAsUnidentified == 1)
                 return 0;       // unidentified
