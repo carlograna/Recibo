@@ -87,17 +87,23 @@ namespace ReceiptExport
         {
             try
             {
-                CreateLogFile();            
+                CreateLogFile();
                 ProcessRecords();
                 CreateFlagFile();
-                CloseLogFile();            
-                System.Environment.Exit((int)ExitCode.Success);
+                CloseLogFile();
+                EndSuccessfully();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Exit(ex.ToString(), ExitCode.UnknownError);
             }                
-        } 
+        }
+
+        private static void EndSuccessfully()
+        {
+            EmailNotification((int)ExitCode.Success, "");
+            System.Environment.Exit((int)ExitCode.Success);
+        }
 
         private static List<Receipt> GetReceiptList()
         {
@@ -366,6 +372,7 @@ namespace ReceiptExport
                 mail.Body = "ReceiptExport job processed <b>successfully</b>. <br /><br />";
                 mail.Body += "Data file: " + fileDir + " <br />";
                 mail.Body += "See attached log file for additional details.";
+                mail.Body += msg;
             }
             else
             {
