@@ -87,23 +87,17 @@ namespace ReceiptExport
         {
             try
             {
-                CreateLogFile();
+                CreateLogFile();            
                 ProcessRecords();
                 CreateFlagFile();
                 CloseLogFile();
                 EndSuccessfully();
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 Log.Exit(ex.ToString(), ExitCode.UnknownError);
             }                
-        }
-
-        private static void EndSuccessfully()
-        {
-            EmailNotification((int)ExitCode.Success, "");
-            System.Environment.Exit((int)ExitCode.Success);
-        }
+        } 
 
         private static List<Receipt> GetReceiptList()
         {
@@ -130,93 +124,10 @@ namespace ReceiptExport
 
             if (receipts.Count > 0)
             {
-                RecordType01 rec01 = new RecordType01();//header
-                rec01.CreationStamp = CurrentDate;
-
+                RecordType01 rec01 = new RecordType01(CurrentDate);//header
                 RecordType05[] rec05 = new RecordType05[receipts.Count];//detail
 
-                using (var db = new ReceiptDBContext())
-                {
-                    int i = 0;
-
-                    foreach (Receipt receipt in receipts)
-                    {
-                        rec05[i] = new RecordType05();
-
-                        rec05[i].SduBatchId = receipt.GlobalBatchID.ToString();
-                        rec05[i].SduTranId = String.IsNullOrEmpty(receipt.SDUTranID)? CreateSduTranID(receipt.GlobalStubID): receipt.SDUTranID;
-                        rec05[i].ReceiptNumber = receipt.RTNumber;
-                        rec05[i].RetransmittalIndicator = IsRetransmittal(receipt); // processingDate is required
-                        rec05[i].PayorID = receipt.PersonID.Trim() == "0" ? "AR00000000000" : receipt.PersonID;
-                        rec05[i].PayorSSN = receipt.SSN;
-                        rec05[i].PaidBy = receipt.PaidBy;
-                        rec05[i].PayorLastName = receipt.LastName;
-                        rec05[i].PayorFirstName = receipt.FirstName;
-                        rec05[i].PayorMiddleName = receipt.MiddleName;
-                        rec05[i].PayorSuffix = receipt.Suffix;
-                        rec05[i].Amount = receipt.Amount ?? 0;
-                        rec05[i].OfcAmount = receipt.OFCAmount ?? 0;
-                        rec05[i].PaymentMode = receipt.PaymentMode;
-                        rec05[i].PaymentSource = receipt.PaymentSource;
-                        rec05[i].ReceiptReceivedDate = receipt.ProcessingDate.ToString();
-                        rec05[i].ReceiptEffectiveDate = receipt.EffectiveDate.ToString();
-                        rec05[i].CheckNumber = receipt.Serial;
-                        rec05[i].ComplianceExemptionReason = GetComplianceExemptionReason(receipt).ToString();
-                        rec05[i].TargetedPaymentIndicator = receipt.TargetedPayment;
-                        rec05[i].Fips = receipt.FIPS;
-                        rec05[i].CourtCaseNumber = receipt.CaseNumber;
-                        rec05[i].CourtJudgementNumber = receipt.CourtJudgment;
-                        rec05[i].CourtGuidelineNumber = receipt.CourtGuideline;
-                        rec05[i].ReasonCode = receipt.ReasonCode;
-
-                        StubsDataEntry sde = db.StubsDataEntries.FirstOrDefault(x => x.GlobalStubID == receipt.GlobalStubID);
-                        if (sde != null)
-                        {
-                            sde.ExportedToCHARTSDate = CurrentDate;
-                            sde.SDUTranID = rec05[i].SduTranId;
-                            sde.CHARTSStubPrefix = rec05[i].SduTranId.Substring(0, 8);
-                            sde.ExportedAsUnidentified = receipt.ExportedAsUnidentified == 1 ? receipt.ExportedAsUnidentified : (receipt.PersonID.Trim() == "0" ? (byte)1 : (byte)0);
-                            sde.ExportedToCHARTS = 1;
-                            sde.ComplianceExemptionReason = GetComplianceExemptionReason(receipt);
-                            if (rec05[i].RetransmittalIndicator && rec05[i].PayorID != "AR00000000000")
-                                sde.ResolvedDate = CurrentDate;
-                        }
-                        else
-                        {
-                            Log.WriteLine("Stub not found, not updated. GlobalStubID: " + receipt.GlobalStubID);
-                        }
-
-                        //update vertical and horizontal tables
-                        SqlParameter pGlobalStubID = new SqlParameter("globalStubID", receipt.GlobalStubID);
-                        db.Database.ExecuteSqlCommand("proc_Custom_ReceiptExport_UpdateStubDE @GlobalStubID", pGlobalStubID);
-
-                        rec01.TotalAmount += rec05[i].Amount;
-
-                        if (rec05[i].RetransmittalIndicator)
-                        {
-                            rec01.RetransmittalRecordCount++;
-                            rec01.RetransmittalAmount += rec05[i].Amount;
-                        }
-                        else
-                        {
-                            rec01.FirstTimeRecordCount++;
-                            rec01.FirstTimeAmount += rec05[i].Amount;
-                        }
-
-                        i++;
-
-                        if((i%200)==0)
-                        {
-                            db.SaveChanges();
-                        }
-                    }
-
-                    db.SaveChanges();
-
-                    rec01.RecordCount = i;
-                    RecordTotals(rec01);
-                    WriteToReceiptFile(rec01, rec05);
-                }
+                ProcessReceipts(receipts, rec01, rec05);
             }
             else
             {
@@ -225,17 +136,132 @@ namespace ReceiptExport
             }
         }
 
+        private static void ProcessReceipts(List<Receipt> receipts, RecordType01 rec01, RecordType05[] rec05)
+        {
+            using (var db = new ReceiptDBContext())
+            {
+                using (var tran = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        int i = 0;
+
+                        foreach (Receipt receipt in receipts)
+                        {
+                            rec05[i] = LoadRec05(receipt);
+
+                            StubsDataEntry sde = db.StubsDataEntries.FirstOrDefault(x => x.GlobalStubID == receipt.GlobalStubID);
+
+                            if (sde != null)
+                            {
+                                sde.ExportedToCHARTSDate = CurrentDate;
+                                sde.SDUTranID = rec05[i].SduTranId;
+                                sde.CHARTSStubPrefix = rec05[i].SduTranId.Substring(0, 8);
+                                sde.ExportedAsUnidentified = receipt.ExportedAsUnidentified == 1 ? receipt.ExportedAsUnidentified : (receipt.PersonID.Trim() == "0" ? (byte)1 : (byte)0);
+                                sde.ExportedToCHARTS = 1;
+                                sde.ComplianceExemptionReason = GetComplianceExemptionReason(receipt);
+                                if (rec05[i].RetransmittalIndicator && rec05[i].PayorID != "AR00000000000")
+                                    sde.ResolvedDate = CurrentDate;
+                            }
+                            else { Log.WriteLine("Stub not found, not updated. GlobalStubID: " + receipt.GlobalStubID); }
+
+                            //update vertical and horizontal tables
+                            SqlParameter pGlobalStubID = new SqlParameter("globalStubID", receipt.GlobalStubID);
+                            db.Database.ExecuteSqlCommand("proc_Custom_ReceiptExport_UpdateStubDE @GlobalStubID", pGlobalStubID);
+
+                            rec01.TotalAmount += rec05[i].Amount;
+
+                            if (rec05[i].RetransmittalIndicator)
+                            {
+                                rec01.RetransmittalRecordCount++;
+                                rec01.RetransmittalAmount += rec05[i].Amount;
+                            }
+                            else
+                            {
+                                rec01.FirstTimeRecordCount++;
+                                rec01.FirstTimeAmount += rec05[i].Amount;
+                            }
+
+                            i++;
+
+                            if ((i % 200) == 0)
+                            {
+                                db.SaveChanges();
+                            }
+                        }
+
+                        db.SaveChanges();
+
+                        rec01.RecordCount = i;
+                        RecordTotals(rec01);
+                        WriteToReceiptFile(rec01, rec05);
+                        tran.Commit();
+                    }
+                    catch
+                    {
+                        tran.Rollback();
+                        throw;
+                    }
+                }                
+            }
+        }
+
+        private static RecordType05 LoadRec05(Receipt receipt)
+        {
+            RecordType05 rec05 = new RecordType05();
+
+            rec05.SduBatchId = receipt.GlobalBatchID.ToString();
+            rec05.SduTranId = String.IsNullOrEmpty(receipt.SDUTranID) ? CreateSduTranID(receipt.GlobalStubID) : receipt.SDUTranID;
+            rec05.ReceiptNumber = receipt.RTNumber;
+            rec05.RetransmittalIndicator = IsRetransmittal(receipt); // processingDate is required
+            rec05.PayorID = receipt.PersonID.Trim() == "0" ? "AR00000000000" : receipt.PersonID;
+            rec05.PayorSSN = receipt.SSN;
+            rec05.PaidBy = receipt.PaidBy;
+            rec05.PayorLastName = receipt.LastName;
+            rec05.PayorFirstName = receipt.FirstName;
+            rec05.PayorMiddleName = receipt.MiddleName;
+            rec05.PayorSuffix = receipt.Suffix;
+            rec05.Amount = receipt.Amount ?? 0;
+            rec05.OfcAmount = receipt.OFCAmount ?? 0;
+            rec05.PaymentMode = receipt.PaymentMode;
+            rec05.PaymentSource = receipt.PaymentSource;
+            rec05.ReceiptReceivedDate = receipt.ProcessingDate.ToString();
+            rec05.ReceiptEffectiveDate = receipt.EffectiveDate.ToString();
+            rec05.CheckNumber = receipt.Serial;
+            rec05.ComplianceExemptionReason = GetComplianceExemptionReason(receipt).ToString();
+            rec05.TargetedPaymentIndicator = receipt.TargetedPayment;
+            rec05.Fips = receipt.FIPS;
+            rec05.CourtCaseNumber = receipt.CaseNumber;
+            rec05.CourtJudgementNumber = receipt.CourtJudgment;
+            rec05.CourtGuidelineNumber = receipt.CourtGuideline;
+            rec05.ReasonCode = receipt.ReasonCode;
+
+            return rec05;
+        }
+
         private static void UnidentifiedReceipts(List<Receipt> allReceipts)
         {
             IEnumerable<Receipt> unidentifiedReceipts = allReceipts.Where(x => x.PersonID == "0").ToList();
             using (var db = new ReceiptDBContext())
             {
-                foreach (var receipt in unidentifiedReceipts)
+                using (var tran = db.Database.BeginTransaction())
                 {
-                    Batch b = db.Batches.FirstOrDefault(x => x.GlobalBatchID == receipt.GlobalBatchID);
-                    b.DEStatus = 3;
+                    try
+                    {
+                        foreach (var receipt in unidentifiedReceipts)
+                        {
+                            Batch b = db.Batches.FirstOrDefault(x => x.GlobalBatchID == receipt.GlobalBatchID);
+                            b.DEStatus = 3;
+                        }
+                        db.SaveChanges();
+                        tran.Commit();
+                    }
+                    catch
+                    {
+                        tran.Rollback();
+                        throw;
+                    }
                 }
-                db.SaveChanges();
             }
         }
 
@@ -372,7 +398,6 @@ namespace ReceiptExport
                 mail.Body = "ReceiptExport job processed <b>successfully</b>. <br /><br />";
                 mail.Body += "Data file: " + fileDir + " <br />";
                 mail.Body += "See attached log file for additional details.";
-                mail.Body += msg;
             }
             else
             {
@@ -491,5 +516,10 @@ namespace ReceiptExport
             Log.WriteLine(errMsg);
         }
 
+        private static void EndSuccessfully()
+        {
+            EmailNotification((int)ExitCode.Success, "");
+            System.Environment.Exit((int)ExitCode.Success);
+        }
     }
 }

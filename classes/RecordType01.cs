@@ -9,6 +9,11 @@ namespace ReceiptExport
     {
         public RecordType01() { }
 
+        public RecordType01(DateTime date)
+        {
+            CreationStamp = date;
+        }
+
         private enum FieldLength : int
         {
             RecordType = 2,
