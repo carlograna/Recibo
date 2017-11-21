@@ -231,7 +231,7 @@ namespace ReceiptExport
         {
             get
             {
-                string strOfcAmount = ((int)OfcAmount * 100).ToString();
+                string strOfcAmount = ((int)(OfcAmount * 100)).ToString();
                 return strOfcAmount;
             }
         }
