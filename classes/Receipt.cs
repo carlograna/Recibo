@@ -9,6 +9,7 @@ namespace ReceiptExport
         public int GlobalStubID { get; set; }
         public DateTime? ProcessingDate { get; set; }
         public byte? PredepositStatus { get; set; }
+        public byte? RAHoldStatus { get; set; }
         public string PersonID { get; set; }
         public string CaseNumber { get; set; }
         public string CourtGuideline { get; set; }

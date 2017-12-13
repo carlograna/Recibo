@@ -39,16 +39,16 @@ namespace ReceiptExport
         static string flagFilePath;
         static string flagFileName;
         static string errMsg;
-        static string paramServer;
 
         static int record05Length = 300;
-        static int addressErrorCount = 0;
-        static int NumOf05RecordsWritten = 0;
-        static int total05Records = 0;
+        static int badRecCount = 0;
+        static int totalProcessedRecords = 0;
         static DateTime CurrentDate = DateTime.Now;
         static string itemprocCS = ConfigurationManager.ConnectionStrings["itemCS"].ToString();
 
         enum PredepositStatus : byte { None, PreDeposit, Released, Unprocessed };
+
+        enum ComplianceReason : byte { Unidentified, Predeposited, Other };
 
         static bool NotPredeposited(byte? status)
         {
@@ -72,11 +72,11 @@ namespace ReceiptExport
                 return false;
         }
 
-        delegate bool MyDelegate(byte? num); 
+        delegate bool MyDelegate(byte? num);
 
         static IEnumerable<Receipt> FilterReceipts(IEnumerable<Receipt> receipts, MyDelegate FilterBy)
         {
-            foreach(var receipt in receipts)
+            foreach (var receipt in receipts)
             {
                 if (FilterBy(receipt.PredepositStatus))
                     yield return receipt;
@@ -87,21 +87,21 @@ namespace ReceiptExport
         {
             try
             {
-                CreateLogFile();            
+                CreateLogFile();
                 ProcessRecords();
                 CreateFlagFile();
                 CloseLogFile();
                 EndSuccessfully();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Exit(ex.ToString(), ExitCode.UnknownError);
-            }                
-        } 
+            }
+        }
 
         private static List<Receipt> GetReceiptList()
         {
-            using(var db = new ReceiptDBContext())
+            using (var db = new ReceiptDBContext())
             {
                 db.Database.CommandTimeout = 1800;
                 List<Receipt> receiptList = db.Database.SqlQuery<Receipt>("proc_Custom_ReceiptExport").ToList();
@@ -114,7 +114,7 @@ namespace ReceiptExport
         {
             List<Receipt> allReceipts = GetReceiptList().OrderBy(x => x.GlobalStubID).ToList<Receipt>();
             Log.WriteLine(String.Format("GetReceipts() returned {0} records.{1}", allReceipts.Count, Environment.NewLine));
-            
+
             UnidentifiedReceipts(allReceipts);
 
             SkippedReceipts(allReceipts);
@@ -146,53 +146,66 @@ namespace ReceiptExport
                     {
                         int i = 0;
 
+                        #region Loop Receipts
                         foreach (Receipt receipt in receipts)
                         {
                             rec05[i] = LoadRec05(receipt);
 
-                            StubsDataEntry sde = db.StubsDataEntries.FirstOrDefault(x => x.GlobalStubID == receipt.GlobalStubID);
-
-                            if (sde != null)
+                            if (rec05[i].RecordLine().Length == record05Length)
                             {
-                                sde.ExportedToCHARTSDate = CurrentDate;
-                                sde.SDUTranID = rec05[i].SduTranId;
-                                sde.CHARTSStubPrefix = rec05[i].SduTranId.Substring(0, 8);
-                                sde.ExportedAsUnidentified = receipt.ExportedAsUnidentified == 1 ? receipt.ExportedAsUnidentified : (receipt.PersonID.Trim() == "0" ? (byte)1 : (byte)0);
-                                sde.ExportedToCHARTS = 1;
-                                sde.ComplianceExemptionReason = GetComplianceExemptionReason(receipt);
-                                if (rec05[i].RetransmittalIndicator && rec05[i].PayorID != "AR00000000000")
-                                    sde.ResolvedDate = CurrentDate;
-                            }
-                            else { Log.WriteLine("Stub not found, not updated. GlobalStubID: " + receipt.GlobalStubID); }
+                                StubsDataEntry sde = db.StubsDataEntries.FirstOrDefault(x => x.GlobalStubID == receipt.GlobalStubID);
 
-                            //update vertical and horizontal tables
-                            SqlParameter pGlobalStubID = new SqlParameter("globalStubID", receipt.GlobalStubID);
-                            db.Database.ExecuteSqlCommand("proc_Custom_ReceiptExport_UpdateStubDE @GlobalStubID", pGlobalStubID);
+                                if (sde != null)
+                                {
+                                    sde.ExportedToCHARTSDate = CurrentDate;
+                                    sde.SDUTranID = rec05[i].SduTranId;
+                                    sde.CHARTSStubPrefix = rec05[i].SduTranId.Substring(0, 8);
+                                    sde.ExportedAsUnidentified = receipt.ExportedAsUnidentified == 1 ? receipt.ExportedAsUnidentified : (receipt.PersonID.Trim() == "0" ? (byte)1 : (byte)0);
+                                    sde.ExportedToCHARTS = 1;
+                                    sde.ComplianceExemptionReason = GetComplianceExemptionReason(receipt);
+                                    if (rec05[i].RetransmittalIndicator && rec05[i].PayorID != "AR00000000000")
+                                        sde.ResolvedDate = CurrentDate;
+                                }
+                                else { Log.WriteLine("Stub not found, not updated. GlobalStubID: " + receipt.GlobalStubID); }
 
-                            rec01.TotalAmount += rec05[i].Amount;
+                                //update vertical and horizontal tables
+                                //SqlParameter pGlobalStubID = new SqlParameter("globalStubID", receipt.GlobalStubID);
+                                //db.Database.ExecuteSqlCommand("proc_Custom_ReceiptExport_UpdateStubDE @GlobalStubID", pGlobalStubID);
 
-                            if (rec05[i].RetransmittalIndicator)
-                            {
-                                rec01.RetransmittalRecordCount++;
-                                rec01.RetransmittalAmount += rec05[i].Amount;
+                                rec01.TotalAmount += rec05[i].Amount;
+
+                                if (rec05[i].RetransmittalIndicator)
+                                {
+                                    rec01.RetransmittalRecordCount++;
+                                    rec01.RetransmittalAmount += rec05[i].Amount;
+                                }
+                                else
+                                {
+                                    rec01.FirstTimeRecordCount++;
+                                    rec01.FirstTimeAmount += rec05[i].Amount;
+                                }
+
+                                rec01.RecordCount++;  // records written to file count
+
+                                if ((i != 0) && (i % 200) == 0)
+                                {
+                                    db.SaveChanges();
+                                }
                             }
                             else
                             {
-                                rec01.FirstTimeRecordCount++;
-                                rec01.FirstTimeAmount += rec05[i].Amount;
+                                LogErrorColumns(rec05[i]);
+                                badRecCount++;
                             }
 
-                            i++;
+                            i++; // total record count
 
-                            if ((i % 200) == 0)
-                            {
-                                db.SaveChanges();
-                            }
                         }
+                        #endregion
 
                         db.SaveChanges();
 
-                        rec01.RecordCount = i;
+                        totalProcessedRecords = i;
                         RecordTotals(rec01);
                         WriteToReceiptFile(rec01, rec05);
                         tran.Commit();
@@ -202,7 +215,7 @@ namespace ReceiptExport
                         tran.Rollback();
                         throw;
                     }
-                }                
+                }
             }
         }
 
@@ -284,13 +297,15 @@ namespace ReceiptExport
 
         private static void RecordTotals(RecordType01 rec01)
         {
-            Log.WriteLine(Environment.NewLine);
-            Log.WriteLine("First Time Amount: " + rec01.FirstTimeAmount);
-            Log.WriteLine("Retransmitted Amount: "+ rec01.RetransmittalAmount);
-            Log.WriteLine("Total Amount: " + rec01.TotalAmount);
+            Log.WriteLine("First Time Amount: " + rec01.FirstTimeAmount.ToString("C"));
+            Log.WriteLine("Retransmitted Amount: " + rec01.RetransmittalAmount.ToString("C"));
+            Log.WriteLine("Total Amount: " + rec01.TotalAmount.ToString("C"));
             Log.WriteLine("First Time Receipts: " + rec01.FirstTimeRecordCount.ToString());
             Log.WriteLine("Retransmitted Receipts: " + rec01.RetransmittalRecordCount.ToString());
-            Log.WriteLine("Total Receipts: " + rec01.RecordCount.ToString());
+            Log.WriteLine("Records Written to Receipt File: " + rec01.RecordCount);
+            Log.WriteLine("Bad Records: " + badRecCount);
+            Log.WriteLine("Total Records: " + totalProcessedRecords);
+            Log.WriteLine(Environment.NewLine);
         }
 
         public static StreamWriter CreateReceiptFile()
@@ -329,8 +344,10 @@ namespace ReceiptExport
 
                         if (currentRecord.Length == record05Length) // and predepositstatus is null or released*******************************
                             receiptWriter.Write(currentRecord);
-                        else
-                            LogErrorColumns(rec05[i]);
+                        //else LogErrorColumns(rec05[i]);  
+                        // no need to log it has already been logged above but
+                        // record05 contains all receipts that's why we check
+                        // again.
                     }
 
                     receiptWriter.Close();
@@ -342,16 +359,32 @@ namespace ReceiptExport
             }
         }
 
+        /// This was reviewed to use new logic
+        /// This commented out section can be deleted later
+        //private static byte? GetComplianceExemptionReason(Receipt receipt)
+        //{
+        //    if (receipt.ExportedToCHARTSDate == null && receipt.PredepositStatus == null)
+        //        return null;    // normal
+        //    else if (receipt.ExportedAsUnidentified == 1)
+        //        return 0;       // unidentified
+        //    else if (receipt.PredepositStatus == (byte?)PredepositStatus.Released)
+        //        return 1;       // released from predeposit
+        //    else
+        //        return 2;
+        //}
+
         private static byte? GetComplianceExemptionReason(Receipt receipt)
         {
-            if (receipt.ExportedToCHARTSDate == null && receipt.PredepositStatus == null)
-                return null;    // normal
-            else if (receipt.ExportedAsUnidentified == 1)
-                return 0;       // unidentified
+            if (receipt.ExportedAsUnidentified == 1)
+                return (byte) ComplianceReason.Unidentified;
             else if (receipt.PredepositStatus == (byte?)PredepositStatus.Released)
-                return 1;       // released from predeposit
+                return (byte)ComplianceReason.Predeposited;
+            else if (receipt.RAHoldStatus == 2)
+                return (byte)ComplianceReason.Other;
+            else if (receipt.ExportedToCHARTSDate != null)
+                return (byte) ComplianceReason.Other;
             else
-                return 2;       // other
+                return null; // normal
         }
 
         private static bool IsRetransmittal(Receipt receipt)
@@ -428,7 +461,7 @@ namespace ReceiptExport
                 fileDir = ConfigurationManager.AppSettings["fileDir"].ToString();
                 Log.CreateLogFile(FileDir);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new CustomException("CreateLogFile() error, exit_code: " + ExitCode.CreateLogFileError, ex);
             }
@@ -452,7 +485,7 @@ namespace ReceiptExport
 
                 File.CreateText(flagFilePath);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new CustomException("CreateFlagFile() exit_code: " + ExitCode.CreateFlagFileError, ex);
             }
@@ -462,56 +495,58 @@ namespace ReceiptExport
         {
             errMsg = String.Format("Record: {0}.  Invalid length: {1}", rec05.SduTranId, rec05.RecordLine().Length);
 
-            if (rec05.SduBatchId.Length != (int)FieldLength.SduBatchId)
-                errMsg += String.Format("{0}SduBatchId length: {1}. Max is: {2}", Environment.NewLine, rec05.SduBatchId.Length, FieldLength.SduBatchId);
-            if (rec05.SduTranId.Length != (int)FieldLength.SduTranId)
-                errMsg += String.Format("{0}SduTranId length: {1}. Max is: {2}", Environment.NewLine, rec05.SduTranId.Length, FieldLength.SduTranId);
-            if (rec05.ReceiptNumber.Length != (int)FieldLength.ReceiptNumber)
-                errMsg += String.Format("{0}ReceiptNumber length: {1}. Max is: {2}", Environment.NewLine, rec05.ReceiptNumber.Length, FieldLength.ReceiptNumber);
-            if (rec05.StrRetransmittalIndicator.Length != (int)FieldLength.RetransmittalIndicator)
-                errMsg += String.Format("{0}RetransmittalIndicator length: {1}. Max is: {2}", Environment.NewLine, rec05.StrRetransmittalIndicator.Length, FieldLength.RetransmittalIndicator);
-            if (rec05.PayorID.Length != (int)FieldLength.PayorID)
-                errMsg += String.Format("{0}PayorID length: {1}. Max is: {2}", Environment.NewLine, rec05.PayorID.Length, FieldLength.PayorID);
-            if (rec05.PayorSSN.Length != (int)FieldLength.PayorSSN)
-                errMsg += String.Format("{0}PayorSSN length: {1}. Max is: {2}", Environment.NewLine, rec05.PayorSSN.Length, FieldLength.PayorSSN);
-            if (rec05.PaidBy.Length != (int)FieldLength.PaidBy)
-                errMsg += String.Format("{0}PaidBy length: {1}. Max is: {2}", Environment.NewLine, rec05.PaidBy.Length, FieldLength.PaidBy);
-            if (rec05.PayorLastName.Length != (int)FieldLength.PayorLastName)
-                errMsg += String.Format("{0}PayorLastName length: {1}. Max is: {2}", Environment.NewLine, rec05.PayorLastName.Length, FieldLength.PayorLastName);
-            if (rec05.PayorFirstName.Length != (int)FieldLength.PayorFirstName)
-                errMsg += String.Format("{0}PayorFirstName length: {1}. Max is: {2}", Environment.NewLine, rec05.PayorFirstName.Length, FieldLength.PayorFirstName);
-            if (rec05.PayorMiddleName.Length != (int)FieldLength.PayorMiddleName)
-                errMsg += String.Format("{0}PayorMiddleName length: {1}. Max is: {2}", Environment.NewLine, rec05.PayorMiddleName.Length, FieldLength.PayorMiddleName);
-            if (rec05.PayorSuffix.Length != (int)FieldLength.PayorSuffix)
-                errMsg += String.Format("{0}PayorSuffix length: {1}. Max is: {2}", Environment.NewLine, rec05.PayorSuffix.Length, FieldLength.PayorSuffix);
-            if (rec05.StrAmount.Length != (int)FieldLength.Amount)
-                errMsg += String.Format("{0}Amount length: {1}. Max is: {2}", Environment.NewLine, rec05.StrAmount.Length, FieldLength.Amount);
-            if (rec05.StrOfcAmount.Length != (int)FieldLength.OfcAmount)
-                errMsg += String.Format("{0}OfcAmount length: {1}. Max is: {2}", Environment.NewLine, rec05.StrOfcAmount.Length, FieldLength.OfcAmount);
-            if (rec05.PaymentMode.Length != (int)FieldLength.PaymentMode)
-                errMsg += String.Format("{0}PaymentMode length: {1}. Max is: {2}", Environment.NewLine, rec05.PaymentMode.Length, FieldLength.PaymentMode);
-            if (rec05.PaymentSource.Length != (int)FieldLength.PaymentSource)
-                errMsg += String.Format("{0}PaymentSource length: {1}. Max is: {2}", Environment.NewLine, rec05.PaymentSource.Length, FieldLength.PaymentSource);
-            if (rec05.ReceiptReceivedDate.Length != (int)FieldLength.ReceiptReceivedDate)
-                errMsg += String.Format("{0}ReceiptReceivedDate length: {1}. Max is: {2}", Environment.NewLine, rec05.ReceiptReceivedDate.Length, FieldLength.ReceiptReceivedDate);
-            if (rec05.ReceiptEffectiveDate.Length != (int)FieldLength.ReceiptEffectiveDate)
-                errMsg += String.Format("{0}ReceiptEffectiveDate length: {1}. Max is: {2}", Environment.NewLine, rec05.ReceiptEffectiveDate.Length, FieldLength.ReceiptEffectiveDate);
-            if (rec05.CheckNumber.Length != (int)FieldLength.CheckNumber)
-                errMsg += String.Format("{0}CheckNumber length: {1}. Max is: {2}", Environment.NewLine, rec05.CheckNumber.Length, FieldLength.CheckNumber);
-            if (rec05.ComplianceExemptionReason.Length != (int)FieldLength.ComplianceExemptionReason)
-                errMsg += String.Format("{0}ComplianceExemptionReason length: {1}. Max is: {2}", Environment.NewLine, rec05.ComplianceExemptionReason.Length, FieldLength.ComplianceExemptionReason);
-            if (rec05.TargetedPaymentIndicator.Length != (int)FieldLength.TargetedPaymentIndicator)
-                errMsg += String.Format("{0}TargetedPaymentIndicator length: {1}. Max is: {2}", Environment.NewLine, rec05.TargetedPaymentIndicator.Length, FieldLength.TargetedPaymentIndicator);
-            if (rec05.Fips.Length != (int)FieldLength.Fips)
+            if (rec05.SduBatchId.Length > (int)FieldLength.SduBatchId)
+                errMsg += String.Format("{0}SduBatchId length: {1}. Max is: {2}", Environment.NewLine, rec05.SduBatchId.Length, (int)FieldLength.SduBatchId);
+            if (rec05.SduTranId.Length > (int)FieldLength.SduTranId)
+                errMsg += String.Format("{0}SduTranId length: {1}. Max is: {2}", Environment.NewLine, rec05.SduTranId.Length, (int)FieldLength.SduTranId);
+            if (rec05.ReceiptNumber.Length > (int)FieldLength.ReceiptNumber)
+                errMsg += String.Format("{0}ReceiptNumber length: {1}. Max is: {2}", Environment.NewLine, rec05.ReceiptNumber.Length, (int)FieldLength.ReceiptNumber);
+            if (rec05.StrRetransmittalIndicator.Length > (int)FieldLength.RetransmittalIndicator)
+                errMsg += String.Format("{0}RetransmittalIndicator length: {1}. Max is: {2}", Environment.NewLine, rec05.StrRetransmittalIndicator.Length, (int)FieldLength.RetransmittalIndicator);
+            if (rec05.PayorID.Length > (int)FieldLength.PayorID)
+                errMsg += String.Format("{0}PayorID length: {1}. Max is: {2}", Environment.NewLine, rec05.PayorID.Length, (int)FieldLength.PayorID);
+            if (rec05.PayorSSN.Length > (int)FieldLength.PayorSSN)
+                errMsg += String.Format("{0}PayorSSN length: {1}. Max is: {2}", Environment.NewLine, rec05.PayorSSN.Length, (int)FieldLength.PayorSSN);
+            if (rec05.PaidBy.Length > (int)FieldLength.PaidBy)
+                errMsg += String.Format("{0}PaidBy length: {1}. Max is: {2}", Environment.NewLine, rec05.PaidBy.Length, (int)FieldLength.PaidBy);
+            if (rec05.PayorLastName.Length > (int)FieldLength.PayorLastName)
+                errMsg += String.Format("{0}PayorLastName length: {1}. Max is: {2}", Environment.NewLine, rec05.PayorLastName.Length, (int)FieldLength.PayorLastName);
+            if (rec05.PayorFirstName.Length > (int)FieldLength.PayorFirstName)
+                errMsg += String.Format("{0}PayorFirstName length: {1}. Max is: {2}", Environment.NewLine, rec05.PayorFirstName.Length, (int)FieldLength.PayorFirstName);
+            if (rec05.PayorMiddleName.Length > (int)FieldLength.PayorMiddleName)
+                errMsg += String.Format("{0}PayorMiddleName length: {1}. Max is: {2}", Environment.NewLine, rec05.PayorMiddleName.Length, (int)FieldLength.PayorMiddleName);
+            if (rec05.PayorSuffix.Length > (int)FieldLength.PayorSuffix)
+                errMsg += String.Format("{0}PayorSuffix length: {1}. Max is: {2}", Environment.NewLine, rec05.PayorSuffix.Length, (int)FieldLength.PayorSuffix);
+            if (rec05.StrAmount.Length > (int)FieldLength.Amount)
+                errMsg += String.Format("{0}Amount length: {1}. Max is: {2}", Environment.NewLine, rec05.StrAmount.Length, (int)FieldLength.Amount);
+            if (rec05.StrOfcAmount.Length > (int)FieldLength.OfcAmount)
+                errMsg += String.Format("{0}OfcAmount length: {1}. Max is: {2}", Environment.NewLine, rec05.StrOfcAmount.Length, (int)FieldLength.OfcAmount);
+            if (rec05.PaymentMode.Length > (int)FieldLength.PaymentMode)
+                errMsg += String.Format("{0}PaymentMode length: {1}. Max is: {2}", Environment.NewLine, rec05.PaymentMode.Length, (int)FieldLength.PaymentMode);
+            if (rec05.PaymentSource.Length > (int)FieldLength.PaymentSource)
+                errMsg += String.Format("{0}PaymentSource length: {1}. Max is: {2}", Environment.NewLine, rec05.PaymentSource.Length, (int)FieldLength.PaymentSource);
+            if (rec05.ReceiptReceivedDate.Length > (int)FieldLength.ReceiptReceivedDate)
+                errMsg += String.Format("{0}ReceiptReceivedDate length: {1}. Max is: {2}", Environment.NewLine, rec05.ReceiptReceivedDate.Length, (int)FieldLength.ReceiptReceivedDate);
+            if (rec05.ReceiptEffectiveDate.Length > (int)FieldLength.ReceiptEffectiveDate)
+                errMsg += String.Format("{0}ReceiptEffectiveDate length: {1}. Max is: {2}", Environment.NewLine, rec05.ReceiptEffectiveDate.Length, (int)FieldLength.ReceiptEffectiveDate);
+            if (rec05.CheckNumber.Length > (int)FieldLength.CheckNumber)
+                errMsg += String.Format("{0}CheckNumber length: {1}. Max is: {2}", Environment.NewLine, rec05.CheckNumber.Length, (int)FieldLength.CheckNumber);
+            if (rec05.ComplianceExemptionReason.Length > (int)FieldLength.ComplianceExemptionReason)
+                errMsg += String.Format("{0}ComplianceExemptionReason length: {1}. Max is: {2}", Environment.NewLine, rec05.ComplianceExemptionReason.Length, (int)FieldLength.ComplianceExemptionReason);
+            if (rec05.TargetedPaymentIndicator.Length > (int)FieldLength.TargetedPaymentIndicator)
+                errMsg += String.Format("{0}TargetedPaymentIndicator length: {1}. Max is: {2}", Environment.NewLine, rec05.TargetedPaymentIndicator.Length, (int)FieldLength.TargetedPaymentIndicator);
+            if (rec05.Fips.Length > (int)FieldLength.Fips)
                 errMsg += String.Format("{0}Fips length: {1}. Max is: {2}", Environment.NewLine, rec05.Fips.Length, FieldLength.Fips);
-            if (rec05.CourtCaseNumber.Length != (int)FieldLength.CourtCaseNumber)
+            if (rec05.CourtCaseNumber.Length > (int)FieldLength.CourtCaseNumber)
                 errMsg += String.Format("{0}CourtCaseNumber length: {1}. Max is: {2}", Environment.NewLine, rec05.CourtCaseNumber.Length, FieldLength.CourtCaseNumber);
-            if (rec05.CourtJudgementNumber.ToString().Length != (int)FieldLength.CourtJudgementNumber)
+            if (rec05.CourtJudgementNumber.ToString().Length > (int)FieldLength.CourtJudgementNumber)
                 errMsg += String.Format("{0}CourtJudgementNumber length: {1}. Max is: {2}", Environment.NewLine, rec05.CourtJudgementNumber.Length, FieldLength.CourtJudgementNumber);
-            if (rec05.CourtGuidelineNumber.ToString().Length != (int)FieldLength.CourtGuidelineNumber)
+            if (rec05.CourtGuidelineNumber.ToString().Length > (int)FieldLength.CourtGuidelineNumber)
                 errMsg += String.Format("{0}CourtGuidelineNumber length: {1}. Max is: {2}", Environment.NewLine, rec05.CourtGuidelineNumber.Length, FieldLength.CourtGuidelineNumber);
-            if (rec05.ReasonCode.Length != (int)FieldLength.ReasonCode)
+            if (rec05.ReasonCode.Length > (int)FieldLength.ReasonCode)
                 errMsg += String.Format("{0}ReasonCode length: {1}. Max is: {2}", Environment.NewLine, rec05.ReasonCode.Length, FieldLength.ReasonCode);
+
+            errMsg += Environment.NewLine; // spacer
 
             Log.WriteLine(errMsg);
         }
